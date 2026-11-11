@@ -1,0 +1,3828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<title>一划果园 · 五十关丰收之旅</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%;margin:0;overflow:hidden}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif;
+    color:#5a4a5e;
+    background:
+      radial-gradient(900px 600px at 12% -10%,#ffe7ee 0%,transparent 60%),
+      radial-gradient(900px 700px at 110% 110%,#e4f0ff 0%,transparent 55%),
+      #fbf7f2;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none;user-select:none;
+  }
+  .app{
+    position:relative;display:flex;flex-direction:column;
+    width:min(100vw,440px);height:100dvh;max-height:880px;
+    background:linear-gradient(180deg,#fffdf9,#fdf8ff 60%,#f7f9ff);
+    box-shadow:0 24px 70px rgba(120,95,150,.18);
+    overflow:hidden;
+  }
+  @media (min-width:480px){
+    .app{border-radius:30px;height:min(860px,94dvh);outline:1px solid #f2eaf8}
+  }
+
+  /* ---------- HUD ---------- */
+  .hud{flex:0 0 auto;padding:10px 14px 8px;display:flex;flex-direction:column;gap:8px}
+  .hud-top{display:flex;align-items:center;justify-content:space-between}
+  .lvchip{display:flex;align-items:center;gap:8px;font-size:13px;color:#8b7c9b;font-weight:600;min-width:0}
+  .lvchip span{
+    background:linear-gradient(135deg,var(--ac1),var(--ac2));
+    color:#fff;border-radius:10px;padding:3px 8px;font-size:11px;font-weight:900;letter-spacing:1px;
+    flex:0 0 auto;box-shadow:0 4px 10px -2px rgba(255,140,100,.45);
+  }
+  .lvchip b{color:#5c4b6d;font-size:14.5px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-btns{display:flex;gap:8px;flex:0 0 auto}
+  .icon-btn{
+    width:34px;height:34px;border-radius:12px;border:1px solid #efe6f8;background:#fff;color:#8b7c9b;
+    font-size:13px;display:grid;place-items:center;cursor:pointer;padding:0;
+    box-shadow:0 3px 8px -3px rgba(140,110,170,.25);
+    transition:transform .12s,background .15s;
+  }
+  .icon-btn:hover{background:#faf5ff;transform:translateY(-1px)}
+  .icon-btn:active{transform:scale(.92)}
+  .hud-mid{display:flex;align-items:center;gap:10px}
+  .orders{flex:1;display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+  .ochip{
+    display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #f1e6f2;
+    border-radius:99px;padding:4px 11px;font-size:12.5px;font-weight:800;color:#8b7c9b;
+    box-shadow:0 2px 6px -2px rgba(140,110,170,.18);
+    transition:transform .15s,background .2s,color .2s,border-color .2s;
+    white-space:nowrap;
+  }
+  .ochip b{font-variant-numeric:tabular-nums;color:#5c4b6d}
+  .ochip.done{background:linear-gradient(135deg,#e9f9ef,#d9f4e3);border-color:#b9e7c9;color:#3e9e62}
+  .ochip.done b{color:#2f8a55}
+  .ochip.bump{animation:bump .3s cubic-bezier(.2,1.8,.4,1)}
+  @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+  .movesbox{
+    flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:#fff;border:1px solid #f1e6f2;border-radius:14px;padding:3px 13px;
+    box-shadow:0 2px 8px -3px rgba(140,110,170,.2);min-width:62px;
+  }
+  .movesbox em{font-style:normal;font-size:9.5px;color:#b3a7c1;font-weight:800;letter-spacing:1px}
+  .movesbox b{font-size:23px;font-weight:900;color:#5c4b6d;line-height:1.05;font-variant-numeric:tabular-nums}
+  .movesbox.low b{color:#ff5f7a;animation:pulseM .7s infinite alternate}
+  @keyframes pulseM{from{transform:scale(1)}to{transform:scale(1.12)}}
+
+  /* ---------- 方形水果小图标（HUD/弹层用） ---------- */
+  .fsq{
+    display:inline-block;width:14px;height:14px;border-radius:4.5px;flex:0 0 auto;
+    background:linear-gradient(180deg,var(--c1),var(--c2));
+    box-shadow:inset 0 0 0 1.5px var(--bd),inset 0 -2px 0 rgba(0,0,0,.08),0 1px 3px rgba(140,100,90,.35);
+  }
+  .fsq{position:relative;overflow:hidden}
+  .fsq.lg{width:22px;height:22px;border-radius:7px}
+
+  /* ---------- 画布 ---------- */
+  .stage{position:relative;flex:1;min-height:0;background:linear-gradient(180deg,#fffdf6,#fbf7e8,#eaf4e2)}
+  canvas{display:block;width:100%;height:100%;touch-action:none}
+
+  /* ---------- 弹层 ---------- */
+  .overlay{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;
+    background:rgba(255,252,250,.6);
+    backdrop-filter:blur(8px) saturate(1.1);-webkit-backdrop-filter:blur(8px) saturate(1.1);
+    opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:9;
+  }
+  .overlay.show{opacity:1;pointer-events:auto}
+  .panel{
+    width:100%;max-width:342px;background:#fff;
+    border-radius:26px;padding:22px 20px;
+    box-shadow:0 24px 60px -18px rgba(140,110,170,.42);
+    border:1px solid #f4ecfa;text-align:center;
+    transform:translateY(10px) scale(.97);transition:transform .3s cubic-bezier(.2,1.3,.4,1);
+    max-height:100%;overflow:auto;overscroll-behavior:contain;
+  }
+  .overlay.show .panel{transform:none}
+  .panel h1{font-size:23px;margin:6px 0 4px;letter-spacing:1px;color:#4c4058}
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    .panel h1.title{background:linear-gradient(135deg,var(--ac1),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  }
+  .panel h2{font-size:20px;margin:2px 0 10px;color:#4c4058}
+  .panel .sub{font-size:12px;line-height:1.7;color:#9a8cab;margin:0 0 10px}
+  .panel .logo{font-size:26px;letter-spacing:5px;filter:saturate(1.15)}
+  .kicker{display:inline-block;color:#fff;font-size:11px;font-weight:900;letter-spacing:1.5px;border-radius:99px;padding:4px 14px;margin:2px 0 8px;
+    background:linear-gradient(135deg,var(--ac1),var(--ac2));}
+  .goalgrid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0 12px}
+  .gitem{display:inline-flex;align-items:center;gap:6px;background:#f8f4ff;border:1px solid #efe7fa;border-radius:99px;padding:7px 14px;
+    font-size:13px;font-weight:800;color:#57486a}
+  .gitem em{font-style:normal;font-size:10px;color:#a99cb8;font-weight:700}
+  .tip{font-size:11.5px;line-height:1.8;color:#a99cb8;margin:0;background:#faf6ff;border-radius:14px;padding:9px 12px;text-align:left}
+  .tip b{color:#7a5bb0}
+  .starsum{font-size:11.5px;font-weight:800;color:#8b7c9b;background:#f6f0ff;border-radius:99px;padding:5px 13px;display:inline-block;margin:0 0 4px}
+  .lvlist{display:flex;flex-direction:column;gap:8px;margin:8px 0 10px}
+  .lvitem{
+    display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border-radius:16px;
+    background:#fbf8ff;border:1px solid #f1e8fa;cursor:pointer;text-align:left;font-family:inherit;
+    transition:transform .13s,box-shadow .16s,background .16s;
+  }
+  .lvitem:not(.locked):hover{background:#f7f1ff;box-shadow:0 10px 22px -8px rgba(150,120,200,.35);transform:translateY(-1px)}
+  .lvitem:active{transform:scale(.98)}
+  .lvitem.locked{opacity:.45;cursor:not-allowed}
+  .lvbadge{
+    width:27px;height:27px;border-radius:9px;color:#fff;font-weight:900;font-size:13px;
+    display:grid;place-items:center;flex:0 0 auto;box-shadow:0 4px 8px -2px rgba(150,110,90,.35);
+    background:linear-gradient(135deg,var(--ac1),var(--ac2));
+  }
+  .lvinfo{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+  .lvinfo b{font-size:13.5px;color:#57486a}
+  .lvinfo em{font-style:normal;font-size:10.5px;color:#a99cb8}
+  .lvstars{font-size:11px;color:#ffc55c;letter-spacing:1.5px;flex:0 0 auto}
+  .btns{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+  .btn{
+    flex:1;min-width:100px;border:0;border-radius:16px;padding:12px 14px;font-size:14px;font-weight:800;
+    font-family:inherit;color:#7b6b8c;background:#f3edfa;cursor:pointer;
+    transition:transform .12s,filter .15s;
+  }
+  .btn:hover{filter:brightness(1.04)}
+  .btn:active{transform:scale(.96)}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--ac1),var(--ac2));color:#fff;
+    box-shadow:0 12px 24px -8px rgba(255,130,150,.55);
+  }
+  .ribbon{
+    display:inline-block;font-size:13px;font-weight:900;color:#fff;border-radius:99px;padding:5px 16px;margin:2px 0 8px;
+    background:linear-gradient(135deg,#57d98f,#2fb26a);box-shadow:0 8px 16px -6px rgba(47,178,106,.5);
+  }
+  .ribbon.bad{background:linear-gradient(135deg,#ff8f9c,#ff5f7a);box-shadow:0 8px 16px -6px rgba(255,95,122,.5)}
+  .stars{font-size:34px;letter-spacing:8px;margin:4px 0 2px;height:42px}
+  .star{display:inline-block;color:#ffc55c;opacity:0;transform:scale(.2) rotate(-25deg);
+    animation:starIn .6s cubic-bezier(.2,1.6,.4,1) forwards;
+    filter:drop-shadow(0 3px 6px rgba(255,180,70,.45));
+  }
+  .star.off{color:#e9e1f2;filter:none}
+  @keyframes starIn{to{opacity:1;transform:none}}
+  .big{font-size:36px;font-weight:900;color:#ff7a5f;font-variant-numeric:tabular-nums;line-height:1.15;margin:2px 0}
+  .rowline{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:#a99cb8;margin:4px 0 10px;flex-wrap:wrap}
+  .newbest{display:inline-block;font-size:12px;font-weight:900;color:#e0821f;background:#fff3d9;border-radius:99px;padding:4px 12px;margin:2px 0 6px}
+  /* 第一阶段：采摘信息优先，棋盘与天气紧密衔接。 */
+  .hud{padding:14px 16px 10px;gap:12px;background:#fffdf9;z-index:2;border-bottom:1px solid #efe5d8}
+  .lvchip b{color:#514b43;font-size:16px}
+  .icon-btn{width:38px;height:38px;border-radius:13px;color:#786d60;border-color:#eee7dd}
+  .orders{gap:7px}
+  .ochip{padding:7px 10px;gap:7px;border-radius:13px;color:#736859;font-size:13px;border-color:#efe6d9}
+  .ochip b{font-size:18px;color:#514b43}
+  .ochip .fsq{width:24px;height:24px;border-radius:7px;position:relative;overflow:hidden}
+  .ochip small{font-size:10px;color:#817568}
+  .movesbox{padding:7px 12px;min-width:70px;background:#fff2df;border-color:#f0d8b8}
+  .movesbox b{font-size:29px;color:#875334}
+  .movesbox em{font-size:10px;color:#876e54;letter-spacing:0}
+  .movesbox.low b{animation:none}
+  .forecast{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:9px 12px;border:1px solid #dce8e1;border-radius:14px;background:#edf6f0;color:#416450;text-align:left;cursor:pointer;font-family:inherit}
+  .forecast #forecastText{font-size:13px;font-weight:900}
+  .forecast #forecastDetail{margin-left:auto;font-size:11px;line-height:1.5;color:#526e60}
+  .forecast b{font-size:20px}
+  .forecast.armed{background:#fff4d8;border-color:#ebcf87;color:#79561c}
+  .forecast.urgent{border-color:#d49e75}
+  .forecast:disabled{cursor:default}
+  .path-preview{position:absolute;left:16px;right:16px;bottom:max(16px,env(safe-area-inset-bottom));min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px 10px;background:rgba(255,253,248,.96);border:1px solid #e8ddcc;border-radius:20px;text-align:center;pointer-events:none;box-shadow:0 6px 18px rgba(100,80,50,.06)}
+  .preview-kicker{font-size:10px;letter-spacing:1px;font-weight:800;color:#82725c}
+  .path-preview b{font-size:17px;color:#4e5741;line-height:1.35}
+  .path-preview>span:last-child{font-size:12px;line-height:1.5;color:#756b5e}
+  .path-preview.reward{background:#fff4d9;border-color:#e6bd65}
+  .path-preview.reward b{color:#8b541c}
+  .path-preview[hidden],.forecast[hidden]{display:none}
+  .panel .sub{color:#756b7d;font-size:13px}
+  .tip{color:#726379;font-size:12px}
+  .lvinfo em{color:#7c7084;font-size:11px;line-height:1.5}
+  .menu-hero{font-size:12px;color:#608268;font-weight:800;letter-spacing:2px;margin:0 0 10px}
+  .menu-continue{width:100%;margin:12px 0 8px;min-height:50px;font-size:16px}
+  .menu-links{display:flex;justify-content:center;margin-top:12px}
+  .menu-links button{border:0;background:transparent;color:#796787;font-family:inherit;font-size:12px;font-weight:700;padding:10px;cursor:pointer}
+  .app.is-menu .hud-mid{display:none}
+  .icon-btn:disabled{opacity:.4;cursor:default}
+  .fsq[data-fruit="0"]::after{content:'⠿';position:absolute;inset:0;color:#fff8d5;text-align:center;font-size:19px;line-height:24px}
+  .fsq[data-fruit="1"]::after{content:'✳';position:absolute;inset:0;color:#fffbe0;text-align:center;font-size:21px;line-height:24px}
+  .fsq[data-fruit="2"]::after{content:'✦';position:absolute;inset:0;color:#dfe5ff;text-align:center;font-size:18px;line-height:24px}
+  .fsq[data-fruit="3"]::after{content:'⁙';position:absolute;inset:0;color:#e2bdf9;text-align:center;font-size:24px;line-height:21px}
+  .fsq[data-fruit="4"]::after{content:'◜';position:absolute;inset:0;color:#fff4da;text-align:center;font-size:24px;line-height:24px}
+  .fsq[data-fruit="5"]::after{content:'∴';position:absolute;inset:0;color:#ffdfac;text-align:center;font-size:23px;line-height:24px}
+  @media(max-width:370px){.hud{padding:10px;gap:8px}.ochip{padding:6px;gap:4px}.forecast #forecastDetail{font-size:10px}.path-preview{left:10px;right:10px}.path-preview b{font-size:15px}}
+  @media(max-height:660px){.hud{padding:8px 10px;gap:6px}.icon-btn{width:32px;height:32px}.forecast{min-height:36px;padding:6px 9px}.ochip{padding:4px 7px;gap:5px}.ochip .fsq{width:19px;height:19px}.ochip b{font-size:16px}.ochip .fsq::after{line-height:19px;font-size:18px}.movesbox{padding:5px 9px}.movesbox b{font-size:25px}.path-preview{min-height:86px;padding:9px;bottom:10px}.path-preview b{font-size:15px}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  .lesson-panel{padding:18px 16px;max-width:350px}
+  .overlay:has(.lesson-panel){position:fixed;inset:0;padding:16px}
+  .lesson-panel h2{font-size:20px;line-height:1.4;margin:10px 0 4px;color:#4d5947}
+  .lesson-groups,.lesson-topics{display:flex;gap:5px;justify-content:center;margin:0 0 8px}
+  .lesson-groups button,.lesson-topics button{font-family:inherit;cursor:pointer;border:0;border-radius:10px;padding:9px 12px;color:#736b61;background:#f5f1e9;font-size:12px;font-weight:800}
+  .lesson-groups button{flex:1}
+  .lesson-groups button[aria-pressed="true"],.lesson-topics button[aria-pressed="true"]{background:#e5f0df;color:#426438;box-shadow:inset 0 0 0 1px #c8dcbf}
+  .lesson-topics button{background:transparent;padding:6px 8px;font-size:11px}
+  .lesson-copy{font-size:13px;line-height:1.65;color:#766b5a;margin:0 0 8px;min-height:22px}
+  .lesson-demo{margin:6px 0 0;background:linear-gradient(#faf5e9,#f2ecd9);border-radius:20px;border:1px solid #e9dfc8;overflow:hidden}
+  .lesson-demo svg{display:block;width:100%;height:auto;max-height:245px}
+  .lesson-phase{position:relative;height:29px;font-size:12px;color:#61704d;font-weight:800}
+  .lesson-phase span{position:absolute;inset:0;display:flex;justify-content:center;align-items:center}
+  .lesson-phase .after{animation:lesson-after 5s infinite}
+  .lesson-phase .before{animation:lesson-before 5s infinite}
+  .lesson-controls{display:flex;justify-content:center;gap:16px;margin:4px 0}
+  .lesson-controls button{font:inherit;font-size:11px;color:#7c7367;border:0;background:transparent;cursor:pointer;padding:7px}
+  .lesson-next{width:100%;min-height:42px;border:1px solid #e6dfd0;background:#fffaf0;border-radius:12px;color:#70604a;font-family:inherit;font-size:12px;cursor:pointer;margin:5px 0 0}
+  .lesson-panel .btns{margin-top:9px}
+  .lesson-panel .btn{min-width:70px}
+  .lesson-goals{font-size:11px;color:#756951;margin:5px 0 9px;display:flex;gap:9px;justify-content:center;align-items:center;flex-wrap:wrap}
+  .lesson-goals span{display:inline-flex;gap:4px;align-items:center}
+  .demo-line{stroke-dasharray:1;stroke-dashoffset:1;animation:lesson-line 5s infinite}
+  .demo-undo-line{animation:lesson-undo 5s infinite}
+  .demo-picked{transform-box:fill-box;transform-origin:center;animation:lesson-pop 5s infinite}
+  .demo-result{animation:lesson-after 5s infinite}
+  .demo-initial{animation:lesson-before 5s infinite}
+  .demo-ice{animation:lesson-ice 5s infinite}
+  .demo-rain{animation:lesson-rain 5s infinite}
+  .demo-boost{animation:lesson-boost 5s infinite}
+  .demo-wind{animation:lesson-wind 5s infinite}
+  .demo-wind-wrap{animation:lesson-wrap 5s infinite}
+  .demo-finger{animation:lesson-finger 5s infinite}
+  .lesson-paused *{animation-play-state:paused!important}
+  @keyframes lesson-line{0%,12%{stroke-dashoffset:1;opacity:1}60%,70%{stroke-dashoffset:0;opacity:1}78%,100%{stroke-dashoffset:0;opacity:0}}
+  @keyframes lesson-undo{0%,12%{stroke-dashoffset:1;opacity:1}42%{stroke-dashoffset:0;opacity:1}65%,90%{stroke-dashoffset:.5;opacity:1}100%{stroke-dashoffset:1;opacity:0}}
+  @keyframes lesson-pop{0%,65%{opacity:1;transform:scale(1)}72%{opacity:1;transform:scale(1.14)}82%,96%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:scale(1)}}
+  @keyframes lesson-after{0%,68%{opacity:0}76%,96%{opacity:1}100%{opacity:0}}
+  @keyframes lesson-before{0%,64%{opacity:1}72%,96%{opacity:0}100%{opacity:1}}
+  @keyframes lesson-ice{0%,10%{opacity:0}25%,65%{opacity:1}80%,100%{opacity:0}}
+  @keyframes lesson-rain{0%,10%{opacity:0;transform:translateY(-14px)}25%,40%{opacity:1}55%,100%{opacity:0;transform:translateY(45px)}}
+  @keyframes lesson-boost{0%,28%{opacity:0}40%,70%{opacity:1}82%,100%{opacity:0}}
+  @keyframes lesson-wind{0%,25%{transform:translateX(0)}60%,92%{transform:translateX(-54px)}100%{transform:translateX(0)}}
+  @keyframes lesson-wrap{0%,25%{transform:translateX(0)}60%,92%{transform:translateX(162px)}100%{transform:translateX(0)}}
+  @keyframes lesson-finger{0%,7%{opacity:0}12%,63%{opacity:1}72%,100%{opacity:0}}
+  @media(max-height:660px){.lesson-panel{padding:12px}.lesson-panel>.kicker,.lesson-next{display:none}.lesson-demo{margin-top:4px}.lesson-demo svg{max-height:150px}.lesson-panel h2{font-size:18px;margin:5px 0}.lesson-groups,.lesson-topics{margin-bottom:4px}.lesson-groups button{padding:7px}.lesson-topics button{padding:5px 7px}.lesson-panel .btn{padding:10px}.lesson-panel .btns{margin-top:6px}.lesson-copy{font-size:12px;min-height:18px;margin-bottom:4px}.lesson-phase{height:23px}.lesson-controls{margin:0}.lesson-controls button{padding:5px}}
+  @media(prefers-reduced-motion:reduce){.lesson-demo *{animation:none!important}.lesson-demo .demo-result{opacity:1}.lesson-demo .demo-picked,.lesson-demo .demo-initial{opacity:.3}.lesson-demo .demo-line{stroke-dashoffset:0}.lesson-demo .demo-finger,.lesson-demo .demo-rain,.lesson-demo .demo-ice{display:none}.lesson-demo .demo-wind{transform:translateX(-54px)}.lesson-demo .demo-wind-wrap{transform:translateX(162px)}.lesson-phase .before{display:none}.lesson-phase .after{opacity:1}}
+  /* Soft orchard: natural silhouettes, quiet surfaces, explicit state labels. */
+  body{color:#4e5e4f;background:#f0f3eb}
+  .app{background:#fafbf6;box-shadow:0 14px 55px rgba(63,84,57,.1);outline-color:#e1e8da}
+  .hud{background:#fafbf6;border-color:#e5ebdf;padding:13px 15px 10px;gap:10px}
+  .lvchip b{color:#4e624f;letter-spacing:.5px}
+  .lvchip span{border-radius:8px;box-shadow:none;letter-spacing:0;padding:4px 7px;background:#e6eee0;color:#66825d}
+  .icon-btn{background:#fffef9;border:1px solid #e2e8da;box-shadow:none;color:#79916c;font-size:14px}
+  .hud-mid{gap:9px}
+  .orders{gap:6px}
+  .ochip{background:#fffef9;border:1px solid #e4e9dc;box-shadow:none;gap:5px;padding:5px 8px;border-radius:14px}
+  .ochip b{color:#53674d;font-size:19px}
+  .ochip small{font-size:9px;color:#8c9981}
+  .ochip.done{background:#eaf2e4;border-color:#d7e4cd}
+  .fsq,.fsq.lg,.ochip .fsq{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;vertical-align:middle;background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;flex-shrink:0}
+  .fsq.lg{width:38px;height:38px}
+  .fsq::after{content:none!important}
+  .fsq svg{display:block;width:100%;height:100%;overflow:visible}
+  .movesbox{background:#eaf0e0;border:0;border-radius:16px;box-shadow:none;min-width:65px;padding:7px 10px}
+  .movesbox b{font-size:29px;color:#5d774e}
+  .movesbox em{font-size:9px;color:#7a8d6c}
+  .weather-row{display:flex;gap:7px;align-items:stretch}
+  .forecast{flex:1;width:auto;min-width:0;flex-wrap:wrap;column-gap:5px;row-gap:0;background:#ecf2e5;border:0;border-radius:14px;padding:8px 11px;min-height:48px;position:relative}
+  .forecast #forecastText{font-size:12px;width:100%;padding-right:10px;line-height:1.5}
+  .forecast #forecastDetail{margin:0;font-size:10px;color:#7a8c6c}
+  .forecast>b{position:absolute;right:10px;top:10px;color:#809675}
+  .forecast.armed{background:#fff0c6;border:0;color:#82632d}
+  .forecast.urgent{box-shadow:inset 0 0 0 1.5px #d3b57d}
+  .weather-class{width:80px;flex-shrink:0;border:1px solid #e2e8d9;background:#fffdf6;border-radius:14px;color:#6f865c;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;line-height:1.5}
+  .weather-class span{display:block;font-size:9px;font-weight:500;color:#93a184;letter-spacing:1px}
+  .weather-class:disabled{opacity:.5;cursor:default}
+  .app.is-menu .weather-row{display:none}
+  .path-preview{background:#fffdf6;border:1px solid #e4e9d9;border-radius:23px;box-shadow:none;min-height:88px;gap:5px}
+  .path-preview b{color:#567048;font-size:17px}
+  .preview-kicker{color:#9aa58c;font-size:10px;letter-spacing:1px}
+  .path-preview>span:last-child{color:#8a967d;font-size:11px}
+  .path-preview.reward{background:#fff5d8;border-color:#ead7a5}
+  .path-preview.reward b{color:#94723b}
+  .panel{background:#fffdf7;border:1px solid #e6eada;box-shadow:0 14px 40px rgba(71,91,58,.13);border-radius:27px}
+  .panel h1,.panel h2,.panel h1.title{background:none;-webkit-text-fill-color:initial;color:#5a774c;letter-spacing:.5px}
+  .panel .sub{color:#8c9a7e;font-size:12px}
+  .menu-hero{color:#9aa78b;font-weight:600;font-size:10px;letter-spacing:3px}
+  .menu-continue,.btn.primary{background:#8eaf78;box-shadow:0 5px 0 #789962;color:#fffef8}
+  .btn{background:#edf1e5;color:#7e906d;border-radius:15px;font-weight:700}
+  .starsum{background:#f4efdb;color:#a18f58;font-size:10px}
+  .lvitem{background:#f6f7ee;border-color:#e7ebdc;padding:10px 12px}
+  .lvitem:not(.locked):hover{background:#edf3e5;box-shadow:none}
+  .lvbadge{background:#dce8ce;color:#7d9568;box-shadow:none}
+  .lvinfo b{color:#627953;font-size:13px}
+  .lvinfo em{color:#9ba58e;font-size:10px}
+  .lvinfo .fsq{width:18px;height:18px}
+  .lvitem.locked{opacity:.55}
+  .lvstars{color:#d2b865}
+  .menu-links button{color:#8fa27a}
+  .lesson-demo{background:#f2f5e9;border:1px solid #e3e9d7;border-radius:22px}
+  .lesson-panel h2{color:#5e774d}
+  .lesson-copy{color:#8b987b}
+  .lesson-groups button,.lesson-topics button{background:#f1f3e9;color:#8e9b7f}
+  .lesson-groups button[aria-pressed="true"],.lesson-topics button[aria-pressed="true"]{background:#dfead2;color:#658153;box-shadow:none}
+  .lesson-next{background:#f6f7ed;border-color:#e5e9db;color:#8a9a78}
+  .lesson-controls button{color:#97a389}
+  .kicker{background:#e5edd9;color:#80976c;font-weight:700;letter-spacing:1px}
+  .lesson-phase{color:#788c62}
+  .demo-half-a{animation:fruit-half-a 5s infinite;transform-origin:0 0}
+  .demo-half-b{animation:fruit-half-b 5s infinite;transform-origin:0 0}
+  .demo-count-3{animation:weather-three 5s infinite}
+  .demo-count-2{animation:weather-two 5s infinite}
+  .demo-count-1{animation:weather-one 5s infinite}
+  @keyframes lesson-pop{0%,64%{opacity:1;transform:scale(1)}70%,96%{opacity:0;transform:scale(1)}100%{opacity:1;transform:scale(1)}}
+  @keyframes fruit-half-a{0%,64%{opacity:0;transform:translate(0,0) rotate(0deg)}70%{opacity:1;transform:translate(-2px,-1px) rotate(-3deg)}92%,100%{opacity:0;transform:translate(-19px,-8px) rotate(-19deg)}}
+  @keyframes fruit-half-b{0%,64%{opacity:0;transform:translate(0,0) rotate(0deg)}70%{opacity:1;transform:translate(2px,1px) rotate(3deg)}92%,100%{opacity:0;transform:translate(19px,10px) rotate(19deg)}}
+  @keyframes weather-three{0%,20%{opacity:1}24%,100%{opacity:0}}
+  @keyframes weather-two{0%,23%{opacity:0}27%,42%{opacity:1}46%,100%{opacity:0}}
+  @keyframes weather-one{0%,45%{opacity:0}49%,65%{opacity:1}69%,100%{opacity:0}}
+  @media(prefers-reduced-motion:reduce){.lesson-demo .demo-half-a,.lesson-demo .demo-half-b{opacity:0}.lesson-demo .demo-count-3,.lesson-demo .demo-count-2,.lesson-demo .demo-count-1{opacity:0}}
+  @media(max-width:370px){.hud{padding:9px 10px;gap:8px}.ochip{padding:4px 6px;gap:3px}.ochip .fsq{width:25px;height:25px}.ochip b{font-size:17px}.weather-class{width:70px}.forecast #forecastText{font-size:11px}.movesbox{min-width:58px;padding:5px 8px}}
+  @media(max-height:660px){.hud{padding:8px 10px;gap:6px}.ochip{padding:3px 6px}.ochip .fsq{width:22px;height:22px}.ochip b{font-size:16px}.weather-class{width:72px;font-size:10px}.forecast{min-height:39px;padding:5px 9px}.forecast #forecastText{font-size:11px}.forecast #forecastDetail{font-size:9px}.forecast>b{top:5px}.movesbox{padding:4px 8px}.movesbox b{font-size:25px}.path-preview{min-height:80px}.path-preview b{font-size:15px}}
+  .chapter-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 0;color:#7c916a;font-size:11px;font-weight:700}
+  .chapter-nav button{width:32px;height:30px;border:1px solid #e2e8d8;border-radius:10px;background:#f4f7eb;color:#7e9769;font-size:20px;cursor:pointer}
+  .chapter-nav button:disabled{opacity:.3;cursor:default}
+  /* Home and level selection follow the quiet paper-and-ink reference. */
+  body:has(.app.is-lobby){background:#f5f3eb}
+  .app.is-lobby{width:min(100vw,1000px);height:100dvh;max-height:none;border-radius:0;outline:0;box-shadow:none;background:#f5f3eb}
+  .app.is-lobby .hud{display:none}
+  .overlay:has(.home-screen),.overlay:has(.level-screen),.overlay:has(.credits-screen){position:absolute;inset:0;padding:0;backdrop-filter:none;background:#f5f3eb}
+  .home-screen,.level-screen,.credits-screen{width:100%;height:100%;position:relative;overflow:auto;background:#f5f3eb;color:#293b35}
+  .home-screen{display:flex;align-items:center;justify-content:center;padding:36px 24px 90px}
+  .home-copy{text-align:center}
+  .home-copy h1,.level-screen h1,.credits-copy h1{font-size:clamp(48px,7vw,72px);letter-spacing:4px;line-height:1.25;margin:0 0 14px;color:#293b35;font-weight:900}
+  .home-copy h1>span,.level-screen h1>span,.credits-copy h1>span{color:#e97d68;letter-spacing:0}
+  .home-art{width:280px;height:218px;margin:10px auto 32px;transform:rotate(-7deg)}
+  .home-art svg{display:block;width:100%;height:100%;overflow:visible}
+  .home-fruit>g{animation:home-bob 4s ease-in-out infinite;transform-origin:center}
+  .home-fruit:nth-child(2n)>g{animation-delay:-1.4s}
+  .home-fruit:nth-child(3n)>g{animation-delay:-2.7s}
+  @keyframes home-bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+  .start-game{min-width:166px;padding:16px 25px;border:0;border-radius:12px;background:#4ba994;color:#fffef9;font-family:inherit;font-size:16px;letter-spacing:2px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #388c79}
+  .start-game span{margin-left:30px;font-size:20px;font-weight:400}
+  .home-credits,.home-help{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));border:0;background:none;font-family:inherit;color:#8b9681;font-size:11px;padding:9px 4px;cursor:pointer;letter-spacing:.5px}
+  .home-credits{left:28px}.home-credits>span{font-size:18px;color:#9eaf8c;margin-right:5px;vertical-align:-1px}
+  .home-help{right:28px}
+  .lobby-back{position:absolute;left:28px;top:24px;width:40px;height:40px;border:1px solid #dce1d2;border-radius:50%;background:transparent;color:#7d8d72;font-size:21px;cursor:pointer;z-index:1}
+  .level-screen{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:70px 26px 40px;gap:25px}
+  .level-screen h1{font-size:36px;font-weight:700;margin:0}
+  .level-number-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;width:min(100%,480px)}
+  .level-number{aspect-ratio:1;min-width:0;border:1px solid #dce2d1;background:#fffdf6;border-radius:15px;color:#647958;font-family:Georgia,serif;font-size:25px;cursor:pointer;transition:background .15s,transform .15s}
+  .level-number.completed{background:#e2ebd9;border-color:#d4dfc8;color:#59724c}
+  .level-number.recommended{box-shadow:inset 0 0 0 2px #85a579}
+  .level-number:disabled{opacity:.38;cursor:default}
+  .level-number:not(:disabled):hover{background:#dce8d1;transform:translateY(-2px)}
+  .credits-screen{display:flex;justify-content:center;align-items:center;padding:76px 25px 40px}
+  .credits-copy{text-align:center;width:min(100%,430px)}
+  .credits-copy h1{font-size:31px;letter-spacing:2px;margin:14px 0 30px}
+  .credits-flower{font:45px Georgia,serif;color:#a1ad8b}
+  .credits-copy h2{font-size:14px;font-weight:600;margin:24px 0 12px;color:#4b6144}
+  .credits-copy p{font-size:12px;line-height:2.1;color:#89927f;margin:0 0 20px}
+  .credits-contact span{user-select:text;-webkit-user-select:text;letter-spacing:1px;color:#617b55}
+  .resume-run{width:min(100%,520px);border:1px solid #cdddc3;background:#e4eddb;color:#56734c;border-radius:13px;padding:12px 16px;font-family:inherit;cursor:pointer;font-size:14px}
+  .resume-run small{font-size:10px;margin-left:12px;color:#829771}
+  .resume-note{font-size:10px;color:#91a084;margin:0;text-align:center}
+  .unlock-levels{border:1px solid #ccd9bd;background:transparent;color:#6b845a;border-radius:20px;padding:8px 18px;font-size:12px;font-family:inherit;cursor:pointer}
+  .unlock-levels:disabled{border-color:transparent;color:#9ba58e;cursor:default}
+  .feature-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:#bf86a2;font-size:25px;flex-shrink:0}
+  .feature-icon svg{width:100%;height:100%}
+  .star-progress{display:flex;align-items:center;justify-content:space-between;gap:6px;color:#8a987c;font-size:10px;padding:0 3px;white-space:nowrap}
+  .star-progress strong{font-size:11px;font-weight:700;color:#738b5f}
+  .star-progress[hidden]{display:none}
+  @media(max-width:370px){.star-progress{font-size:9px}.star-progress strong{font-size:10px}.level-screen:has(.resume-run){gap:16px}}
+  button:focus-visible{outline:3px solid #cdb578;outline-offset:4px}
+  @media(max-width:480px){.home-copy h1{font-size:52px;letter-spacing:3px}.home-art{width:245px;height:193px;margin:8px auto 29px}.home-credits{left:18px}.home-help{right:18px}.level-number-grid{gap:9px}.level-number{border-radius:12px;font-size:22px}.lobby-back{left:20px;top:20px}}
+  @media(max-height:600px){.home-copy h1{font-size:43px}.home-art{width:215px;height:157px;margin:4px auto 18px}.home-screen{padding-top:25px;padding-bottom:65px}.start-game{padding:13px 22px}.home-credits,.home-help{bottom:12px}.credits-copy h1{margin:10px 0 15px}.credits-copy h2{margin:15px 0 8px}.credits-copy p{margin-bottom:13px}.credits-flower{font-size:32px}}
+  @media(prefers-reduced-motion:reduce){.home-fruit>g{animation:none}}
+  .tool-tray{position:absolute;left:16px;right:16px;bottom:114px;height:46px;display:flex;justify-content:center;gap:8px;pointer-events:auto}
+  .tool-tray[hidden]{display:none}
+  .tool-tray button{display:flex;align-items:center;justify-content:center;gap:5px;flex:1;max-width:180px;min-width:0;border:1px solid #dce6d3;border-radius:14px;background:#fffdf6;color:#6e875d;font-family:inherit;font-size:11px;cursor:pointer;box-shadow:0 2px 0 #e3e9da}
+  .tool-tray button[aria-pressed="true"]{background:#dfeeda;border-color:#7fa174;color:#4f7446}
+  .tool-tray button.needed{border-color:#9dbb8b;box-shadow:0 0 0 2px #edf4e7}
+  .app.no-weather-kit .weather-row{display:none}
+  .tool-tray button:disabled{opacity:.45;cursor:default}
+  .tool-tray b{display:grid;place-items:center;background:#edf2e4;width:18px;height:18px;border-radius:50%;font-size:10px}
+  .pocket-icon{display:inline-flex;width:20px;height:20px;vertical-align:middle;flex-shrink:0;color:#7a9465}
+  .pocket-icon svg{width:100%;height:100%}
+  .level-screen{justify-content:safe center}
+  .level-screen .level-number-grid{flex-shrink:0}
+  .chain-cheer{position:absolute;left:50%;z-index:3;transform:translate(-50%,-50%);pointer-events:none;text-align:center;white-space:nowrap;color:var(--cheer-color,#579785);animation-play-state:paused;--cheer-time:0s}
+  .chain-cheer[hidden]{display:none}
+  .cheer-pop{position:relative;padding:7px 22px 10px;border-radius:32px;background:rgba(255,253,244,.94);box-shadow:0 6px 25px #73855d20;animation:cheer-pop 1.35s both;animation-delay:var(--cheer-time);animation-play-state:inherit}
+  .cheer-pop b{display:block;font:italic 900 clamp(30px,8vw,43px)/1.1 Georgia,serif;letter-spacing:-1px;text-shadow:0 2px 0 #fff,0 4px 0 #dce7ce70}
+  .cheer-pop small{display:block;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:3px;color:#8a9877}
+  .cheer-pop::before,.cheer-pop::after{position:absolute;content:'✦';color:var(--cheer-color);font-size:22px;top:13px;left:-9px;animation:cheer-spark 1.35s both;animation-delay:var(--cheer-time);animation-play-state:inherit}
+  .cheer-pop::after{left:auto;right:-12px;top:35px;font-size:15px;animation-delay:calc(var(--cheer-time) + 40ms)}
+  @keyframes cheer-pop{0%{opacity:0;transform:translateY(14px) scale(.55) rotate(-6deg)}18%{opacity:1;transform:translateY(-3px) scale(1.12) rotate(2deg)}30%,68%{opacity:1;transform:translateY(0) scale(1) rotate(-2deg)}100%{opacity:0;transform:translateY(-24px) scale(1.05) rotate(-2deg)}}
+  @keyframes cheer-spark{0%{opacity:0;transform:scale(0) rotate(-45deg)}22%,65%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:translateY(-15px) scale(.5) rotate(45deg)}}
+  @media(prefers-reduced-motion:reduce){.cheer-pop,.cheer-pop::before,.cheer-pop::after{animation:none!important}}
+  .kit-swap-right{animation:kit-right 5s infinite}.kit-swap-left{animation:kit-left 5s infinite}
+  @keyframes kit-right{0%,20%{transform:translateX(0)}60%,95%{transform:translateX(54px)}100%{transform:translateX(0)}}
+  @keyframes kit-left{0%,20%{transform:translateX(0)}60%,95%{transform:translateX(-54px)}100%{transform:translateX(0)}}
+  @media(max-height:660px){.tool-tray{left:10px;right:10px;bottom:99px;height:44px}.tool-tray button{font-size:10px;gap:3px}.tool-tray .pocket-icon{width:18px;height:18px}.tool-tray b{width:16px;height:16px}.level-screen{padding-top:70px;gap:17px}.level-number-grid{gap:8px}}
+  @media(max-height:660px){.app.tool-level .path-preview{min-height:65px;gap:3px;padding:7px}.app.tool-level .path-preview b{font-size:14px}.app.tool-level .path-preview>span:last-child{font-size:10px}.app.tool-level .tool-tray{bottom:83px;height:40px}}
+  @media(max-height:660px){.level-screen,.level-screen:has(.resume-run){padding:62px 22px 20px;gap:12px}.level-screen h1{font-size:30px}.level-number{font-size:20px}.resume-run{padding:10px 12px}}
+  @media(prefers-reduced-motion:reduce){.kit-swap-right{transform:translateX(54px)}.kit-swap-left{transform:translateX(-54px)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="hud-top">
+      <div class="lvchip"><span id="lvNum">01</span><b id="lvName">果园小摊</b></div>
+      <div class="hud-btns">
+        <button class="icon-btn" id="btnHelp" title="玩法帮助" aria-label="玩法帮助">?</button>
+        <button class="icon-btn" id="btnSound" title="音效开关" aria-label="音效开关">🔊</button>
+        <button class="icon-btn" id="btnPause" title="暂停" aria-label="暂停游戏">❚❚</button>
+      </div>
+    </div>
+    <div class="hud-mid">
+      <div class="orders" id="orders"></div>
+      <div class="movesbox" id="movesbox"><em>剩余步数</em><b id="moves">0</b></div>
+    </div>
+    <div class="weather-row"><button class="forecast" id="btnForecast" aria-label="查看下一次天气动画"><span id="forecastText">果园天气</span><span id="forecastDetail">查看动画</span><b>›</b></button><button class="weather-class" id="btnWeatherClass" aria-label="学习天气变化">天气课堂<span>雨 · 风 · 雪</span></button></div>
+    <div class="star-progress" id="starProgress" hidden></div>
+  </header>
+  <main class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="chain-cheer" id="chainCheer" role="status" aria-live="polite" hidden></div>
+    <div class="tool-tray" id="toolTray" hidden aria-label="随身道具"></div>
+    <div class="path-preview" id="pathPreview"><span class="preview-kicker" id="previewKicker">准备采摘</span><b id="previewTitle">连起 3 颗同款水果</b><span id="previewDetail">可以斜连 · 沿原路回划可撤销</span></div>
+    <div class="overlay" id="overlay"></div>
+  </main>
+</div>
+
+<script src="fruit-art.js"></script>
+<script src="pocket-tools.js"></script>
+<script src="orchard-expansion.js"></script>
+<script src="guide-animations.js"></script>
+<script>
+(() => {
+'use strict';
+
+/* =========================================================
+   0. 基础引用
+   ========================================================= */
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const stageEl = document.getElementById('stage');
+const overlay = document.getElementById('overlay');
+const elOrders = document.getElementById('orders');
+const elMoves = document.getElementById('moves');
+const elMovesBox = document.getElementById('movesbox');
+const elLvName = document.getElementById('lvName');
+const elLvNum = document.getElementById('lvNum');
+const btnSound = document.getElementById('btnSound');
+const btnPause = document.getElementById('btnPause');
+const elApp = document.querySelector('.app');
+const btnHelp = document.getElementById('btnHelp');
+const btnForecast = document.getElementById('btnForecast');
+const elToolTray=document.getElementById('toolTray');
+const elCheer=document.getElementById('chainCheer');
+const elStarProgress = document.getElementById('starProgress');
+const btnWeatherClass = document.getElementById('btnWeatherClass');
+const elForecastText = document.getElementById('forecastText');
+const elForecastDetail = document.getElementById('forecastDetail');
+const elPreview = document.getElementById('pathPreview');
+const elPreviewKicker = document.getElementById('previewKicker');
+const elPreviewTitle = document.getElementById('previewTitle');
+const elPreviewDetail = document.getElementById('previewDetail');
+
+const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif';
+const UI_FONT = '"PingFang SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,sans-serif';
+
+/* =========================================================
+   1. 配置
+   ========================================================= */
+const ROWS = 8, COLS = 8;
+
+/* 方形水果：果身即方块（用配色+纹理区分款式），不再"方块里放 emoji" */
+const FRUITS = window.FruitArt.fruits;
+const TOOL_INFO=window.PocketTools.items;
+const TOOL_KEYS=Object.keys(TOOL_INFO);
+const ORCHARD=window.OrchardExpansion;
+
+/* goals: fruit 订单 / special: bomb、rainbow 生成数
+   weatherEvery/weatherPool: 每 N 步触发一次天气（rain 雨 / wind 风 / frost 寒潮）
+   天气按洗好的"锋面队列"轮流过境，HUD 提前预报；划 6+ 长链/成圈可把下一次天气变成 ✨ 温和版 */
+const LEVELS = [
+  {
+    "name": "第一篮草莓",
+    "types": 4,
+    "moves": 14,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 12
+      },
+      {
+        "fruit": 1,
+        "n": 9
+      }
+    ],
+    "lesson": "connect",
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "bomb": false,
+    "rainbow": false,
+    "loop": true,
+    "autoTools": false,
+    "star2": 1400,
+    "star3": 2600
+  },
+  {
+    "name": "轻轻回划",
+    "types": 4,
+    "moves": 15,
+    "goals": [
+      {
+        "fruit": 2,
+        "n": 15
+      },
+      {
+        "fruit": 3,
+        "n": 12
+      }
+    ],
+    "lesson": "undo",
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "bomb": false,
+    "rainbow": false,
+    "loop": true,
+    "autoTools": false,
+    "star2": 1520,
+    "star3": 2780
+  },
+  {
+    "name": "蜜桃初熟",
+    "types": 5,
+    "moves": 16,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 16
+      },
+      {
+        "fruit": 4,
+        "n": 14
+      }
+    ],
+    "lesson": "connect",
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "bomb": false,
+    "rainbow": false,
+    "loop": true,
+    "autoTools": false,
+    "star2": 1640,
+    "star3": 2960
+  },
+  {
+    "name": "炸弹小课堂",
+    "types": 4,
+    "moves": 19,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 20
+      },
+      {
+        "special": "bomb",
+        "n": 1
+      }
+    ],
+    "lesson": "bomb",
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "bomb": true,
+    "rainbow": false,
+    "loop": true,
+    "autoTools": false,
+    "star2": 1760,
+    "star3": 3140
+  },
+  {
+    "name": "彩虹的礼物",
+    "types": 4,
+    "moves": 21,
+    "goals": [
+      {
+        "fruit": 1,
+        "n": 22
+      },
+      {
+        "special": "rainbow",
+        "n": 1
+      }
+    ],
+    "lesson": "rainbow",
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": false,
+    "star2": 1880,
+    "star3": 3320
+  },
+  {
+    "name": "绕一圈丰收",
+    "types": 4,
+    "moves": 18,
+    "goals": [
+      {
+        "fruit": 3,
+        "n": 28
+      },
+      {
+        "fruit": 2,
+        "n": 14
+      }
+    ],
+    "lesson": "loop",
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": false,
+    "star2": 2000,
+    "star3": 3500
+  },
+  {
+    "name": "雨后的果园",
+    "types": 4,
+    "moves": 20,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 28
+      },
+      {
+        "fruit": 1,
+        "n": 24
+      }
+    ],
+    "lesson": "rain",
+    "weatherEvery": 5,
+    "weatherPool": [
+      "rain"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": false,
+    "star2": 2120,
+    "star3": 3680
+  },
+  {
+    "name": "借一阵好风",
+    "types": 5,
+    "moves": 22,
+    "goals": [
+      {
+        "fruit": 2,
+        "n": 26
+      },
+      {
+        "fruit": 3,
+        "n": 24
+      }
+    ],
+    "lesson": "wind",
+    "weatherEvery": 4,
+    "weatherPool": [
+      "wind"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": false,
+    "star2": 2240,
+    "star3": 3860
+  },
+  {
+    "name": "寒潮来之前",
+    "types": 5,
+    "moves": 23,
+    "goals": [
+      {
+        "fruit": 4,
+        "n": 24
+      },
+      {
+        "fruit": 1,
+        "n": 26
+      }
+    ],
+    "lesson": "frost",
+    "weatherEvery": 5,
+    "weatherPool": [
+      "frost"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": false,
+    "star2": 2360,
+    "star3": 4040
+  },
+  {
+    "name": "轻松丰收日",
+    "types": 4,
+    "moves": 22,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 22
+      },
+      {
+        "fruit": 1,
+        "n": 22
+      },
+      {
+        "fruit": 3,
+        "n": 20
+      }
+    ],
+    "lesson": "charge",
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 2480,
+    "star3": 4220
+  },
+  {
+    "name": "风雨小集市",
+    "types": 5,
+    "moves": 24,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 26
+      },
+      {
+        "fruit": 2,
+        "n": 24
+      },
+      {
+        "fruit": 4,
+        "n": 24
+      }
+    ],
+    "lesson": "forecast",
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain",
+      "wind"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 2600,
+    "star3": 4400
+  },
+  {
+    "name": "破冰的巧思",
+    "types": 5,
+    "moves": 25,
+    "goals": [
+      {
+        "fruit": 1,
+        "n": 26
+      },
+      {
+        "fruit": 3,
+        "n": 26
+      },
+      {
+        "special": "bomb",
+        "n": 1
+      }
+    ],
+    "lesson": "frost",
+    "weatherEvery": 4,
+    "weatherPool": [
+      "wind",
+      "frost"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 2720,
+    "star3": 4580
+  },
+  {
+    "name": "缤纷水果篮",
+    "types": 6,
+    "moves": 26,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 26
+      },
+      {
+        "fruit": 4,
+        "n": 26
+      },
+      {
+        "fruit": 5,
+        "n": 24
+      }
+    ],
+    "lesson": "rain",
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain",
+      "frost"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 2840,
+    "star3": 4760
+  },
+  {
+    "name": "四季彩虹桥",
+    "types": 5,
+    "moves": 28,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 28
+      },
+      {
+        "fruit": 2,
+        "n": 28
+      },
+      {
+        "special": "rainbow",
+        "n": 1
+      }
+    ],
+    "lesson": "charge",
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain",
+      "wind",
+      "frost"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 2960,
+    "star3": 4940
+  },
+  {
+    "name": "果匠的庆典",
+    "types": 6,
+    "moves": 30,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 30
+      },
+      {
+        "fruit": 1,
+        "n": 30
+      },
+      {
+        "fruit": 5,
+        "n": 28
+      },
+      {
+        "special": "bomb",
+        "n": 2
+      }
+    ],
+    "lesson": "forecast",
+    "weatherEvery": 3,
+    "weatherPool": [
+      "rain",
+      "wind",
+      "frost"
+    ],
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3080,
+    "star3": 5120
+  }
+];
+LEVELS.push(...[
+  {
+    "name": "剪开第一颗",
+    "types": 5,
+    "moves": 22,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 24
+      },
+      {
+        "fruit": 1,
+        "n": 20
+      },
+      {
+        "tool": "scissors",
+        "n": 1
+      }
+    ],
+    "lesson": "scissors",
+    "tools": {
+      "scissors": 2
+    },
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "introTool": "scissors",
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3000,
+    "star3": 5200
+  },
+  {
+    "name": "精准小收割",
+    "types": 5,
+    "moves": 22,
+    "goals": [
+      {
+        "fruit": 2,
+        "n": 26
+      },
+      {
+        "fruit": 4,
+        "n": 22
+      }
+    ],
+    "lesson": "scissors",
+    "tools": {
+      "scissors": 2
+    },
+    "weatherEvery": 5,
+    "weatherPool": [
+      "rain"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3100,
+    "star3": 5360
+  },
+  {
+    "name": "换个位置",
+    "types": 5,
+    "moves": 22,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 26
+      },
+      {
+        "fruit": 3,
+        "n": 22
+      },
+      {
+        "tool": "glove",
+        "n": 1
+      }
+    ],
+    "lesson": "glove",
+    "tools": {
+      "glove": 2
+    },
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "introTool": "glove",
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3200,
+    "star3": 5520
+  },
+  {
+    "name": "借风换一手",
+    "types": 5,
+    "moves": 23,
+    "goals": [
+      {
+        "fruit": 1,
+        "n": 28
+      },
+      {
+        "fruit": 2,
+        "n": 26
+      }
+    ],
+    "lesson": "glove",
+    "tools": {
+      "glove": 2,
+      "scissors": 1
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "wind"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3300,
+    "star3": 5680
+  },
+  {
+    "name": "满满一果篮",
+    "types": 5,
+    "moves": 23,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 28
+      },
+      {
+        "fruit": 1,
+        "n": 26
+      },
+      {
+        "tool": "basket",
+        "n": 1
+      }
+    ],
+    "lesson": "basket",
+    "tools": {
+      "basket": 1
+    },
+    "weatherEvery": 0,
+    "weatherPool": [],
+    "introTool": "basket",
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3400,
+    "star3": 5840
+  },
+  {
+    "name": "冰上的采摘篮",
+    "types": 5,
+    "moves": 24,
+    "goals": [
+      {
+        "fruit": 2,
+        "n": 28
+      },
+      {
+        "fruit": 4,
+        "n": 26
+      }
+    ],
+    "lesson": "basket",
+    "tools": {
+      "basket": 2
+    },
+    "weatherEvery": 5,
+    "weatherPool": [
+      "frost"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3500,
+    "star3": 6000
+  },
+  {
+    "name": "剪开寒潮",
+    "types": 5,
+    "moves": 24,
+    "goals": [
+      {
+        "fruit": 1,
+        "n": 28
+      },
+      {
+        "fruit": 3,
+        "n": 28
+      }
+    ],
+    "lesson": "scissors",
+    "tools": {
+      "scissors": 3
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "frost",
+      "rain"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3600,
+    "star3": 6160
+  },
+  {
+    "name": "顺风巧换位",
+    "types": 6,
+    "moves": 25,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 28
+      },
+      {
+        "fruit": 5,
+        "n": 28
+      }
+    ],
+    "lesson": "glove",
+    "tools": {
+      "glove": 3
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "wind",
+      "rain"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3700,
+    "star3": 6320
+  },
+  {
+    "name": "双倍的一篮",
+    "types": 5,
+    "moves": 24,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 30
+      },
+      {
+        "fruit": 1,
+        "n": 28
+      },
+      {
+        "fruit": 3,
+        "n": 26
+      }
+    ],
+    "lesson": "basket",
+    "tools": {
+      "basket": 2
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3800,
+    "star3": 6480
+  },
+  {
+    "name": "果园小帮手",
+    "types": 5,
+    "moves": 25,
+    "goals": [
+      {
+        "fruit": 2,
+        "n": 30
+      },
+      {
+        "fruit": 4,
+        "n": 28
+      },
+      {
+        "fruit": 1,
+        "n": 26
+      }
+    ],
+    "lesson": "basket",
+    "tools": {
+      "scissors": 1,
+      "glove": 1,
+      "basket": 1
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain",
+      "wind"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 3900,
+    "star3": 6640
+  },
+  {
+    "name": "剪刀与炸弹",
+    "types": 6,
+    "moves": 27,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 30
+      },
+      {
+        "fruit": 5,
+        "n": 28
+      },
+      {
+        "special": "bomb",
+        "n": 1
+      }
+    ],
+    "lesson": "scissors",
+    "tools": {
+      "scissors": 2,
+      "glove": 1
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "wind",
+      "frost"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 4000,
+    "star3": 6800
+  },
+  {
+    "name": "换位解冰局",
+    "types": 6,
+    "moves": 28,
+    "goals": [
+      {
+        "fruit": 1,
+        "n": 30
+      },
+      {
+        "fruit": 3,
+        "n": 30
+      },
+      {
+        "fruit": 4,
+        "n": 28
+      }
+    ],
+    "lesson": "glove",
+    "tools": {
+      "glove": 2,
+      "basket": 1
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "frost",
+      "wind"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 4100,
+    "star3": 6960
+  },
+  {
+    "name": "丰收加倍日",
+    "types": 5,
+    "moves": 26,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 32
+      },
+      {
+        "fruit": 2,
+        "n": 30
+      },
+      {
+        "fruit": 4,
+        "n": 28
+      }
+    ],
+    "lesson": "basket",
+    "tools": {
+      "scissors": 1,
+      "basket": 2
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 4200,
+    "star3": 7120
+  },
+  {
+    "name": "四季巧手",
+    "types": 6,
+    "moves": 29,
+    "goals": [
+      {
+        "fruit": 0,
+        "n": 32
+      },
+      {
+        "fruit": 2,
+        "n": 30
+      },
+      {
+        "special": "rainbow",
+        "n": 1
+      }
+    ],
+    "lesson": "glove",
+    "tools": {
+      "scissors": 2,
+      "glove": 2,
+      "basket": 1
+    },
+    "weatherEvery": 4,
+    "weatherPool": [
+      "rain",
+      "wind",
+      "frost"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 4300,
+    "star3": 7280
+  },
+  {
+    "name": "果园工具大师",
+    "types": 6,
+    "moves": 30,
+    "goals": [
+      {
+        "fruit": 1,
+        "n": 36
+      },
+      {
+        "fruit": 5,
+        "n": 34
+      }
+    ],
+    "lesson": "basket",
+    "tools": {
+      "scissors": 2,
+      "glove": 2,
+      "basket": 2
+    },
+    "weatherEvery": 3,
+    "weatherPool": [
+      "rain",
+      "wind",
+      "frost"
+    ],
+    "introTool": null,
+    "bomb": true,
+    "rainbow": true,
+    "loop": true,
+    "autoTools": true,
+    "star2": 4400,
+    "star3": 7440
+  }
+]);
+LEVELS.push(...ORCHARD.levels);
+const LEVEL_N = LEVELS.length;
+
+/* 每关视觉主题 */
+const THEMES = ['#6f9d84','#b28d74','#ae91aa','#859ab1','#8d9e76'].map(ac=>({
+  ac1:ac,ac2:ac,panelA:'#fffef9',panelB:'#fffef9',panelBorder:'#e2e9db',
+  cell1:'rgba(255,255,255,0)',cell2:'rgba(255,255,255,0)',
+  bg:['#f7f9f0','#f4f7eb','#edf2e4']
+}));
+
+function cfg(){ return LEVELS[G.level] || LEVELS[0]; }
+function theme(){ return THEMES[Math.floor(G.level/5)%THEMES.length]; }
+function hex2rgb(h){ const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function mix(a, b, k){
+  const A = hex2rgb(a), B = hex2rgb(b);
+  return 'rgb(' + Math.round(A[0] + (B[0] - A[0]) * k) + ',' + Math.round(A[1] + (B[1] - A[1]) * k) + ',' + Math.round(A[2] + (B[2] - A[2]) * k) + ')';
+}
+function applyThemeVars(){
+  const t = theme(), s = document.documentElement.style;
+  s.setProperty('--ac1', t.ac1);
+  s.setProperty('--ac2', t.ac2);
+}
+
+/* =========================================================
+   2. 存档
+   ========================================================= */
+const SAVE_KEY = 'fruitmatch.save.v1';
+function defProg(){ return {unlocked:1, allLevelsOpen:false, best:new Array(LEVEL_N).fill(0), stars:new Array(LEVEL_N).fill(0), campaignVersion:2, seenWx:[], seenTools:[], seenOrchard:[], seenWeatherIntro:false, seenWeatherGuide:[], seenBasics:false, hasStarted:false}; }
+let save = {sound:true, m:defProg()};
+try{
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(raw){
+    const o = JSON.parse(raw);
+    save.sound = o.sound !== false;
+    if(o.m){
+      const p = defProg();
+      p.seenBasics = o.m.seenBasics === true;
+      p.seenTools=Array.isArray(o.m.seenTools)?o.m.seenTools.filter(k=>TOOL_KEYS.includes(k)):[];
+      p.seenOrchard=Array.isArray(o.m.seenOrchard)?o.m.seenOrchard.filter(k=>ORCHARD.lessons[k]):[];
+      p.allLevelsOpen=o.m.allLevelsOpen===true;
+      p.hasStarted = o.m.hasStarted===true || o.m.seenBasics===true || Number(o.m.unlocked)>1 || (Array.isArray(o.m.best)&&o.m.best.some(v=>Number(v)>0));
+      p.seenWeatherIntro = o.m.seenWeatherIntro === true;
+      if(Array.isArray(o.m.seenWeatherGuide))p.seenWeatherGuide=o.m.seenWeatherGuide.filter(k=>['rain','wind','frost'].includes(k));
+      const u = parseInt(o.m.unlocked, 10);
+      if(u >= 1 && u <= LEVEL_N) p.unlocked = u;
+      if(Array.isArray(o.m.best))  for(let i=0;i<LEVEL_N;i++){ const v=parseInt(o.m.best[i],10);  if(v>0) p.best[i]=v; }
+      if(Array.isArray(o.m.stars)) for(let i=0;i<LEVEL_N;i++){ const v=parseInt(o.m.stars[i],10); if(v>0) p.stars[i]=Math.min(3,v); }
+      /* 天气教学卡：只认合法天气名（旧存档迁移） */
+      if(Array.isArray(o.m.seenWx)) p.seenWx = o.m.seenWx.filter(x => x === 'rain' || x === 'wind' || x === 'frost');
+      if(o.m.campaignVersion!==2){
+        p.legacyFive={unlocked:o.m.unlocked,best:o.m.best,stars:o.m.stars};
+        p.best=new Array(LEVEL_N).fill(0);p.stars=new Array(LEVEL_N).fill(0);
+        for(let i=0;i<5;i++){const j=[2,5,8,11,14][i];p.best[j]=Number(o.m.best?.[i])||0;p.stars[j]=Math.min(3,Number(o.m.stars?.[i])||0);}
+        p.unlocked=Number(o.m.stars?.[4])>0?Math.min(16,LEVEL_N):Math.min(LEVEL_N,Math.max(1,((Number(o.m.unlocked)||1)-1)*3+1));
+      }else if(o.m.legacyFive)p.legacyFive=o.m.legacyFive;
+      if(o.m.campaignVersion===2&&Number(o.m.stars?.[14])>0)p.unlocked=Math.max(p.unlocked,16);
+      if(o.m.campaignVersion===2&&Number(o.m.stars?.[29])>0)p.unlocked=Math.max(p.unlocked,31);
+      save.m = p;
+    }
+  }
+}catch(e){}
+const RUN_KEY='fruitmatch.run.v1';
+function toolAllowance(c){return Object.fromEntries(TOOL_KEYS.map(k=>[k,c.tools?.[k]||0]));}
+function toolIcon(k){return '<span class="pocket-icon">'+window.PocketTools.icon(k)+'</span>';}
+function cancelTool(){G.activeTool=null;G.swapSource=null;G.toolMessage='';}
+function selectPocketTool(id){
+  if(G.state!=='play'||G.phase!=='idle'||!TOOL_INFO[id]||!(G.tools[id]>0))return false;
+  const cancel=G.activeTool===id;clearGesture();cancelTool();G.hint=null;G.hintT=0;if(!cancel)G.activeTool=id;
+  return true;
+}
+function usePocketTool(cell){
+  const id=G.activeTool;
+  if(G.state!=='play'||G.phase!=='idle'||!TOOL_INFO[id]||!(G.tools[id]>0)||!cell||cell.r<0||cell.r>=8||cell.c<0||cell.c>=8)return false;
+  const target=G.grid[cell.r][cell.c];if(!target)return false;
+  if(id==='glove'){
+    if(target.frost){G.toolMessage='冰块不能交换，试试剪刀或篮子';return false;}
+    if(!G.swapSource){G.swapSource={...cell};G.toolMessage='再点相邻的一颗水果';return false;}
+    const first=G.swapSource,from=G.grid[first.r][first.c];
+    if(first.r===cell.r&&first.c===cell.c){G.swapSource=null;G.toolMessage='重新选第一颗水果';return false;}
+    if(Math.max(Math.abs(first.r-cell.r),Math.abs(first.c-cell.c))!==1){G.toolMessage='请选择旁边的一颗，可以斜着换';return false;}
+    if(from.type===target.type&&from.special===target.special){G.toolMessage='这两颗相同，换其他水果试试';return false;}
+    G.grid[first.r][first.c]=target;G.grid[cell.r][cell.c]=from;
+    Object.assign(target,{r:first.r,c:first.c,x:colX(first.c),y:rowY(first.r),bornT:.2});
+    Object.assign(from,{r:cell.r,c:cell.c,x:colX(cell.c),y:rowY(cell.r),bornT:.2});
+  }
+  const seeds=[];
+  if(id==='scissors')seeds.push({...cell});
+  if(id==='basket')for(let r=Math.max(0,cell.r-1);r<=Math.min(7,cell.r+1);r++)for(let c=Math.max(0,cell.c-1);c<=Math.min(7,cell.c+1);c++)seeds.push({r,c});
+  G.tools[id]--;G.toolUses[id]++;cancelTool();G.combo=1;G.autoMade=0;G.weatherPending=false;
+  updateOrders();sfxSpawn();
+  if(id==='glove')nextCascadeStep(true);
+  else{
+    for(const {r,c}of seeds)G.grid[r][c].frost=0;
+    startRemoval(seeds);
+  }
+  return true;
+}
+let toolTrayKey='';
+function renderPocketTools(playing){
+  const enabled=TOOL_KEYS.filter(k=>(cfg().tools?.[k]||0)>0);
+  elToolTray.hidden=!playing||enabled.length===0;
+  const key=JSON.stringify([G.level,G.phase,G.state,G.tools,G.activeTool,G.toolUses]);
+  if(toolTrayKey===key)return;toolTrayKey=key;
+  elToolTray.innerHTML=enabled.map(k=>'<button class="'+(G.orders.some(o=>o.kind==='tool'&&o.tool===k&&orderGot(o)<o.n)?'needed':'')+'" data-pocket="'+k+'" aria-label="'+TOOL_INFO[k].name+'，剩余'+G.tools[k]+'次" aria-pressed="'+(G.activeTool===k)+'" '+(!(G.tools[k]>0)||G.phase!=='idle'?'disabled':'')+'>'+toolIcon(k)+'<span>'+TOOL_INFO[k].name+'</span><b>'+G.tools[k]+'</b></button>').join('');
+}
+function drawToolSelection(){
+  if(!G.swapSource||G.state!=='play')return;
+  ctx.save();ctx.strokeStyle='#7da77c';ctx.lineWidth=3;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.arc(colX(G.swapSource.c),rowY(G.swapSource.r),TILE*.47,0,Math.PI*2);ctx.stroke();ctx.restore();
+}
+
+function levelSignature(i){const c=LEVELS[i];return JSON.stringify([c.types,c.moves,c.goals,c.weatherEvery,c.weatherPool,c.bomb,c.rainbow,c.loop,c.autoTools].concat(c.tools?[c.tools]:[],c.orchard?[c.orchard]:[]));}
+function compatibleLevelSignature(i,signature){
+  const current=levelSignature(i);if(signature===current)return true;
+  // Only the early-loop availability changed. Preserve those old in-progress boards.
+  if(i>=5)return false;
+  const previous=JSON.parse(current);previous[7]=false;
+  return signature===JSON.stringify(previous);
+}
+function readSavedRun(){
+  try{
+    const r=JSON.parse(localStorage.getItem(RUN_KEY)||'null');
+    if(!r||r.version!==1||!Number.isInteger(r.level)||r.level<0||r.level>=LEVEL_N||!compatibleLevelSignature(r.level,r.signature))return null;
+    const c=LEVELS[r.level],validInt=(n,max)=>Number.isInteger(n)&&n>=0&&n<=max;
+    const cell=p=>p&&validInt(p.r,7)&&validInt(p.c,7);
+    if(!validInt(r.moves,c.moves)||r.moves<1||!validInt(r.score,1e9)||!validInt(r.maxCombo,1e6))return null;
+    if(typeof r.wxArmed!=='boolean'||typeof r.teachBasics!=='boolean')return null;
+    const specials=[null,'bomb','rainbow',...(c.orchard?.burst?['burst']:[]),...(c.orchard?.cycle?['cycle']:[])];
+    if(!Array.isArray(r.grid)||r.grid.length!==8||r.grid.some(row=>!Array.isArray(row)||row.length!==8||row.some(t=>!t||!Number.isInteger(t.type)||t.type< -1||t.type>=c.types||!specials.includes(t.special)||((t.type===-1)!==(t.special==='rainbow'))||!validInt(t.frost,1)||!validInt(t.boost,1))))return null;
+    if(!r.stats||!validInt(r.stats.bombMade,1e6)||!validInt(r.stats.rainbowMade,1e6)||!Array.isArray(r.collected)||r.collected.length!==c.goals.length||r.collected.some(n=>!validInt(n,1e6)))return null;
+    if(!validInt(r.weatherLeft,c.weatherEvery||99)||r.weatherLeft<1||!Array.isArray(r.wxQueue)||r.wxQueue.length>6||r.wxQueue.some(k=>!c.weatherPool.includes(k)))return null;
+    if(c.weatherEvery ? !c.weatherPool.includes(r.forecast) : r.forecast!==null)return null;
+    if(r.weatherPlan){
+      const p=r.weatherPlan;
+      if(p.name!==r.forecast||!Array.isArray(p.cells)||p.cells.length>6||!p.cells.every(cell)||!Array.isArray(p.rows)||p.rows.length>2||p.rows.some(v=>!validInt(v,7)))return null;
+    }
+    if(r.lessonRoute!==null&&(!Array.isArray(r.lessonRoute)||r.lessonRoute.length>8||!r.lessonRoute.every(cell)))return null;
+    const limits=toolAllowance(c);
+    if(r.tools===undefined&&!c.tools){r.tools=limits;r.toolUses={scissors:0,glove:0,basket:0};}
+    if(!r.tools||!r.toolUses||TOOL_KEYS.some(k=>!validInt(r.tools[k],limits[k])||!validInt(r.toolUses[k],limits[k])||r.tools[k]+r.toolUses[k]!==limits[k]))return null;
+    if(Object.keys(r.tools).some(k=>!TOOL_KEYS.includes(k)))return null;
+    if(r.orchard===undefined&&!c.orchard)r.orchard=freshOrchard(c);
+    if(!validOrchard(r.orchard,c))return null;
+    return r;
+  }catch(e){return null;}
+}
+function clearSavedRun(){try{localStorage.removeItem(RUN_KEY);}catch(e){}}
+function saveRun(){
+  if(!['play','paused'].includes(G.state)||G.phase!=='idle'||G.weatherPending||G.colorPending||G.bonus||G.moves<1||!G.grid.length)return false;
+  const r={version:1,signature:levelSignature(G.level),level:G.level,moves:G.moves,score:G.score,maxCombo:G.maxCombo,
+    grid:G.grid.map(row=>row.map(t=>({type:t.type,special:t.special||null,frost:t.frost||0,boost:t.boost||0}))),
+    tools:{...G.tools},toolUses:{...G.toolUses},orchard:{...G.orchard,flowers:G.orchard.flowers.slice()},stats:{...G.stats},collected:G.orders.map(o=>o.kind==='fruit'?o.got:0),weatherLeft:G.weatherLeft,forecast:G.forecast,
+    wxQueue:G.wxQueue.slice(),wxArmed:!!G.wxArmed,weatherPlan:G.weatherPlan,teachBasics:!!G.teachBasics,lessonRoute:G.lessonRoute};
+  try{localStorage.setItem(RUN_KEY,JSON.stringify(r));return true;}catch(e){return false;}
+}
+function resumeRun(){
+  const r=readSavedRun();if(!r)return false;
+  startLevel(r.level,r);return true;
+}
+
+function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
+function prog(){ return save.m; }
+function isLevelOpen(i){return Number.isInteger(i)&&i>=0&&i<LEVEL_N&&(prog().allLevelsOpen||i<prog().unlocked);}
+function unlockAllLevels(){prog().allLevelsOpen=true;prog().hasStarted=true;persist();showLevelSelect();}
+
+/* Garden progress is independent of campaign unlocks and survives exact-board saves. */
+function freshOrchard(c){return {flowers:(c.orchard?.flowers||[]).map(([r,c])=>r*8+c),gathered:0,burst:0,cycle:0,bee:0,charge:0};}
+function validOrchard(v,c){
+  if(!v||!Array.isArray(v.flowers)||new Set(v.flowers).size!==v.flowers.length)return false;
+  const initial=freshOrchard(c),ints=['gathered','burst','cycle','bee','charge'];
+  if(ints.some(k=>!Number.isInteger(v[k])||v[k]<0||v[k]>1e6))return false;
+  if(v.flowers.some(k=>!initial.flowers.includes(k))||v.flowers.length+v.gathered!==initial.flowers.length)return false;
+  if(v.charge>=(c.orchard?.bee?.charges||1))return false;
+  if((!c.orchard?.burst&&v.burst)||(!c.orchard?.cycle&&v.cycle)||(!c.orchard?.bee&&(v.bee||v.charge)))return false;
+  return true;
+}
+function featureIcon(id){return '<span class="feature-icon">'+ORCHARD.icon(id)+'</span>';}
+function nextOrchardLesson(c=cfg()){
+  const order=[c.introFeature,...Object.keys(ORCHARD.lessons)].filter(Boolean);
+  return order.find(id=>c.orchard?.[id]&&!prog().seenOrchard.includes(id));
+}
+function teachOrchard(c=cfg()){const id=nextOrchardLesson(c);if(id)showLesson(id,'play','feature-intro','果园新发现');}
+function decorateFruit(t){
+  const c=cfg().orchard;if(!c||t.special)return t;
+  const x=Math.random();if(x<(c.burst||0))t.special='burst';else if(x<(c.burst||0)+(c.cycle||0))t.special='cycle';
+  return t;
+}
+function collectOrchard(marked){
+  for(const k of marked){
+    const t=G.grid[Math.floor(k/8)][k%8];
+    if(t?.special==='burst')G.orchard.burst++;
+    if(t?.special==='cycle')G.orchard.cycle++;
+    const i=G.orchard.flowers.indexOf(k);
+    if(i>=0){G.orchard.flowers.splice(i,1);G.orchard.gathered++;burst(colX(k%8),rowY(Math.floor(k/8)),'#d69ab6',7);floatText(colX(k%8),rowY(Math.floor(k/8))-TILE*.5,'✿ +1','#c481a1',14);}
+  }
+}
+function cycleFruits(){
+  if(!G.colorPending)return false;G.colorPending=false;
+  let changed=false;
+  forEachCell(t=>{if(t.special==='cycle'&&!t.frost){t.type=(t.type+1)%G.types;t.bornT=.32;changed=true;burst(t.x,t.y,'#b4a2ce',3);}});
+  if(changed)floatText(W/2,BY+TILE*.4,'↻ 变色了','#9c87b4',13);
+  return changed;
+}
+function beeTargets(p){
+  const b=cfg().orchard?.bee;if(!b||pathLength(p)<b.chain||G.orchard.charge+1<b.charges)return [];
+  const excluded=planRemovals(p),list=[];
+  forEachCell((t,r,c)=>{const k=key(r,c);if(t.type<0||t.frost||t.spawnKeep||excluded.has(k))return;
+    const need=orderFor(t.type);list.push({r,c,priority:(need&&orderGot(need)<need.n?20:0)+(G.orchard.flowers.includes(k)?10:0)+(t.special==='burst'?4:0)});});
+  return list.sort((a,b)=>b.priority-a.priority||a.r-b.r||a.c-b.c).slice(0,b.picks).map(({r,c})=>({r,c}));
+}
+function chargeBee(p){
+  const b=cfg().orchard?.bee;if(!b||pathLength(p)<b.chain)return [];
+  const targets=beeTargets(p);G.orchard.charge++;
+  if(G.orchard.charge<b.charges)return [];
+  G.orchard.charge=0;G.orchard.bee++;
+  G.beeFlights=targets.map(v=>({x:colX(v.c),y:rowY(v.r),t:0,life:.32}));
+  floatText(W/2,BY+TILE*.8,'🐝 蜜蜂来帮忙！','#b39451',17);sfxSpawn();
+  return targets;
+}
+
+/* =========================================================
+   3. 音效
+   ========================================================= */
+let audioOn = save.sound !== false;
+let actx = null;
+function ac(){
+  if(!actx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) actx = new AC(); }
+  return actx;
+}
+function blip(freq, dur, type, gain, slide){
+  if(!audioOn) return;
+  try{
+    const a = ac(); if(!a) return;
+    if(a.state === 'suspended') a.resume();
+    const t = a.currentTime;
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(50, freq + slide), t + dur);
+    g.gain.setValueAtTime(gain || 0.05, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(t); o.stop(t + dur + 0.03);
+  }catch(e){}
+}
+function sfxSelect(){ blip(640, 0.05, 'triangle', 0.04); }
+function sfxSwap(){ blip(360, 0.07, 'sine', 0.04, 140); }
+function sfxInvalid(){ blip(190, 0.08, 'square', 0.035); setTimeout(()=>blip(160,0.1,'square',0.03),70); }
+function sfxMatch(combo){
+  const base = 480 + Math.min(combo, 8) * 75;
+  blip(base, 0.09, 'triangle', 0.055, 60);
+  setTimeout(() => blip(base * 1.5, 0.11, 'sine', 0.045, 40), 60);
+}
+let lastBombSound=-1;
+function sfxBomb(){
+  if(!audioOn)return;
+  try{
+    const a=ac();if(!a)return;
+    if(a.state==='suspended')a.resume();
+    const t=a.currentTime;
+    if(t-lastBombSound<.07)return;
+    lastBombSound=t;
+    for(const [freq,duration,gain,delay]of [[220,.13,.035,0],[523.25,.19,.022,.015],[783.99,.22,.014,.035]]){
+      const o=a.createOscillator(),g=a.createGain(),at=t+delay;
+      o.type='sine';o.frequency.setValueAtTime(freq,at);
+      if(freq===220)o.frequency.exponentialRampToValueAtTime(150,at+duration);
+      g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(gain,at+.009);
+      g.gain.exponentialRampToValueAtTime(.0001,at+duration);
+      o.connect(g);g.connect(a.destination);o.start(at);o.stop(at+duration+.02);
+    }
+  }catch(e){}
+}
+function sfxRainbow(){ [660,880,1100,1320].forEach((f,i)=>setTimeout(()=>blip(f,0.12,'triangle',0.05),i*70)); }
+function sfxSpawn(){ blip(980, 0.07, 'triangle', 0.045, 200); setTimeout(()=>blip(1300,0.09,'triangle',0.04),55); }
+function sfxOrder(){ [520,660,780].forEach((f,i)=>setTimeout(()=>blip(f,0.12,'triangle',0.05),i*90)); }
+function sfxShuffle(){ [400,560,720].forEach((f,i)=>setTimeout(()=>blip(f,0.07,'sine',0.04),i*60)); }
+function sfxRain(){ [880,740,640].forEach((f,i)=>setTimeout(()=>blip(f,0.09,'sine',0.045,-70),i*90)); }
+function sfxWind(){ blip(200,0.45,'sawtooth',0.05,320); setTimeout(()=>blip(170,0.4,'sawtooth',0.04,260),120); }
+function sfxFrost(){ [1500,1240,1020].forEach((f,i)=>setTimeout(()=>blip(f,0.1,'triangle',0.04,-90),i*80)); }
+function sfxWin(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>blip(f,0.22,'triangle',0.06),i*110)); }
+function sfxLose(){ blip(320, 0.22, 'sawtooth', 0.05, -60); setTimeout(()=>blip(210,0.3,'sawtooth',0.045,-50),160); }
+
+/* =========================================================
+   4. 状态
+   ========================================================= */
+const POP_DUR = 0.32;
+
+const G = {
+  state:'menu',        // menu | intro | play | paused | win | lose
+  phase:'idle',        // fallin | idle | pop | fall | bonus
+  level:0, nextId:1,
+  grid:[],             // grid[r][c] = tile | null
+  types:4, moves:0, score:0,
+  combo:0, maxCombo:0, autoMade:0,
+  orders:[],           // {kind:'fruit',fruit,n,got,done} | {kind:'special',special,n}
+  stats:{bombMade:0, rainbowMade:0},
+  tools:{scissors:0,glove:0,basket:0},toolUses:{scissors:0,glove:0,basket:0},activeTool:null,swapSource:null,toolMessage:'',
+  orchard:freshOrchard({}),colorPending:false,beeFlights:[],
+  path:[], lastSwap:null,          /* 画线：当前拖动路径 */
+  teachBasics:false, lessonRoute:null,
+  weatherLeft:99, wfx:null, wparts:[],   /* 天气：距下次触发步数 / 特效 / 粒子 */
+  wxQueue:[], forecast:null, wxArmed:false,  /* 天气队列 / 预报 / 长链蓄力(温和版) */
+  weatherPending:false, weatherPlan:null,
+  wxCard:null,                            /* 天气公告卡（画布上的短暂播报） */
+  popT:0, marked:new Set(),
+  hint:null, hintT:0,
+  bonus:false, bonusLeft:0, bonusT:0,
+  shake:0, flashT:0, banner:null, cheer:null, shuffleT:0,
+  parts:[], texts:[],
+  slices:[], cutTrails:[],
+};
+
+/* =========================================================
+   5. 布局
+   ========================================================= */
+let W = 0, H = 0, DPR = 1, TILE = 40, BX = 0, BY = 0;
+
+function rr(x, y, w, h, r){
+  const rad = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rad, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rad);
+  ctx.arcTo(x + w, y + h, x, y + h, rad);
+  ctx.arcTo(x, y + h, x, y, rad);
+  ctx.arcTo(x, y, x + w, y, rad);
+  ctx.closePath();
+}
+function colX(c){ return BX + c * TILE + TILE / 2; }
+function rowY(r){ return BY + r * TILE + TILE / 2; }
+function cellFromPoint(x, y){
+  const c = Math.floor((x - BX) / TILE), r = Math.floor((y - BY) / TILE);
+  if(r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+  return {r, c};
+}
+function key(r, c){ return r * COLS + c; }
+
+function computeLayout(){
+  const reserve=cfg().tools?((window.innerHeight||800)<=660?160:190):142;
+  TILE = Math.max(12, Math.floor(Math.min((W - 22) / COLS, (H - reserve) / ROWS)));
+  BX = Math.round((W - TILE * COLS) / 2);
+  BY = 16;
+}
+function resize(){
+  const r = stageEl.getBoundingClientRect();
+  W = Math.max(200, Math.round(r.width));
+  H = Math.max(260, Math.round(r.height));
+  DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  cv.width = Math.round(W * DPR);
+  cv.height = Math.round(H * DPR);
+  cv.style.width = W + 'px';
+  cv.style.height = H + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  computeLayout();
+}
+window.addEventListener('resize', resize);
+if(window.ResizeObserver){ new ResizeObserver(() => resize()).observe(stageEl); }
+
+/* =========================================================
+   6. 盘面生成与工具
+   ========================================================= */
+function forEachCell(fn){
+  for(let r = 0; r < ROWS; r++) for(let c = 0; c < COLS; c++){
+    const t = G.grid[r][c]; if(t) fn(t, r, c);
+  }
+}
+function makeTile(type, r, c, special){
+  return {id:G.nextId++, type, special:special || null, r, c,
+          x:colX(c), y:rowY(r), vy:0, state:'idle',
+          popT:0, squashT:0, bornT:0, spawnKeep:false, frost:0, boost:0};
+}
+function orderFor(fruit){ return G.orders.find(o => o.kind === 'fruit' && o.fruit === fruit); }
+function orderGot(o){
+  if(o.kind==='tool')return G.toolUses[o.tool]||0;
+  if(o.kind==='feature')return G.orchard[o.feature==='flowers'?'gathered':o.feature]||0;
+  if(o.kind === 'fruit') return o.got;
+  return o.special === 'bomb' ? G.stats.bombMade : G.stats.rainbowMade;
+}
+function allGoalsDone(){ return G.orders.every(o => orderGot(o) >= o.n); }
+
+/* 出牌加权：订单水果更容易出现（保证不难） */
+function randType(){
+  const n = G.types;
+  /* 6 种水果时订单加权更高，补偿出牌密度下降（保住"不难"） */
+  const bias = 1.25 + (n - 5) * 0.15;
+  let total = 0; const w = [];
+  for(let i = 0; i < n; i++){ const wi = orderFor(i) ? bias : 1; w.push(wi); total += wi; }
+  let x = Math.random() * total;
+  for(let i = 0; i < n; i++){ x -= w[i]; if(x <= 0) return i; }
+  return n - 1;
+}
+
+function fillBoard(){
+  let guard = 0;
+  do{
+    G.grid = [];
+    for(let r = 0; r < ROWS; r++){
+      const row = [];
+      for(let c = 0; c < COLS; c++){
+        let type, tries = 0;
+        do{
+          type = randType(); tries++;
+        }while(tries < 40 && (
+          (c >= 2 && row[c-1].type === type && row[c-2].type === type) ||
+          (r >= 2 && G.grid[r-1][c].type === type && G.grid[r-2][c].type === type) ||
+          /* 避免现成 2×2 同款方块：成圈必须靠玩家在局中创造 */
+          (c >= 1 && r >= 1 && row[c-1].type === type && G.grid[r-1][c].type === type && G.grid[r-1][c-1].type === type)
+        ));
+        row.push(decorateFruit(makeTile(type, r, c)));
+      }
+      G.grid.push(row);
+    }
+  }while(!hasAnyMove() && ++guard < 20);
+}
+
+/* =========================================================
+   7. 匹配检测（含 run 合并 → L/T 形）
+   ========================================================= */
+function findMatches(){
+  const runs = [];
+  for(let r = 0; r < ROWS; r++){
+    let c = 0;
+    while(c < COLS){
+      const t = G.grid[r][c];
+      if(t && t.type >= 0){
+        let len = 1;
+        while(c + len < COLS){
+          const t2 = G.grid[r][c + len];
+          if(t2 && t2.type === t.type) len++; else break;
+        }
+        if(len >= 3){
+          const cells = [];
+          for(let i = 0; i < len; i++) cells.push({r, c:c + i});
+          runs.push({cells, dir:'h', len});
+        }
+        c += len;
+      }else c++;
+    }
+  }
+  for(let c = 0; c < COLS; c++){
+    let r = 0;
+    while(r < ROWS){
+      const t = G.grid[r][c];
+      if(t && t.type >= 0){
+        let len = 1;
+        while(r + len < ROWS){
+          const t2 = G.grid[r + len][c];
+          if(t2 && t2.type === t.type) len++; else break;
+        }
+        if(len >= 3){
+          const cells = [];
+          for(let i = 0; i < len; i++) cells.push({r:r + i, c});
+          runs.push({cells, dir:'v', len});
+        }
+        r += len;
+      }else r++;
+    }
+  }
+  /* 合并共享格子的 run → 同一组 */
+  const used = new Array(runs.length).fill(false);
+  const groups = [];
+  for(let i = 0; i < runs.length; i++){
+    if(used[i]) continue;
+    let cells = runs[i].cells.slice();
+    let maxLen = runs[i].len;
+    const dirs = new Set([runs[i].dir]);
+    used[i] = true;
+    let changed = true;
+    while(changed){
+      changed = false;
+      for(let j = 0; j < runs.length; j++){
+        if(used[j]) continue;
+        if(runs[j].cells.some(cc => cells.some(x => x.r === cc.r && x.c === cc.c))){
+          cells = cells.concat(runs[j].cells.filter(cc => !cells.some(x => x.r === cc.r && x.c === cc.c)));
+          maxLen = Math.max(maxLen, runs[j].len);
+          dirs.add(runs[j].dir);
+          used[j] = true; changed = true;
+        }
+      }
+    }
+    groups.push({cells, maxLen, cross:dirs.size > 1});
+  }
+  return groups;
+}
+
+/* =========================================================
+   8. 可行步扫描 / 提示
+   ========================================================= */
+function typeView(){
+  const T = [];
+  for(let r = 0; r < ROWS; r++){
+    const row = [];
+    for(let c = 0; c < COLS; c++){
+      const t = G.grid[r][c];
+      row.push(t ? t.type : null);
+    }
+    T.push(row);
+  }
+  return T;
+}
+function runLenAt(T, r, c){
+  const v = T[r][c];
+  if(v == null || v < 0) return 0;
+  let l = c; while(l > 0 && T[r][l-1] === v) l--;
+  let rt = c; while(rt < COLS - 1 && T[r][rt+1] === v) rt++;
+  const h = rt - l + 1;
+  let u = r; while(u > 0 && T[u-1][c] === v) u--;
+  let d = r; while(d < ROWS - 1 && T[d+1][c] === v) d++;
+  return Math.max(h, d - u + 1);
+}
+/* 画线模式：找同款连通簇（8 向相邻，冰冻牌不算） */
+function sameTypeNeighbors(r, c){
+  const t = G.grid[r][c];
+  if(!t || t.type < 0 || t.frost) return null;
+  const nb = [];
+  for(let dr = -1; dr <= 1; dr++) for(let dc = -1; dc <= 1; dc++){
+    if(!dr && !dc) continue;
+    const r2 = r + dr, c2 = c + dc;
+    if(r2 < 0 || r2 >= ROWS || c2 < 0 || c2 >= COLS) continue;
+    const t2 = G.grid[r2][c2];
+    if(t2 && t2.type === t.type && !t2.frost) nb.push({r:r2, c:c2});
+  }
+  return nb.length >= 2 ? nb : null;
+}
+function findHint(){
+  const roots=[];forEachCell((t,r,c)=>{if(!t.frost)roots.push({r,c,type:t.type,special:t.special});});
+  const need=type=>{const o=orderFor(type);return o?Math.max(0,o.n-orderGot(o)):0;};
+  roots.sort((a,b)=>need(b.type)-need(a.type));
+  let best=null,bestScore=-Infinity,nodes=0,evaluations=0;
+  function consider(p){
+    if(evaluations++>450)return;
+    const v=pathPreview(p);if(!v||(!v.reward&&v.n<3))return;
+    let score=v.marked.size*.35,gain=0;
+    for(const o of G.orders){
+      if(o.kind==='fruit'){
+        let n=0;for(const k of v.marked){const t=G.grid[Math.floor(k/COLS)][k%COLS];if(t.type===o.fruit)n+=t.boost?2:1;}
+        gain+=Math.min(n,Math.max(0,o.n-orderGot(o)));
+      }else if(o.kind==='feature'&&orderGot(o)<o.n){
+        let n=0;for(const k of v.marked){const t=G.grid[Math.floor(k/8)][k%8];if(o.feature==='flowers'?G.orchard.flowers.includes(k):t.special===o.feature)n++;}
+        score+=Math.min(n,o.n-orderGot(o))*35;
+        if(o.feature==='bee'&&v.n>=(cfg().orchard?.bee?.chain||99))score+=90;
+      }else if(orderGot(o)<o.n&&v.reward===o.special)score+=160;
+    }
+    score+=gain*9;
+    if(v.reward==='bomb'||v.reward==='rainbow')score+=14;
+    if(v.loop)score+=8;
+    if(G.forecast&&!G.wxArmed&&(v.n>=6||v.loop))score+=8;
+    const thaw=new Set();
+    for(const k of v.marked){const r=Math.floor(k/COLS),c=k%COLS;
+      for(const [dr,dc]of [[0,1],[0,-1],[1,0],[-1,0]]){const rr=r+dr,cc=c+dc;if(G.grid[rr]?.[cc]?.frost)thaw.add(key(rr,cc));}
+    }
+    score+=thaw.size*5;
+    if(score>bestScore){bestScore=score;best={cells:p.map(c=>({...c})),reason:gain?'优先完成订单':v.reward==='bomb'||v.reward==='rainbow'?'制作订单需要的道具':thaw.size?'先解冻，再连线':'调整棋盘，寻找新机会'};}
+  }
+  for(const root of roots){
+    if(evaluations>450||nodes>2500)break;
+    if(root.special==='rainbow'){consider([{r:root.r,c:root.c}]);continue;}
+    if(root.type<0)continue;
+    let branch=0;
+    function visit(p){
+      if(branch++>64||nodes++>2500)return;
+      if(p.length===3||p.length===6||p.length===8)consider(p);
+      if(p.length>=8)return;
+      const last=p[p.length-1];
+      for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+        if(!dr&&!dc)continue;const r=last.r+dr,c=last.c+dc,t=G.grid[r]?.[c];
+        if(!t||t.type!==root.type||t.frost)continue;
+        const cell={r,c},closing=r===root.r&&c===root.c;
+        if(closing){if(!canCloseLoop(p))continue;}
+        else if(p.some(v=>v.r===r&&v.c===c))continue;
+        let cross=false;
+        for(let i=0;i<p.length-2;i++){if(closing&&i===0)continue;if(segmentsCross(last,cell,p[i],p[i+1])){cross=true;break;}}
+        if(cross)continue;
+        if(closing){const loop=p.concat([cell]);if(pathIsLoop(loop))consider(loop);}
+        else visit(p.concat([cell]));
+      }
+    }
+    visit([{r:root.r,c:root.c}]);
+  }
+  return best;
+}
+function hasAnyMove(){
+  for(let r = 0; r < ROWS; r++) for(let c = 0; c < COLS; c++){
+    if(G.grid[r]?.[c]?.special==='rainbow'&&!G.grid[r][c].frost)return true;
+    if(sameTypeNeighbors(r, c)) return true;
+  }
+  return false;
+}
+
+function shuffleBoard(){
+  const normals = [];
+  forEachCell((t) => { if(t.type >= 0){ t.frost = 0; t.boost = 0; normals.push(t); } });
+  let ok = false, guard = 0;
+  while(!ok && guard++ < 60){
+    const types = normals.map(t => t.type);
+    for(let i = types.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = types[i]; types[i] = types[j]; types[j] = tmp;
+    }
+    normals.forEach((t, i) => t.type = types[i]);
+    if(findMatches().length === 0 && hasAnyMove()) ok = true;
+  }
+  if(!ok) fillBoard();
+  banner('🔀 重新洗牌');
+  sfxShuffle();
+  G.shuffleT = 0.5;
+  G.phase = 'idle'; G.hintT = 0; G.hint = null;saveRun();
+}
+
+/* =========================================================
+   9. 消除计划（炸弹/彩虹连锁扩散）
+   ========================================================= */
+function mostCommonType(){
+  const count = new Array(G.types).fill(0);
+  forEachCell(t => { if(t.type >= 0) count[t.type]++; });
+  let best = -1, n = 0;
+  for(let i = 0; i < G.types; i++) if(count[i] > n){ n = count[i]; best = i; }
+  return n > 0 ? best : null;
+}
+function planRemovals(seeds, noChain, preserved){
+  const marked = new Set();
+  const queue = seeds.slice();
+  const nc = new Set(noChain || []);
+  while(queue.length){
+    const cell = queue.shift();
+    const k = key(cell.r, cell.c);
+    if(marked.has(k)) continue;
+    const t = G.grid[cell.r][cell.c];
+    if(!t || t.spawnKeep || t.frost || (preserved && preserved.has(k))) continue;   /* 冰冻牌免疫消除，需相邻消除解冻 */
+    marked.add(k);
+    if(nc.has(k)) continue;
+    if(t.special === 'bomb'){
+      for(let i = 0; i < COLS; i++) if(i !== cell.c) queue.push({r:cell.r, c:i});
+      for(let j = 0; j < ROWS; j++) if(j !== cell.r) queue.push({r:j, c:cell.c});
+    }else if(t.special === 'burst'){
+      for(let r=Math.max(0,cell.r-1);r<=Math.min(7,cell.r+1);r++)for(let c=Math.max(0,cell.c-1);c<=Math.min(7,cell.c+1);c++)queue.push({r,c});
+    }else if(t.special === 'rainbow'){
+      const tp = mostCommonType();
+      if(tp != null) forEachCell((t2, r, c) => { if(t2.type === tp) queue.push({r, c}); });
+    }
+  }
+  return marked;
+}
+
+/* =========================================================
+   10. 消除执行 → 分数/订单 → 动画 → 重力
+   ========================================================= */
+function processMatchGroups(groups){
+  const seeds = [];
+  for(const g of groups){
+    let kind = null;
+    /* 自动连锁以收集为主：每次手动操作最多额外生成一个道具。 */
+    if(cfg().autoTools && G.autoMade<1){
+      if(g.cells.length>=8 && cfg().rainbow)kind='rainbow';
+      else if(g.cells.length>=6 && cfg().bomb)kind='bomb';
+    }
+    let sc = null;
+    if(kind){
+      sc = g.cells[Math.floor(g.cells.length / 2)];
+      const t = G.grid[sc.r][sc.c];
+      if(t){
+        t.spawnKeep = true; t.bornT = 0.35;
+        if(kind === 'rainbow'){
+          t.special = 'rainbow'; t.type = -1; G.autoMade++;
+          addScore(200, {x:colX(sc.c), y:rowY(sc.r), label:'🌈 彩虹 +200'});
+        }else{
+          t.special = 'bomb'; G.autoMade++;
+          addScore(100, {x:colX(sc.c), y:rowY(sc.r), label:'💥 炸弹 +100'});
+        }
+        sfxSpawn();
+        updateOrders();
+      }
+    }
+    for(const cc of g.cells){
+      if(!(sc && cc.r === sc.r && cc.c === sc.c)) seeds.push(cc);
+    }
+  }
+  return seeds;
+}
+
+function startRemoval(seeds, opts){
+  opts = opts || {};
+  const marked = planRemovals(seeds, opts.noChain);
+  if(marked.size === 0) return false;
+  collectOrchard(marked);
+
+  let cnt = 0, cx = 0, cy = 0, boostN = 0;
+  for(const k of marked){
+    const r = Math.floor(k / COLS), c = k % COLS;
+    const t = G.grid[r][c]; if(!t) continue;
+    t.state = 'pop'; t.popT = 0;
+    cnt++; cx += t.x; cy += t.y;
+    if(t.boost) boostN++;
+    if(t.type>=0) sliceFruit(t);
+    burst(t.x, t.y, t.type >= 0 ? FRUITS[t.type].c2 : '#b4a4d3', t.boost ? 5 : 3);
+    if(t.special === 'bomb'){ G.shake = Math.max(G.shake, 0.55); sfxBomb(); }
+    if(t.special === 'burst'){G.shake=Math.max(G.shake,.22);burst(t.x,t.y,'#f4b48a',10);}
+  }
+  /* 分数与订单（✨双倍水果按 2 计） */
+  const gain = (cnt + boostN) * 10 * Math.min(G.combo,3);
+  addScore(gain, {x:cx / cnt, y:cy / cnt,
+    label:'+' + gain + (G.combo > 1 ? ' ×' + Math.min(G.combo,3) : '') + (boostN ? ' ✨' : '')});
+  for(const k of marked){
+    const r = Math.floor(k / COLS), c = k % COLS;
+    const t = G.grid[r][c];
+    if(t && t.type >= 0){
+      const o = orderFor(t.type);
+      if(o) o.got += t.boost ? 2 : 1;
+    }
+  }
+  for(const o of G.orders){
+    if(o.kind === 'fruit' && !o.done && o.got >= o.n){
+      o.done = true;
+      banner('✅ ' + (o.n ? FRUITS[o.fruit].name + ' 订单完成！' : ''));
+      sfxOrder();
+    }
+  }
+  sfxMatch(G.combo);
+  if(G.combo >= 2){
+    banner('连锁 ' + G.combo + ' 次！');
+    G.flashT = 0.22;
+  }
+  updateOrders();
+
+  G.marked = marked;
+  G.phase = 'pop';
+  G.popT = POP_DUR;
+  return true;
+}
+
+function applyRemovals(){
+  for(const k of G.marked){
+    const r = Math.floor(k / COLS), c = k % COLS;
+    G.grid[r][c] = null;
+    /* 相邻被消除 → 冰冻解封 */
+    for(const d of [[0,1],[0,-1],[1,0],[-1,0]]){
+      const r2 = r + d[0], c2 = c + d[1];
+      if(r2 < 0 || r2 >= ROWS || c2 < 0 || c2 >= COLS) continue;
+      const t2 = G.grid[r2][c2];
+      if(t2 && t2.frost){
+        t2.frost = 0; t2.bornT = 0.22;
+        burst(colX(c2), rowY(r2), '#bcd9f2', 6);
+        floatText(colX(c2), rowY(r2) - TILE * 0.5, '解冻！', '#6fa8dc', 12);
+      }
+    }
+  }
+  G.marked = new Set();
+  forEachCell(t => { t.spawnKeep = false; });
+
+  /* 重力 + 补牌（逐列压实） */
+  for(let c = 0; c < COLS; c++){
+    let write = ROWS - 1;
+    for(let r = ROWS - 1; r >= 0; r--){
+      const t = G.grid[r][c];
+      if(t){
+        if(write !== r){
+          G.grid[write][c] = t;
+          G.grid[r][c] = null;
+          t.r = write; t.state = 'fall'; t.vy = 0;
+        }
+        write--;
+      }
+    }
+    for(let r = write; r >= 0; r--){
+      const t = decorateFruit(makeTile(randType(), r, c));
+      t.y = rowY(r) - (write + 1.35) * TILE - Math.random() * TILE * 0.5;
+      t.state = 'fall'; t.vy = 0;
+      G.grid[r][c] = t;
+    }
+  }
+  G.phase = 'fall';
+}
+
+/* =========================================================
+   9b. 天气系统：可预报、可驯服
+   - 洗好的"锋面队列"轮流过境，HUD 提前预报下一次天气 + 倒计时
+   - 划 6+ 长链或成圈 → ✨蓄力：下次天气触发"温和版"
+   - 天气有意图也有克制：雨优先浇订单缺的水果并解冻；风专挑能成消除的行；寒潮专冻快连上的水果
+   ========================================================= */
+const WEATHER = {
+  rain:  {icon:'☔',  name:'阵雨', gentle:'甘霖',
+          hint:'✨双倍按 2 计入订单 · 雨解冻',
+          what:'水果被浇成 ✨双倍：消除、订单都按 2 个算，优先浇订单还缺的；雨水还会解冻所有 ❄️。',
+          use:'预报 ☔ 就攒长链收割双倍；被冻住别急，等一场雨全化。'},
+  wind:  {icon:'🌬️', name:'起风', gentle:'顺风格',
+          hint:'整行转一格 · 找新三连',
+          what:'整行循环挪一格：专挑挪完立刻成三连的行，白送一次消除；也可能挪走你连到一半的。',
+          use:'预报 🌬️ 时边行别急着连；吹完马上扫一遍新三连。'},
+  frost: {icon:'❄️', name:'寒潮', gentle:'瑞雪',
+          hint:'冻块划不动 · 消旁边解冻',
+          what:'冻住 3 个快连上的水果；冻块不能连线，但会随水果下落。消除上下左右相邻的水果即可解冻，阵雨也能解冻。',
+          use:'消冻块旁边的水果即可解冻，下雨也会解冻；预报 ❄️ 前先清热点。'},
+};
+
+function refillWxQueue(){
+  const pool = cfg().weatherPool || [];
+  const q = pool.slice();
+  for(let i = q.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = q[i]; q[i] = q[j]; q[j] = tmp;
+  }
+  /* 避免和刚触发过的天气首尾相连 */
+  if(G.forecast && q.length > 1 && q[0] === G.forecast){
+    const j = 1 + Math.floor(Math.random() * (q.length - 1));
+    const tmp = q[0]; q[0] = q[j]; q[j] = tmp;
+  }
+  G.wxQueue.push(...q);
+}
+function nextForecast(){
+  if(!G.wxQueue.length) refillWxQueue();
+  return G.wxQueue.shift();
+}
+
+/* 加权抽格子（订单缺的水果 / 快连上的热点，权重更高） */
+function pickWeighted(pool){
+  let total = 0;
+  for(const p of pool) total += p.w;
+  let x = Math.random() * total;
+  for(let i = 0; i < pool.length; i++){
+    x -= pool[i].w;
+    if(x <= 0) return i;
+  }
+  return pool.length - 1;
+}
+
+function buildWeatherPlan(name){
+  if(!name)return null;
+  if(name==='wind')return {name,rows:windRows(2),cells:[]};
+  const pool=[];
+  forEachCell((t,r,c)=>{
+    if(t.type>=0&&!t.special&&!t.boost&&!t.frost)pool.push({r,c,w:(orderFor(t.type)?2:1)});
+  });
+  const cells=[],limit=name==='rain'?6:3;
+  while(cells.length<limit&&pool.length)cells.push(pool.splice(pickWeighted(pool),1)[0]);
+  return {name,rows:[],cells:cells.map(({r,c})=>({r,c}))};
+}
+function ensureWeatherPlan(){
+  if(!G.forecast){G.weatherPlan=null;return null;}
+  if(!G.weatherPlan||G.weatherPlan.name!==G.forecast)G.weatherPlan=buildWeatherPlan(G.forecast);
+  return G.weatherPlan;
+}
+function plannedTargets(plan,blessed=G.wxArmed){
+  if(!plan)return [];
+  return plan.name==='wind'?plan.rows.slice(0,blessed?2:1):plan.cells.slice(0,plan.name==='rain'?(blessed?6:4):(blessed?1:3));
+}
+function drawWeatherPlan(){
+  if(G.state!=='play'||G.phase!=='idle')return;
+  const plan=ensureWeatherPlan();if(!plan)return;
+  ctx.save();ctx.lineWidth=1.5;
+  const color=plan.name==='rain'?'#709e9e':plan.name==='frost'?'#829fc9':'#93a274';
+  ctx.strokeStyle=color;ctx.fillStyle=color;
+  if(plan.name==='wind'){
+    for(const r of plannedTargets(plan)){
+      ctx.setLineDash([4,5]);rr(BX+1,BY+r*TILE+1,COLS*TILE-2,TILE-2,12);ctx.stroke();ctx.setLineDash([]);
+      ctx.beginPath();ctx.moveTo(BX+8,rowY(r));ctx.lineTo(BX+17,rowY(r)-5);ctx.lineTo(BX+17,rowY(r)+5);ctx.closePath();ctx.fill();
+    }
+  }else for(const {r,c}of plannedTargets(plan)){
+    ctx.setLineDash([3,4]);ctx.beginPath();ctx.arc(colX(c),rowY(r),TILE*.44,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+    const x=colX(c)-TILE*.32,y=rowY(r)+TILE*.32;
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle='#fffef8';ctx.fill();ctx.stroke();
+    ctx.fillStyle=color;ctx.font='800 8px '+UI_FONT;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(plan.name==='rain'?'雨':'冰',x,y);
+  }
+  ctx.restore();
+}
+
+function maybeWeather(){
+  const c = cfg();
+  if(!c.weatherEvery || !c.weatherPool || !c.weatherPool.length) return false;
+  if(G.weatherLeft > 1){
+    G.weatherLeft--;
+    if(!prog().seenWeatherIntro){
+      showLesson('forecast','play','weather-intro','天气每走一步，就近一步');
+    }else if(G.weatherLeft===1 && !prog().seenWeatherGuide.includes(G.forecast)){
+      showLesson(G.forecast,'play','weather-before','下一步：'+WEATHER[G.forecast].name);
+    }
+    return false;
+  }
+  G.weatherLeft = c.weatherEvery;
+  const name = G.forecast || nextForecast();
+  const plan=ensureWeatherPlan();
+  G.forecast = nextForecast(); G.weatherPlan=null;
+  const blessed = G.wxArmed;   /* 长链蓄力：天气变温和版 */
+  G.wxArmed = false;
+  return triggerWeather(name, blessed, plan);
+}
+
+function triggerWeather(name, blessed, plan){
+  plan=plan&&plan.name===name?plan:buildWeatherPlan(name);
+  if(name === 'rain'){
+    /* ☔ 阵雨：随机水果变 ✨ 双倍（订单也×2），优先浇订单还缺的；雨水顺带解冻。甘霖(✨)浇 6 个 */
+    const n = blessed ? 6 : 4;
+    let affected=0;
+    for(const {r,c}of plannedTargets(plan,blessed)){
+      const t=G.grid[r][c];if(!t||t.type<0||t.special)continue;
+      t.boost=1;t.bornT=.3;affected++;
+      burst(colX(c),rowY(r),'#ffd166',4);
+    }
+    let thawed = 0;
+    forEachCell((t) => { if(t.frost){ t.frost = 0; t.bornT = 0.25; thawed++; } });
+    announceWeather('rain', blessed, '滋润 ' + affected + ' 个 ×2' + (thawed ? ' · 解冻 ×' + thawed : ''));
+    sfxRain();
+    G.wfx = {name:'rain', t:blessed ? 2.8 : 2.0, blessed};
+  }else if(name === 'wind'){
+    /* 🌬️ 起风：优先挑"吹完立刻成消除"的行；顺风格(✨)连吹两行 */
+    const rows = plannedTargets(plan,blessed);
+    for(const row of rows) windShiftRow(row);
+    announceWeather('wind', blessed, '吹动 ' + rows.map(r => '第' + (r + 1) + '行').join('、'));
+    sfxWind();
+    G.wfx = {name:'wind', t:blessed ? 1.9 : 1.3, row:rows[0], blessed};
+    G.combo = 1;
+    G.flashT = 0.18;
+    nextCascadeStep(true);
+    return true;
+  }else if(name === 'frost'){
+    /* ❄️ 寒潮：优先冻"快连上的水果"（堵你的路线）；瑞雪(✨)只冻 1 个 */
+    const n = blessed ? 1 : 3;
+    let frozen=0;
+    for(const {r,c}of plannedTargets(plan,blessed)){
+      const t=G.grid[r][c];if(!t||t.type<0||t.special||t.spawnKeep)continue;
+      t.frost=1;t.bornT=.25;frozen++;
+      burst(colX(c),rowY(r),'#cfe8fa',4);
+    }
+    announceWeather('frost', blessed, (blessed ? '轻落 · 只冻 ' : '冻住 ') + frozen + ' 个预告位置');
+    sfxFrost();
+    G.wfx = {name:'frost', t:blessed ? 2.6 : 2.0, blessed};
+  }
+  return false;
+}
+
+/* 风选行：优先挑"吹完直接成三连"的行 */
+/* =========================================================
+   9c. 天气播报：首次遇到 → 教学卡（DOM，点"知道了"才关）；
+       之后 → 画布公告卡（约 4s 自动消失，不挡操作，没看清可点预报芯片查图鉴）
+   ========================================================= */
+function announceWeather(name, blessed, detail){
+  const wd = WEATHER[name];
+  if(!wd) return;
+  const title = blessed ? '✨ ' + wd.gentle + ' · 温和版' : wd.icon + ' ' + wd.name;
+  const first = !prog().seenWeatherGuide.includes(name);
+  if(first){
+    prog().seenWx.push(name);
+    prog().seenWeatherGuide.push(name);
+    persist();
+  }
+  if(first && G.state === 'play'){ G.wxCard = null; showWxTeach(name, blessed, detail, title); }
+  else G.wxCard = {name, blessed, title, detail, hint:wd.hint, t:0, dur:4.2};
+}
+
+function rowShiftMatch(r){
+  const row = G.grid[r];
+  const nw = [];
+  for(let c = 0; c < COLS; c++) nw.push(row[(c + 1) % COLS]);
+  for(let c = 0; c + 2 < COLS; c++){
+    const a = nw[c], b = nw[c + 1], d = nw[c + 2];
+    if(a && b && d && a.type >= 0 && a.type === b.type && b.type === d.type) return true;
+  }
+  for(let c = 0; c < COLS; c++){
+    const t = nw[c];
+    if(!t || t.type < 0) continue;
+    for(let dir = -1; dir <= 1; dir += 2){
+      const r1 = r + dir, r2 = r + dir * 2;
+      if(r1 < 0 || r1 >= ROWS || r2 < 0 || r2 >= ROWS) continue;
+      const t1 = G.grid[r1][c], t2 = G.grid[r2][c];
+      if(t1 && t2 && t1.type === t.type && t2.type === t.type) return true;
+    }
+    /* 中位竖三连：位移后的牌恰好落在中间（上下各一个同款） */
+    if(r > 0 && r < ROWS - 1){
+      const up = G.grid[r - 1][c], dn = G.grid[r + 1][c];
+      if(up && dn && up.type >= 0 && up.type === t.type && dn.type === t.type) return true;
+    }
+  }
+  return false;
+}
+function windRows(k){
+  let smart = [];
+  for(let r = 0; r < ROWS; r++) if(rowShiftMatch(r)) smart.push(r);
+  const rows = [];
+  let guard = 0;
+  while(rows.length < k && guard++ < 32){
+    let r;
+    if(smart.length){
+      r = smart[Math.floor(Math.random() * smart.length)];
+      smart = smart.filter(x => x !== r);
+    }else{
+      r = Math.floor(Math.random() * ROWS);
+    }
+    if(!rows.includes(r)) rows.push(r);
+  }
+  return rows;
+}
+function windShiftRow(row){
+  const tiles = G.grid[row];
+  const moved = tiles[0];
+  for(let c = 0; c < COLS - 1; c++) tiles[c] = tiles[c + 1];
+  tiles[COLS - 1] = moved;
+  for(let c = 0; c < COLS; c++){
+    const t = tiles[c];
+    if(t){ t.c = c; t.x = colX(c); t.y = rowY(row); t.squashT = 0.14; }
+  }
+}
+
+function nextCascadeStep(skipWx){
+  // One rotation per manual turn; cascades and pocket tools never rotate again.
+  if(G.colorPending)cycleFruits();
+  const groups = findMatches();
+  if(groups.length){
+    G.combo++;
+    G.maxCombo = Math.max(G.maxCombo, G.combo);
+    const seeds = processMatchGroups(groups);
+    if(startRemoval(seeds)) return;
+  }
+  if(allGoalsDone()){
+    if(G.bonus){
+      if(G.bonusLeft > 0){ G.phase = 'bonus'; G.bonusT = 0.32; return; }
+      winNow(); return;
+    }
+    if(G.moves > 0){
+      G.bonus = true;
+      G.bonusLeft = Math.min(G.moves, 6);
+      if(G.moves > G.bonusLeft){
+        const extra = (G.moves - G.bonusLeft) * 60;
+        addScore(extra, {x: W / 2, y: BY + ROWS * TILE * 0.45, label:'剩余步数 +' + extra});
+      }
+      banner('🎉 订单完成！剩余步数变炸弹');
+      G.phase = 'bonus'; G.bonusT = 0.55;
+      return;
+    }
+    winNow(); return;
+  }
+  if(G.moves <= 0){ loseNow(); return; }
+  if(!skipWx && G.weatherPending){
+    G.weatherPending=false;
+    if(maybeWeather() && (G.phase === 'pop' || G.phase === 'fall' || G.phase === 'bonus')) return;
+  }
+  if(!hasAnyMove()){ shuffleBoard(); return; }
+  G.phase = 'idle';
+  ensureWeatherPlan();
+  G.hintT = 0; G.hint = null;
+  saveRun();
+}
+
+function injectBonusBomb(){
+  /* 彩虹格不能被覆盖（type=-1），优先落在普通水果上 */
+  const plain = [], any = [];
+  forEachCell((t, r, c) => {
+    if(t.spawnKeep || t.frost || t.special === 'rainbow') return;
+    (t.special ? any : plain).push({r, c});
+  });
+  const cand = plain.length ? plain : any;
+  if(!cand.length){ G.bonusLeft = 0; return; }
+  const p = cand[Math.floor(Math.random() * cand.length)];
+  const t = G.grid[p.r][p.c];
+  t.special = 'bomb'; t.bornT = 0.3;
+  G.combo = 1;
+  addScore(100, {x:colX(p.c), y:rowY(p.r), label:'步数奖励 +100'});
+  G.moves--; updateMoves();
+  startRemoval([p]);
+}
+
+/* =========================================================
+   11. 画线流程
+   ========================================================= */
+function extendPath(cell){
+  const path = G.path;
+  const last = path[path.length - 1];
+  if(!last) return;
+  if(cell.r === last.r && cell.c === last.c) return;
+  /* 划回上一格 = 回退一步 */
+  if(path.length >= 2){
+    const prev = path[path.length - 2];
+    if(cell.r === prev.r && cell.c === prev.c){ path.pop(); blip(500, 0.04, 'sine', 0.03); return; }
+  }
+  if(pathIsLoop(path)) return;
+  if(Math.abs(cell.r - last.r) > 1 || Math.abs(cell.c - last.c) > 1) return;
+  const t = G.grid[cell.r][cell.c], lt = G.grid[last.r][last.c];
+  if(!t || !lt || t.frost || t.type !== lt.type) return;
+  const closing = cell.r === path[0].r && cell.c === path[0].c;
+  if(closing && !canCloseLoop(path)) return;
+  if(!closing && path.some(x => x.r === cell.r && x.c === cell.c)) return;
+  /* 不接受斜线交叉；闭合边仅允许与首边共用起点。 */
+  for(let i = 0; i < path.length - 2; i++){
+    if(closing && i === 0) continue;
+    if(segmentsCross(last, cell, path[i], path[i + 1])) return;
+  }
+  if(closing && Math.abs(pathArea(path)) < 0.5) return;
+  path.push(cell);
+  blip(560 + Math.min(path.length, 10) * 40, 0.045, 'triangle', 0.035);
+}
+
+function segmentsCross(a, b, c, d){
+  const side = (p, q, r) => (q.c-p.c)*(r.r-p.r)-(q.r-p.r)*(r.c-p.c);
+  return side(a,b,c)*side(a,b,d) < 0 && side(c,d,a)*side(c,d,b) < 0;
+}
+function pathArea(p){
+  let area = 0;
+  for(let i=0;i<p.length;i++){
+    const a=p[i], b=p[(i+1)%p.length];
+    area += a.c*b.r-b.c*a.r;
+  }
+  return area/2;
+}
+function pathIsLoop(p){
+  if(p.length < 5) return false;
+  const a = p[0], b = p[p.length - 1];
+  return a.r === b.r && a.c === b.c && Math.abs(pathArea(p)) >= 0.5;
+}
+/* One readiness rule for the start ring, HUD, hints and actual closure. */
+function canCloseLoop(p){
+  if(!cfg().loop || p.length<4 || pathIsLoop(p))return false;
+  const first=p[0],last=p[p.length-1];
+  if(Math.max(Math.abs(first.r-last.r),Math.abs(first.c-last.c))!==1)return false;
+  const a=G.grid[first.r]?.[first.c],b=G.grid[last.r]?.[last.c];
+  if(!a||!b||a.frost||b.frost||a.type<0||a.type!==b.type)return false;
+  for(let i=1;i<p.length-2;i++)if(segmentsCross(last,first,p[i],p[i+1]))return false;
+  return Math.abs(pathArea(p))>=.5;
+}
+function pathLength(p){ return p.length - (pathIsLoop(p) ? 1 : 0); }
+
+/* Only the player's unique linked fruit count earns a cheer, never automatic clears. */
+function chainPraise(n){
+  if(n>=12)return {word:'Perfect!',color:'#d99645',tier:4};
+  if(n>=8)return {word:'Excellent!',color:'#d98288',tier:3};
+  if(n>=6)return {word:'Great!',color:'#8d83bb',tier:2};
+  if(n>=4)return {word:'Good!',color:'#579785',tier:1};
+  return null;
+}
+function cheerChain(p){
+  const n=pathLength(p),praise=chainPraise(n);
+  if(!praise)return;
+  G.cheer={...praise,n,t:0,dur:1.35};
+  burst(W/2,BY+ROWS*TILE*.48,praise.color,4+praise.tier*3);
+  renderChainCheer();
+}
+function renderChainCheer(){
+  const cheer=G.cheer;
+  elCheer.hidden=!cheer||!G.grid.length;
+  elCheer.style.top=(BY+ROWS*TILE*.5)+'px';
+  // Drive CSS with the game clock so pausing and a background tab keep effects in sync.
+  elCheer.style.setProperty('--cheer-time',(-(cheer?cheer.t:0))+'s');
+  if(elCheer._cheer===cheer)return;
+  elCheer._cheer=cheer;
+  if(!cheer){elCheer.innerHTML='';return;}
+  elCheer.style.setProperty('--cheer-color',cheer.color);
+  elCheer.innerHTML='<div class="cheer-pop"><b>'+cheer.word+'</b><small>'+cheer.n+' 颗连线</small></div>';
+}
+
+/* 只预测当前操作可确定的结果，不把未知补牌连锁计入。 */
+function pathPreview(p){
+  if(!p.length) return null;
+  const first = G.grid[p[0].r][p[0].c];
+  const n = pathLength(p), loop = cfg().loop && pathIsLoop(p);
+  if(first.special === 'rainbow' && n === 1){
+    return {n, loop, reward:'rainbowTap', marked:planRemovals([p[0]])};
+  }
+  const reward = loop ? 'loop' : n >= 8 && cfg().rainbow ? 'rainbow' : n >= 6 && cfg().bomb ? 'bomb' : null;
+  let seeds = p.slice();
+  if(loop) forEachCell((t,r,c)=>{ if(t.type===first.type) seeds.push({r,c}); });
+  if(reward === 'bomb' || reward === 'rainbow') seeds = seeds.slice(1);
+  const keep = reward === 'bomb' || reward === 'rainbow' ? new Set([key(p[0].r,p[0].c)]) : null;
+  const marked = n >= 3 ? planRemovals(seeds.concat(beeTargets(p)), null, keep) : new Set();
+  /* 起点将变成新道具，本次保留，与实际消除的 spawnKeep 一致。 */
+  if(reward === 'bomb' || reward === 'rainbow') marked.delete(key(p[0].r,p[0].c));
+  return {n, loop, reward, marked};
+}
+
+function updatePlayHUD(){
+  const playing = G.state === 'play';
+  elApp.classList.toggle('is-menu',!G.grid.length);
+  elApp.classList.toggle('is-lobby',!!G.screen);
+  elApp.classList.toggle('tool-level',!!cfg().tools&&!!G.grid.length);
+  elApp.classList.toggle('no-weather-kit',!!cfg().tools&&!G.forecast&&!!G.grid.length);
+  elStarProgress.hidden=!G.grid.length;
+  const starText=G.score+'分 · ★ 订单 · ★★ '+cfg().star2+' · ★★★ '+cfg().star3;
+  if(elStarProgress.textContent!==starText)elStarProgress.textContent=starText;
+  elStarProgress.title='完成订单后按最终分数评星，包含剩余步数奖励';
+  btnPause.disabled = !playing;
+  btnHelp.disabled = !playing && G.state!=='menu';
+  btnWeatherClass.disabled = !playing;
+  btnForecast.hidden = !G.grid.length;
+  btnForecast.disabled = !playing;
+  elPreview.hidden = !playing;renderPocketTools(playing);renderChainCheer();
+  if(!playing) return;
+  const wd = WEATHER[G.forecast];
+  const wxLabel = wd ? wd.icon+' '+(G.wxArmed ? wd.gentle : wd.name)+' · '+G.weatherLeft+'步后' : '晴朗果园';
+  const plan=ensureWeatherPlan();
+  const targets=plannedTargets(plan);
+    const wxDetail=!wd?'安心采摘，完成订单':G.forecast==='wind'?'第'+targets.map(r=>r+1).join('、')+'行向左移 · 虚线预告':(G.forecast==='rain'?'虚线处将变 ×2':'虚线处将结冰')+(G.wxArmed?' · 已蓄力':'');
+
+  if(elForecastText.textContent !== wxLabel) elForecastText.textContent=wxLabel;
+  if(elForecastDetail.textContent !== wxDetail) elForecastDetail.textContent=wxDetail;
+  btnForecast.disabled = !playing || !wd;
+  btnForecast.classList.toggle('armed', G.wxArmed);
+  btnForecast.classList.toggle('urgent', !!wd && G.weatherLeft<=1);
+  let kicker='本关 '+G.score+' 分 · 采摘小窍门', title='连起 3 颗同款水果', detail='可以斜连 · 沿原路回划可撤销', reward=false;
+  if(G.activeTool){
+    kicker='不扣步数 · 剩余 '+G.tools[G.activeTool]+' 次';
+    title=G.activeTool==='scissors'?'小剪刀：点一颗水果':G.activeTool==='basket'?'采摘篮：点九宫格中心':G.swapSource?'再点相邻的一颗水果':'手套：先点第一颗水果';
+    detail=G.toolMessage||'再次点击道具，可取消选择';
+  }else if(G.phase !== 'idle'){
+    kicker=G.phase==='fallin'?'果园准备中':'正在收集';
+    title=G.phase==='fallin'?'水果就位，马上开始':'让丰收再飞一会儿';
+    detail='已获得 '+G.score+' 分 · 完成上方订单即可过关';
+  }else if(G.path.length){
+    const pv=pathPreview(G.path);
+    kicker='已连接 '+pv.n+' 颗 · '+(pv.n>=3 || pv.reward==='rainbowTap' ? '松手消耗 1 步':'不足3颗不扣步');
+    const praise=chainPraise(pv.n);
+    if(praise)kicker=praise.word+' · '+pv.n+' 颗连线';
+    const titles={loop:'闭环成功 · 清除全场同款',bomb:'松手生成十字炸弹',rainbow:'松手生成彩虹',rainbowTap:'松手引爆彩虹'};
+    title=titles[pv.reward] || (pv.n<3?'再连 '+(3-pv.n)+' 颗即可采摘':cfg().bomb?'松手采摘 · 再连 '+Math.max(0,6-pv.n)+' 颗出炸弹':'松手，收进水果篮');
+    reward=!!pv.reward;
+    const gains=[];
+    for(const o of G.orders){
+      if(o.kind==='feature'&&orderGot(o)<o.n){
+        let n=0;for(const k of pv.marked){const t=G.grid[Math.floor(k/8)][k%8];if(o.feature==='flowers'?G.orchard.flowers.includes(k):t.special===o.feature)n++;}
+        if(n)gains.push(ORCHARD.names[o.feature]+' +'+Math.min(n,o.n-orderGot(o)));continue;
+      }
+      if(o.kind!=='fruit' || orderGot(o)>=o.n) continue;
+      let count=0;
+      for(const k of pv.marked){ const t=G.grid[Math.floor(k/COLS)][k%COLS]; if(t.type===o.fruit) count+=t.boost?2:1; }
+      if(count) gains.push(FRUITS[o.fruit].name+' +'+Math.min(count,o.n-orderGot(o)));
+    }
+    detail=gains.length ? '本次订单：'+gains.join(' · ') : pv.n>=3 ? '调整盘面，寻找订单水果' : '可以斜连 · 回到上一颗可撤销';
+    if(pv.reward==='rainbowTap') detail='清除数量最多的一种水果 · 自动连锁另计';
+    else if(cfg().weatherEvery && (pv.loop || pv.n>=6)) detail+=(G.wxArmed?' · 天气已蓄力':' · 蓄力下次天气');
+    else if(canCloseLoop(G.path)) detail='划回起点闭环，清除全场同款';
+  }else if(G.wxCard){
+    kicker='天气变化 · 本关 '+G.score+' 分'; title=G.wxCard.title;
+    detail=G.wxCard.detail+' · '+WEATHER[G.wxCard.name].hint;
+    reward=G.wxCard.blessed;
+  }else if(G.teachBasics){
+    kicker='第一次采摘 · 试着划一下'; title='沿 1 → 2 → 3 连起草莓'; detail='按住第一颗，划到第三颗后松手';
+  }else if(G.lessonRoute){
+    const featureTitles={flowers:'沿路线采摘，收小花',burst:'连进水滴果，试试爆浆',cycle:'把变色果连进来',bee:'连起4颗，给蜜蜂蓄能'};
+    kicker='跟着数字，试一次';title=featureTitles[cfg().introFeature]||(cfg().lesson==='bomb'?'连6颗，留下炸弹':cfg().lesson==='rainbow'?'连8颗，留下彩虹':'绕一圈，最后回到1');detail='从1开始，按顺序划过发光的水果';
+   }else if(G.orders.some(o=>o.kind==='tool'&&orderGot(o)<o.n)){
+    const o=G.orders.find(o=>o.kind==='tool'&&orderGot(o)<o.n);
+    kicker='本关新玩法';title='试试下方的'+TOOL_INFO[o.tool].name;detail='点道具，再点棋盘 · 不扣步数';
+  }else if(G.hint){
+    kicker='试试这条路线'; title=G.hint.cells.length===1?'点一下发光的彩虹':pathIsLoop(G.hint.cells)?'按数字绕一圈，最后回到1':'沿数字路线采摘'; detail=G.hint.reason||'横、竖、斜方向都可以连';
+  }else if(G.level>0){
+    kicker='第 '+(G.level+1)+' 关';
+    title=cfg().rainbow?'6连出炸弹 · 8连出彩虹':cfg().bomb?'连6颗，制作第一个炸弹':'连同款，完成水果订单';
+    detail=G.forecast?'虚线标出下次天气位置 · 长链让天气变温和':cfg().loop?'划回起点，收走全场同款':'可以斜连 · 沿原路回划可撤销';
+  }
+  if(cfg().orchard?.bee&&!G.activeTool){
+    const b=cfg().orchard.bee;
+    const charge=G.orchard.charge+(G.path.length&&pathLength(G.path)>=b.chain?1:0);
+    kicker=G.path.length?kicker+' · 🐝 '+Math.min(charge,b.charges)+'/'+b.charges:'🐝 助手 '+G.orchard.charge+'/'+b.charges+' · '+b.chain+'连蓄能';
+  }
+  if(elPreviewKicker.textContent!==kicker) elPreviewKicker.textContent=kicker;
+  if(elPreviewTitle.textContent!==title) elPreviewTitle.textContent=title;
+  if(elPreviewDetail.textContent!==detail) elPreviewDetail.textContent=detail;
+  elPreview.classList.toggle('reward',reward);
+}
+
+function commitPath(){
+  const p = G.path;
+  if(pathLength(p)>=3)G.lessonRoute=null;
+  if(pathLength(p)>=3) G.cutTrails.push({points:p.map(c=>({x:colX(c.c),y:rowY(c.r)})),t:0,life:.3});
+  G.path = [];
+  if(!p.length) return;
+  if(p.length === 1){
+    const t = G.grid[p[0].r] && G.grid[p[0].r][p[0].c];
+    if(t && t.special === 'rainbow') activateRainbow(p[0]);
+    return;
+  }
+  if(p.length < 3){ blip(220, 0.07, 'square', 0.03); return; }
+  finishPath(p);
+}
+
+function activateRainbow(cell){
+  const t = G.grid[cell.r][cell.c];
+  if(!t || t.special !== 'rainbow') return;
+  G.moves--; updateMoves();G.weatherPending=true;
+  G.colorPending=!!cfg().orchard?.cycle;
+  G.combo = 1; G.autoMade=0;
+  banner('🌈 彩虹引爆！');
+  sfxRainbow();
+  G.shake = Math.max(G.shake, 0.6);
+  startRemoval([cell]);
+}
+
+function finishPath(p){
+  const a = p[0];
+  const t0 = G.grid[a.r][a.c];
+  if(!t0 || t0.type < 0) return;
+  const loop = cfg().loop && pathIsLoop(p);
+  G.moves--; updateMoves();G.weatherPending=true;
+  G.colorPending=!!cfg().orchard?.cycle;
+  G.combo = 1; G.autoMade=0;
+  G.lastSwap = null;
+  /* 长链/成圈蓄力：下一次预报的天气将变成 ✨ 温和版（甘霖/顺风/瑞雪） */
+  if((p.length >= 6 || loop) && !G.wxArmed && cfg().weatherPool && cfg().weatherPool.length){
+    G.wxArmed = true;
+    floatText(colX(a.c), rowY(a.r) - TILE * 0.55, '✨ 蓄力！下次天气变温和', '#2fa8d0', 13);
+    blip(860, 0.1, 'triangle', 0.04, 120);
+  }
+
+  const seeds = p.slice();
+  if(loop){
+    /* ⭕ 成圈：清除全场同款 */
+    const tp = t0.type;
+    forEachCell((t, r, c) => { if(t.type === tp) seeds.push({r, c}); });
+    banner('⭕ 成圈！清除全场' + FRUITS[tp].name);
+    sfxRainbow();
+    G.shake = Math.max(G.shake, 0.6);
+    G.flashT = 0.25;
+    addScore(150, {x:colX(a.c), y:rowY(a.r), label:'⭕ 成圈 +150'});
+  }else if(p.length >= 8 && cfg().rainbow){
+    /* 8 连及以上：起点生成 🌈 彩虹 */
+    t0.special = 'rainbow'; t0.type = -1; t0.spawnKeep = true; t0.bornT = 0.35;
+    G.stats.rainbowMade++;
+    addScore(200, {x:colX(a.c), y:rowY(a.r), label:'🌈 彩虹 +200'});
+    sfxSpawn();
+    updateOrders();
+  }else if(p.length >= 6 && cfg().bomb){
+    /* 6~7 连：起点生成 💥 炸弹 */
+    t0.special = 'bomb'; t0.spawnKeep = true; t0.bornT = 0.35;
+    G.stats.bombMade++;
+    addScore(100, {x:colX(a.c), y:rowY(a.r), label:'💥 炸弹 +100'});
+    sfxSpawn();
+    updateOrders();
+  }
+  const bee=chargeBee(p);seeds.push(...bee);
+  if(startRemoval(seeds)){
+    cheerChain(p);
+    if(G.teachBasics){
+      G.teachBasics=false; prog().seenBasics=true; persist();
+      banner('采摘成功！继续完成上方订单');
+    }
+    if(!loop && p.length >= 5){
+      const bonus = (p.length - 4) * 20;
+      addScore(bonus, {x:colX(a.c), y:rowY(a.r) - TILE * 0.6, label:'长链 +' + bonus});
+    }
+  }
+}
+
+/* =========================================================
+   12. 关卡流程
+   ========================================================= */
+function startLevel(idx,restored=null){
+  if(idx < 0 || idx >= LEVEL_N) idx = 0;
+  const c = LEVELS[idx];
+  G.level = idx;
+  G.state = 'play';G.screen=null;
+  G.types = c.types;G.lessonRoute=null;G.tools=toolAllowance(c);G.toolUses={scissors:0,glove:0,basket:0};cancelTool();
+  G.orchard=freshOrchard(c);G.colorPending=false;G.beeFlights=[];
+  G.moves = c.moves;
+  G.score = 0;
+  G.combo = 0; G.maxCombo = 0; G.autoMade=0;
+  G.stats = {bombMade:0, rainbowMade:0};
+  G.orders = c.goals.map(g => g.fruit != null
+    ? {kind:'fruit', fruit:g.fruit, n:g.n, got:0, done:false}
+    : g.feature ? {kind:'feature',feature:g.feature,n:g.n} : g.tool ? {kind:'tool',tool:g.tool,n:g.n} : {kind:'special', special:g.special, n:g.n});
+  clearGesture(); G.lastSwap = null;
+  G.weatherLeft = c.weatherEvery || 99;
+  G.weatherPending=false;
+  G.wfx = null; G.wparts = [];
+  G.wxQueue = []; G.forecast = null; G.wxArmed = false;G.weatherPlan=null;
+  G.wxCard = null;
+  if(c.weatherEvery && c.weatherPool && c.weatherPool.length) G.forecast = nextForecast();
+  G.hint = null; G.hintT = 0;
+  G.bonus = false; G.bonusLeft = 0;
+  G.marked = new Set();
+  G.parts = []; G.texts = []; G.banner = null; G.cheer=null; G.slices=[];G.cutTrails=[];
+  G.shake = 0; G.flashT = 0; G.shuffleT = 0;
+  if(restored){
+    G.grid=restored.grid.map((row,r)=>row.map((t,c)=>Object.assign(makeTile(t.type,r,c,t.special),{frost:t.frost,boost:t.boost})));
+    G.tools={...restored.tools};G.toolUses={...restored.toolUses};
+    G.orchard={...restored.orchard,flowers:restored.orchard.flowers.slice()};
+    G.moves=restored.moves;G.score=restored.score;G.maxCombo=restored.maxCombo;G.stats={...restored.stats};
+    G.orders.forEach((o,i)=>{if(o.kind==='fruit'){o.got=restored.collected[i];o.done=o.got>=o.n;}});
+    G.weatherLeft=restored.weatherLeft;G.forecast=restored.forecast;G.wxQueue=restored.wxQueue.slice();
+    G.wxArmed=restored.wxArmed;G.weatherPlan=restored.weatherPlan;G.teachBasics=restored.teachBasics;G.lessonRoute=restored.lessonRoute;
+    G.phase='idle';applyThemeVars();setLevelHUD();updateOrders();updateMoves();hideOverlay();saveRun();
+    if(c.introTool&&!prog().seenTools.includes(c.introTool))showLesson(c.introTool,'play','tool-intro','随身道具 · 不扣步数');
+    else teachOrchard(c);return;
+  }
+  fillBoard();
+  G.teachBasics = idx===0 && !prog().seenBasics;
+  if(G.teachBasics){
+    for(const p of [{r:3,c:2},{r:4,c:3},{r:5,c:4}]) G.grid[p.r][p.c]=makeTile(0,p.r,p.c);
+  }
+  if(idx===3)G.lessonRoute=Array.from({length:6},(_,i)=>({r:3,c:i+1}));
+  if(idx===4)G.lessonRoute=[[2,1],[2,2],[2,3],[2,4],[2,5],[3,5],[3,4],[3,3]].map(([r,c])=>({r,c}));
+  if(idx===5)G.lessonRoute=[[3,3],[3,4],[4,4],[4,3]].map(([r,c])=>({r,c}));
+  if(G.lessonRoute)for(const {r,c}of G.lessonRoute)G.grid[r][c]=makeTile(idx===3?0:idx===4?1:3,r,c);
+  if(idx===15){G.grid[3][3].frost=1;}
+  if(idx===17){
+    for(let col=1;col<=5;col++)G.grid[3][col]=makeTile(0,3,col);
+    G.grid[3][6]=makeTile(1,3,6);G.grid[2][6]=makeTile(0,2,6);
+  }
+  if(idx===19)for(let r=2;r<=4;r++)for(let col=2;col<=4;col++){G.grid[r][col]=makeTile((r+col)%2,r,col);if(r===3)G.grid[r][col].frost=1;}
+  if(idx===30){G.lessonRoute=[{r:2,c:1},{r:3,c:2},{r:4,c:3}];for(const p of G.lessonRoute)G.grid[p.r][p.c]=makeTile(0,p.r,p.c);}
+  if(c.orchard?.burst)for(const [r,col]of [[2,2],[4,5],[6,3]]){G.grid[r][col].special='burst';G.grid[r][col].type=idx===35?0:G.grid[r][col].type;}
+  if(c.orchard?.cycle)for(const [r,col]of [[1,2],[3,4],[5,6],[6,1]])G.grid[r][col].special='cycle';
+  if(idx===35){G.lessonRoute=[{r:2,c:1},{r:2,c:2},{r:2,c:3}];for(const p of G.lessonRoute)G.grid[p.r][p.c]=makeTile(0,p.r,p.c,p.c===2?'burst':null);}
+  if(idx===40){G.lessonRoute=[{r:3,c:3},{r:3,c:4},{r:4,c:5}];for(const p of G.lessonRoute)G.grid[p.r][p.c]=makeTile(1,p.r,p.c,p.c===4?'cycle':null);}
+  if(idx===45){G.lessonRoute=[{r:2,c:1},{r:3,c:2},{r:4,c:3},{r:5,c:4}];for(const p of G.lessonRoute)G.grid[p.r][p.c]=makeTile(0,p.r,p.c);}
+  ensureWeatherPlan();
+  G.phase='idle';saveRun();
+  /* 开场瀑布落牌 */
+  forEachCell((t) => {
+    t.y = rowY(t.r) - (ROWS - t.r) * TILE - TILE * 1.4 - (t.c % 4) * TILE * 0.35 - Math.random() * 40;
+    t.state = 'fall'; t.vy = 0;
+  });
+  G.phase = 'fallin';
+  applyThemeVars();
+  setLevelHUD();
+  updateOrders(true);
+  updateMoves();
+  hideOverlay();
+  if(c.introTool&&!prog().seenTools.includes(c.introTool))showLesson(c.introTool,'play','tool-intro','随身道具 · 不扣步数');
+  else teachOrchard(c);
+}
+
+function starsFor(score){
+  const c = cfg();
+  return score >= c.star3 ? 3 : (score >= c.star2 ? 2 : 1);
+}
+function winNow(){
+  clearSavedRun();
+  G.state = 'win';
+  const s = starsFor(G.score);
+  const pr = prog();
+  const prevBest = pr.best[G.level] || 0;
+  pr.best[G.level] = Math.max(prevBest, G.score);
+  pr.stars[G.level] = Math.max(pr.stars[G.level] || 0, s);
+  pr.unlocked = Math.max(pr.unlocked, Math.min(LEVEL_N, G.level + 2));
+  persist();
+  sfxWin();
+  confettiBurst();
+  showWin(s, G.score > prevBest && prevBest > 0);
+}
+function loseNow(){
+  clearSavedRun();
+  G.state = 'lose';
+  sfxLose();
+  showLose();
+}
+
+function setLevelHUD(){
+  elLvNum.textContent = String(G.level + 1).padStart(2, '0');
+  elLvName.textContent = '第 '+(G.level+1)+' 关';
+}
+function setMenuHUD(){
+  elLvNum.textContent = '01';
+  elLvName.textContent = '一划果园';
+  elOrders.innerHTML = '';
+  elMoves.textContent = '--';
+}
+
+/* =========================================================
+   13. 分数 / 粒子 / 飘字 / 横幅
+   ========================================================= */
+function addScore(n, fx){
+  G.score += n;
+  if(fx && fx.label) floatText(fx.x, fx.y, fx.label, fx.color || theme().ac2, 15);
+}
+function floatText(x, y, text, color, size){
+  G.texts.push({x, y, text, color:color || '#ff8552', size:size || 15, t:0, life:0.95});
+}
+function banner(text){
+  if(!text) return;
+  G.banner = {text, t:0, dur:1.15, color:theme().ac2};
+}
+function burst(x, y, color, n){
+  for(let i = 0; i < n; i++){
+    const a = Math.random() * Math.PI * 2, sp = 25 + Math.random() * 80;
+    G.parts.push({
+      x, y, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp - 110,
+      life:0.32 + Math.random() * 0.22, t:0, r:1.6 + Math.random() * 1.8,
+      color, rect:false, rot:Math.random() * 6.28, vr:(Math.random() - 0.5) * 5,
+    });
+  }
+}
+function confettiBurst(){
+  const cols = ['#ff9bb3', '#ffd166', '#8fd999', '#9db2ff', '#c0a9f7'];
+  for(let i = 0; i < 70; i++){
+    G.parts.push({
+      x:Math.random() * W, y:-10 - Math.random() * 60,
+      vx:(Math.random() - 0.5) * 90, vy:80 + Math.random() * 150,
+      life:1.4 + Math.random() * 0.8, t:0, r:2.5 + Math.random() * 3,
+      color:cols[i % 5], rect:true, rot:Math.random() * 6.28, vr:(Math.random() - 0.5) * 12,
+    });
+  }
+}
+function updateFx(dt){
+  if(G.state==='paused')return;
+  for(const p of G.beeFlights)p.t+=dt;
+  G.beeFlights=G.beeFlights.filter(p=>p.t<p.life);
+  for(const p of G.slices){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=260*dt;p.rot+=p.vr*dt;}
+  G.slices=G.slices.filter(p=>p.t<p.life);
+  for(const p of G.cutTrails)p.t+=dt;
+  G.cutTrails=G.cutTrails.filter(p=>p.t<p.life);
+  if(G.shake > 0) G.shake = Math.max(0, G.shake - dt * 2.2);
+  if(G.flashT > 0) G.flashT = Math.max(0, G.flashT - dt);
+  if(G.shuffleT > 0) G.shuffleT = Math.max(0, G.shuffleT - dt);
+  /* 天气氛围粒子（温和版更热闹） */
+  if(G.wfx){
+    G.wfx.t -= dt;
+    if(G.wfx.name === 'rain'){
+      const n = G.wfx.blessed ? 5 : 3;
+      for(let i = 0; i < n; i++) G.wparts.push({x:Math.random() * W, y:-12, vy:420 + Math.random() * 180});
+      for(const d of G.wparts) d.y += d.vy * dt;
+      G.wparts = G.wparts.filter(d => d.y < H + 16);
+    }else if(G.wfx.name === 'frost'){
+      const cap = G.wfx.blessed ? 34 : 60, n = G.wfx.blessed ? 1 : 2;
+      if(G.wparts.length < cap){
+        for(let i = 0; i < n; i++) G.wparts.push({x:Math.random() * W, y:-8, vy:55 + Math.random() * 55,
+          r:1.6 + Math.random() * 2.6, drift:(Math.random() - 0.5) * 40});
+      }
+      for(const d of G.wparts){ d.y += d.vy * dt; d.x += d.drift * dt; }
+      G.wparts = G.wparts.filter(d => d.y < H + 8);
+    }else if(G.wfx.name === 'wind'){
+      if(G.wparts.length < (G.wfx.blessed ? 22 : 12)) G.wparts.push({x:W + 20, y:BY + G.wfx.row * TILE + Math.random() * TILE,
+        vx:-(420 + Math.random() * 320), len:26 + Math.random() * 54});
+      for(const d of G.wparts) d.x += d.vx * dt;
+      G.wparts = G.wparts.filter(d => d.x + d.len > -10);
+    }
+    if(G.wfx.t <= 0){ G.wfx = null; G.wparts = []; }
+  }
+  if(G.banner){ G.banner.t += dt; if(G.banner.t >= G.banner.dur) G.banner = null; }
+  if(G.cheer){ G.cheer.t += dt; if(G.cheer.t >= G.cheer.dur) G.cheer = null; }
+  if(G.wxCard){ G.wxCard.t += dt; if(G.wxCard.t >= G.wxCard.dur) G.wxCard = null; }
+  for(const p of G.parts){
+    p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 430 * dt;
+    if(p.vr) p.rot += p.vr * dt;
+  }
+  G.parts = G.parts.filter(p => p.t < p.life);
+  for(const t of G.texts){ t.t += dt; t.y -= 32 * dt; }
+  G.texts = G.texts.filter(t => t.t < t.life);
+}
+
+/* =========================================================
+   14. HUD DOM
+   ========================================================= */
+function fsq(i,lg){
+  const f=FRUITS[i]||FRUITS[0];
+  return '<span class="fsq'+(lg?' lg':'')+'" role="img" aria-label="'+f.name+'">'+window.FruitArt.svg(i)+'</span>';
+}
+
+function updateOrders(){
+  let html = '';
+  for(const o of G.orders){
+    const got = orderGot(o), need = o.n;
+    const label = o.kind === 'fruit' ? fsq(o.fruit) : o.kind==='feature'?featureIcon(o.feature):(o.kind==='tool'?toolIcon(o.tool):o.special === 'bomb' ? '💥' : '🌈');
+    const done = got >= need;
+    const name = o.kind === 'fruit' ? FRUITS[o.fruit].name : o.kind==='feature'?ORCHARD.names[o.feature]:o.kind==='tool'?'使用'+TOOL_INFO[o.tool].name:o.special === 'bomb' ? '制作炸弹' : '制作彩虹';
+    html += '<span class="ochip' + (done ? ' done' : '') + '" aria-label="' + name + (done ? '已完成' : '还差'+(need-got)) + '">' + label +
+            ' <b>' + (done ? '✓' : need-got) + '</b></span>';
+  }
+  elOrders.innerHTML = html;
+}
+function updateMoves(){
+  elMoves.textContent = G.moves;
+  elMovesBox.classList.toggle('low', G.state === 'play' && G.moves <= 5);
+}
+
+/* =========================================================
+   15. 更新
+   ========================================================= */
+function allSettled(){
+  for(let r = 0; r < ROWS; r++){
+    const row = G.grid[r]; if(!row) continue;
+    for(let c = 0; c < COLS; c++){
+      const t = row[c];
+      if(t && t.state !== 'idle') return false;
+    }
+  }
+  return true;
+}
+function updateTiles(dt){
+  for(let r = 0; r < ROWS; r++){
+    const row = G.grid[r]; if(!row) continue;
+    for(let c = 0; c < COLS; c++){
+      const t = row[c]; if(!t) continue;
+      if(t.state === 'fall'){
+        t.vy = Math.min(1500, t.vy + 3400 * dt);
+        t.y += t.vy * dt;
+        const ty = rowY(t.r);
+        if(t.y >= ty){ t.y = ty; t.vy = 0; t.state = 'idle'; t.squashT = 0.14; }
+        t.x = colX(t.c);
+      }else if(t.state === 'idle'){
+        t.x = colX(t.c); t.y = rowY(t.r);
+      }else if(t.state === 'pop'){
+        t.popT += dt;
+      }
+      if(t.squashT > 0) t.squashT = Math.max(0, t.squashT - dt);
+      if(t.bornT > 0) t.bornT = Math.max(0, t.bornT - dt);
+    }
+  }
+}
+function update(dt){
+  updateFx(dt);
+  if(G.state !== 'play') return;
+  switch(G.phase){
+    case 'fallin':
+      if(allSettled()){
+        G.phase = 'idle'; G.hintT = 0;
+        if(G.teachBasics) G.hint={cells:[{r:3,c:2},{r:4,c:3},{r:5,c:4}]};
+      }
+      break;
+    case 'pop':
+      G.popT -= dt;
+      if(G.popT <= 0) applyRemovals();
+      break;
+    case 'fall':
+      if(allSettled()) nextCascadeStep();
+      break;
+    case 'bonus':
+      G.bonusT -= dt;
+      if(G.bonusT <= 0){
+        if(G.bonusLeft > 0){ G.bonusLeft--; injectBonusBomb(); }
+        else winNow();
+      }
+      break;
+    case 'idle':
+      if(G.activeTool){G.hintT=0;G.hint=null;break;}
+      if(G.orders.some(o=>o.kind==='tool'&&orderGot(o)<o.n)){G.hintT=0;G.hint=null;break;}
+      G.hintT += dt;
+      if(G.hintT > 5 && !G.hint) G.hint = findHint();
+      break;
+  }
+  updateTiles(dt);
+}
+
+/* =========================================================
+   16. 绘制
+   ========================================================= */
+let nowMs = 0;
+
+function drawFruitSquare(s,type){window.FruitArt.draw(ctx,type,s);}
+function drawStatusBadge(s,kind){
+  const x=s*.3,y=-s*.34,w=s*.58,h=s*.35;
+  ctx.save();ctx.lineWidth=2;ctx.strokeStyle='#fffef9';
+  ctx.fillStyle=kind==='rain'?'#ffdc75':kind==='frost'?'#d2edf4':'#68546e';
+  rr(x-w/2,y-h/2,w,h,h/2);ctx.fill();ctx.stroke();
+  if(kind==='rain'){
+    ctx.fillStyle='#76551c';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 '+Math.max(11,s*.28)+'px '+UI_FONT;
+    ctx.fillText('×2',x,y+.5);
+  }else{
+    ctx.strokeStyle=kind==='frost'?'#4489a7':'#fff0c1';ctx.lineWidth=1.7;ctx.lineCap='round';
+    const rays=kind==='frost'?3:2,r=s*.09;
+    for(let i=0;i<rays;i++){const a=i*Math.PI/rays;ctx.beginPath();ctx.moveTo(x-Math.cos(a)*r,y-Math.sin(a)*r);ctx.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);ctx.stroke();}
+  }
+  ctx.restore();
+}
+function drawIceShell(s,front=false){
+  ctx.save();ctx.beginPath();
+  for(const [i,p]of [[-.47,-.34],[.22,-.48],[.49,-.19],[.45,.35],[-.22,.48],[-.49,.2]].entries()){
+    if(i)ctx.lineTo(p[0]*s,p[1]*s);else ctx.moveTo(p[0]*s,p[1]*s);
+  }
+  ctx.closePath();ctx.fillStyle=front?'rgba(173,221,239,.12)':'#e1f2f7';
+  ctx.strokeStyle='#83bed2';ctx.lineWidth=front?1.8:3;ctx.fill();ctx.stroke();
+  if(front){ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-s*.38,-s*.22);ctx.lineTo(-s*.3,-s*.3);ctx.lineTo(-s*.15,-s*.33);ctx.moveTo(s*.37,s*.15);ctx.lineTo(s*.35,s*.28);ctx.stroke();}
+  ctx.restore();
+}
+function drawRainbowCard(s){
+  ctx.save();ctx.strokeStyle='#fffef9';ctx.lineWidth=3;
+  const colors=['#f4a1ad','#f5cc80','#c7dca1','#95cdbd','#a0badb','#c6acdb'];
+  for(let i=0;i<6;i++){ctx.beginPath();const a=i*Math.PI/3;ctx.arc(Math.cos(a)*s*.19,Math.sin(a)*s*.19,s*.23,0,Math.PI*2);ctx.fillStyle=colors[i];ctx.fill();}
+  ctx.beginPath();ctx.arc(0,0,s*.25,0,Math.PI*2);ctx.fillStyle='#fffaf0';ctx.fill();
+  ctx.fillStyle='#b28a68';ctx.beginPath();ctx.moveTo(0,-s*.15);ctx.lineTo(s*.04,-s*.04);ctx.lineTo(s*.15,0);ctx.lineTo(s*.04,s*.04);ctx.lineTo(0,s*.15);ctx.lineTo(-s*.04,s*.04);ctx.lineTo(-s*.15,0);ctx.lineTo(-s*.04,-s*.04);ctx.closePath();ctx.fill();
+  ctx.restore();
+}
+function drawOrchardBadge(s,kind,type){
+  const x=s*.3,y=s*.3,r=Math.max(6,s*.17);
+  ctx.save();ctx.translate(x,y);ctx.lineWidth=1.6;ctx.strokeStyle='#fffdf7';
+  if(kind==='burst'){
+    ctx.fillStyle='#eaa276';ctx.beginPath();ctx.moveTo(0,-r*1.4);ctx.bezierCurveTo(-r*1.6,0,-r,r*1.15,0,r*1.15);ctx.bezierCurveTo(r,r*1.15,r*1.6,0,0,-r*1.4);ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#fff5de';ctx.beginPath();ctx.moveTo(-r*.45,0);ctx.quadraticCurveTo(-r*.6,r*.5,-r*.1,r*.6);ctx.stroke();
+  }else{
+    ctx.fillStyle='#fffaf4';ctx.beginPath();ctx.arc(0,0,r*1.2,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ac99c7';ctx.stroke();
+    ctx.fillStyle='#9482b1';ctx.font='900 '+(r*2.1)+'px '+UI_FONT;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('↻',0,-.5);
+    ctx.fillStyle=FRUITS[(type+1)%G.types].c2;ctx.beginPath();ctx.arc(r*.9,r*.8,r*.52,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#fffdf7';ctx.stroke();
+  }ctx.restore();
+}
+function drawFlowerGround(front){
+  for(const k of G.orchard.flowers){const x=colX(k%8),y=rowY(Math.floor(k/8));ctx.save();
+    if(!front){ctx.fillStyle='#fff0f2';ctx.strokeStyle='#ead1dd';ctx.lineWidth=1.2;rr(x-TILE*.46,y-TILE*.46,TILE*.92,TILE*.92,TILE*.23);ctx.fill();ctx.stroke();}
+    else{const fx=x-TILE*.32,fy=y+TILE*.32;ctx.fillStyle='#fffdf8';ctx.beginPath();ctx.arc(fx,fy,TILE*.18,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c78ba6';ctx.font='900 '+Math.max(11,TILE*.34)+'px '+UI_FONT;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✿',fx,fy);}
+    ctx.restore();
+  }
+}
+function drawBeeFlights(){
+  for(const p of G.beeFlights){const k=Math.min(1,p.t/p.life),x=W/2+(p.x-W/2)*k,y=BY+(p.y-BY)*k-Math.sin(k*Math.PI)*TILE;
+    ctx.save();ctx.globalAlpha=k>.8?(1-k)/.2:1;ctx.font=Math.max(15,TILE*.5)+'px '+EMOJI_FONT;ctx.textAlign='center';ctx.fillText('🐝',x,y);ctx.restore();}
+}
+function drawTile(t){
+  if(t.state==='pop')return;
+  let scale=1,sy=1;
+  if(t.squashT>0)sy=.9+.1*(1-t.squashT/.14);
+  if(t.bornT>0)scale*=1+.15*(t.bornT/.35);
+  const inPath=G._pk&&G._pk.has(key(t.r,t.c));
+  if(inPath)scale*=1.06;
+  const s=TILE*.92;
+  ctx.save();ctx.globalAlpha=G.path.length && !inPath ? .94 : 1;
+  ctx.translate(t.x,t.y+(inPath?-2:0));ctx.scale(scale,scale*sy);
+  if(inPath||t.boost){
+    ctx.beginPath();ctx.ellipse(0,s*.06,s*.47,s*.43,0,0,Math.PI*2);
+    ctx.fillStyle=inPath?'#deefe4':'#fff1c2';ctx.fill();
+    ctx.strokeStyle=inPath?'#80b298':'#e4be62';ctx.lineWidth=1.6;ctx.stroke();
+  }
+  if(t.frost)drawIceShell(s);
+  if(t.special==='rainbow')drawRainbowCard(s);else{
+    window.FruitArt.draw(ctx,t.type,s,{selected:!!inPath});
+    if(t.frost)drawIceShell(s,true);
+  }
+  if(t.boost)drawStatusBadge(s,'rain');
+  if(t.frost)drawStatusBadge(s,'frost');
+  if(t.special==='bomb')drawStatusBadge(s,'bomb');
+  if(t.special==='burst'||t.special==='cycle')drawOrchardBadge(s,t.special,t.type);
+  if(inPath){
+    const index=G.path.findIndex(p=>p.r===t.r&&p.c===t.c)+1,x=-s*.34,y=-s*.32,r=Math.max(7,s*.16);
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='#47745f';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.6;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 '+Math.max(10,s*.25)+'px '+UI_FONT;ctx.fillText(String(index),x,y);
+  }
+  ctx.restore();
+}
+function sliceFruit(t){
+  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){burst(t.x,t.y,FRUITS[t.type].c2,2);return;}
+  for(const side of [-1,1])G.slices.push({
+    type:t.type,side,x:t.x,y:t.y,vx:side*(35+Math.random()*30),vy:-65-Math.random()*45,
+    size:TILE*.92,t:0,life:.58,rot:0,vr:side*(.8+Math.random()*.7)
+  });
+}
+function drawSliceFx(){
+  for(const trail of G.cutTrails){
+    if(trail.points.length<2)continue;
+    ctx.save();ctx.globalAlpha=Math.max(0,1-trail.t/trail.life);ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();trail.points.forEach((p,i)=>{if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y);});
+    ctx.strokeStyle='#a4d7c5';ctx.lineWidth=9;ctx.stroke();ctx.strokeStyle='#fffef1';ctx.lineWidth=3;ctx.stroke();ctx.restore();
+  }
+  for(const p of G.slices){
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+    ctx.globalAlpha=p.t/p.life<.6?1:Math.max(0,(1-p.t/p.life)/.4);
+    window.FruitArt.half(ctx,p.type,p.size,p.side);ctx.restore();
+  }
+}
+
+function drawBoard(){
+  const th = theme();
+  const hint = G.activeTool ? null : G.teachBasics && !G.path.length
+    ? {cells:[{r:3,c:2},{r:4,c:3},{r:5,c:4}]} : G.lessonRoute&&!G.path.length ? {cells:G.lessonRoute} : G.hint;
+  const pad = TILE * 0.22;
+  const g = ctx.createLinearGradient(0, BY - pad, 0, BY + ROWS * TILE + pad);
+  g.addColorStop(0, th.panelA); g.addColorStop(1, th.panelB);
+  ctx.save();
+  ctx.shadowColor = 'rgba(140,110,170,.16)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6;
+  ctx.fillStyle = g;
+  rr(BX - pad, BY - pad, COLS * TILE + pad * 2, ROWS * TILE + pad * 2, 20); ctx.fill();
+  ctx.restore();
+  ctx.strokeStyle = th.panelBorder; ctx.lineWidth = 1.5;
+  rr(BX - pad, BY - pad, COLS * TILE + pad * 2, ROWS * TILE + pad * 2, 20); ctx.stroke();
+  for(let r = 0; r < ROWS; r++) for(let c = 0; c < COLS; c++){
+    ctx.fillStyle = ((r + c) % 2 === 0) ? th.cell1 : th.cell2;
+    rr(BX + c * TILE + 1.5, BY + r * TILE + 1.5, TILE - 3, TILE - 3, TILE * 0.2); ctx.fill();
+  }
+  if(hint && G.phase === 'idle' && !G.path.length){
+    const pul = 0.5 + 0.5 * Math.sin(nowMs * 0.006);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(105,160,130,' + (0.45 + 0.35 * pul).toFixed(2) + ')';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    hint.cells.forEach((cell,i)=>{ if(i) ctx.lineTo(colX(cell.c),rowY(cell.r)); else ctx.moveTo(colX(cell.c),rowY(cell.r)); });
+    ctx.stroke();
+    for(const cell of hint.cells){
+      ctx.beginPath();ctx.arc(colX(cell.c),rowY(cell.r),TILE*.46,0,Math.PI*2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  drawFlowerGround(false);
+  G._pk = new Set(G.path.map(p => key(p.r, p.c)));
+  for(let r = 0; r < ROWS; r++){
+    const row = G.grid[r]; if(!row) continue;
+    for(let c = 0; c < COLS; c++){
+      const t = row[c]; if(!t) continue;
+      drawTile(t);
+    }
+  }
+  if(hint && G.phase==='idle' && !G.path.length){
+    ctx.save();
+    for(let i=0;i<hint.cells.length;i++){
+      if(i===hint.cells.length-1&&i>0&&hint.cells[i].r===hint.cells[0].r&&hint.cells[i].c===hint.cells[0].c)continue;
+      const p=hint.cells[i], x=colX(p.c)-TILE*.28, y=rowY(p.r)-TILE*.28;
+      ctx.beginPath();ctx.arc(x,y,Math.max(8,TILE*.17),0,Math.PI*2);
+      ctx.fillStyle='#f8fbed';ctx.fill();ctx.strokeStyle='#88ac77';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle='#5d7e51';ctx.font='900 '+Math.max(10,TILE*.24)+'px '+UI_FONT;
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),x,y);
+    }
+    ctx.restore();
+  }
+}
+function drawPath(){
+  const p = G.path;
+  if(p.length < 2) return;
+  const first = G.grid[p[0].r][p[0].c];
+  const ac = first && first.type >= 0 ? FRUITS[first.type].bd : theme().ac2;
+  ctx.save();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(colX(p[0].c), rowY(p[0].r));
+  for(let i = 1; i < p.length; i++) ctx.lineTo(colX(p[i].c), rowY(p[i].r));
+  ctx.strokeStyle = ac; ctx.globalAlpha = 0.4; ctx.lineWidth = TILE * 0.24;
+  ctx.shadowColor = ac; ctx.shadowBlur = 14;
+  ctx.stroke();
+  ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.globalAlpha = 0.9; ctx.lineWidth = TILE * 0.09;
+  ctx.stroke();
+  const e = p[p.length - 1];
+  ctx.globalAlpha = 0.95; ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(colX(e.c), rowY(e.r), TILE * 0.13, 0, Math.PI * 2); ctx.fill();
+  /* 靠近起点时提示闭环；完成后保留明确的闭合线。 */
+  if((cfg().loop&&pathIsLoop(p)) || canCloseLoop(p)){
+    const pul = 0.5 + 0.5 * Math.sin(nowMs * 0.02);
+    ctx.strokeStyle = 'rgba(255,205,60,' + (0.45 + 0.55 * pul).toFixed(2) + ')';
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(colX(p[0].c), rowY(p[0].r), TILE * 0.55, 0, Math.PI * 2); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawWeatherFx(){
+  if(!G.wfx || G.wfx.t <= 0) return;
+  /* 天气氛围色罩（随结束淡出） */
+  const TINT = {rain:'rgba(96,148,224,.12)', wind:'rgba(255,236,200,.09)', frost:'rgba(150,200,240,.16)'};
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, G.wfx.t / 0.3);
+  ctx.fillStyle = TINT[G.wfx.name] || 'rgba(255,255,255,0)';
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+  if(!G.wparts.length) return;
+  ctx.save();
+  if(G.wfx.name === 'rain'){
+    ctx.strokeStyle = 'rgba(110,165,230,.5)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    for(const d of G.wparts){ ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - 3, d.y + 11); ctx.stroke(); }
+  }else if(G.wfx.name === 'frost'){
+    ctx.fillStyle = 'rgba(205,232,250,.9)';
+    for(const d of G.wparts){ ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill(); }
+  }else{
+    ctx.strokeStyle = 'rgba(255,255,255,.65)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    for(const d of G.wparts){ ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x + d.len, d.y); ctx.stroke(); }
+  }
+  ctx.restore();
+}
+function drawParticles(){
+  for(const p of G.parts){
+    const k = p.t / p.life;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, 1 - k);
+    ctx.translate(p.x, p.y);
+    if(p.rect){
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r, -p.r * 0.55, p.r * 2, p.r * 1.1);
+    }else{
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(0, 0, p.r * (1 - k * 0.4), 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+function drawTexts(){
+  for(const t of G.texts){
+    const k = t.t / t.life;
+    ctx.save();
+    ctx.globalAlpha = k < 0.15 ? k / 0.15 : (1 - Math.pow(k, 2.2));
+    ctx.fillStyle = t.color;
+    ctx.font = '900 ' + t.size + 'px ' + UI_FONT;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round'; ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(255,255,255,.92)';
+    ctx.strokeText(t.text, t.x, t.y);
+    ctx.fillText(t.text, t.x, t.y);
+    ctx.restore();
+  }
+}
+function drawBanner(){
+  if(!G.banner) return;
+  const b = G.banner;
+  const k = b.t / b.dur;
+  const scale = 0.7 + 0.3 * Math.min(1, k * 5);
+  const alpha = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(W / 2, BY + ROWS * TILE * 0.3);
+  ctx.scale(scale, scale);
+  ctx.font = '900 24px ' + UI_FONT;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round'; ctx.lineWidth = 7;
+  ctx.strokeStyle = 'rgba(255,255,255,.95)';
+  ctx.strokeText(b.text, 0, 0);
+  ctx.fillStyle = b.color;
+  ctx.fillText(b.text, 0, 0);
+  ctx.restore();
+}
+/* 顶部双芯片的几何（分数 + 天气预报）。预报芯片可点击打开天气图鉴，命中检测与绘制共用这一份 */
+function scoreChipLayout(){
+  ctx.save();
+  ctx.font = '800 13px ' + UI_FONT;
+  const sl = '分数 ' + G.score;
+  const wm = G.forecast ? WEATHER[G.forecast] : null;
+  const hasWx = G.state === 'play' && wm && cfg().weatherEvery;
+  const urgent = hasWx && G.weatherLeft <= 1;
+  const wl = hasWx
+    ? (G.wxArmed ? '✨' : '') + wm.icon + wm.name + (urgent ? '将至' : G.weatherLeft + '步后')
+    : '';
+  const w1 = ctx.measureText(sl).width + 26;
+  const w2 = hasWx ? ctx.measureText(wl).width + 40 : 0;   /* 40 = 常规留白 + 右端小问号 */
+  const gap = hasWx ? 10 : 0;
+  const x0 = W / 2 - (w1 + gap + w2) / 2;
+  const y = Math.max(16, BY - TILE * 0.55);
+  ctx.restore();
+  return {sl, wl, hasWx, urgent, x0, y, w1, w2, gap};
+}
+function drawScoreChip(){
+  if(G.state === 'menu' || G.state === 'intro') return;
+  const {sl, wl, hasWx, urgent, x0, y, w1, w2, gap} = scoreChipLayout();
+  ctx.save();
+  ctx.font = '800 13px ' + UI_FONT;
+  /* 布局几何统一由 scoreChipLayout() 提供（点击命中检测共用同一份） */
+  ctx.fillStyle = 'rgba(255,255,255,.92)';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  rr(x0, y - 12, w1, 24, 12); ctx.fill();
+  ctx.fillStyle = '#8b7c9b';
+  ctx.fillText(sl, x0 + w1 / 2, y + 1);
+  if(hasWx){
+    rr(x0 + w1 + gap, y - 12, w2, 24, 12); ctx.fill();
+    if(urgent){
+      const pul = 0.5 + 0.5 * Math.sin(nowMs * 0.012);
+      ctx.fillStyle = mix('#ff7a5f', '#ff4f6e', pul);
+    }else{
+      ctx.fillStyle = '#7a6f8f';
+    }
+    ctx.fillText(wl, x0 + w1 + gap + (w2 - 14) / 2, y + 1);
+    /* 右端小问号：点这颗芯片可随时打开天气图鉴 */
+    ctx.font = '800 10px ' + UI_FONT;
+    ctx.fillStyle = urgent ? 'rgba(255,255,255,.9)' : 'rgba(122,111,143,.8)';
+    ctx.fillText('?', x0 + w1 + gap + w2 - 12, y + 1);
+  }
+  ctx.restore();
+}
+function fitText(s, maxW, font){
+  ctx.font = font;
+  if(ctx.measureText(s).width <= maxW) return s;
+  let t = s;
+  while(t.length > 1 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
+}
+/* 天气公告卡：非首次天气的播报。位于画布底部（芯片下方空间不足），淡入 0.18s、末 0.45s 淡出 */
+function drawWxCard(){
+  const c = G.wxCard;
+  if(!c || G.state !== 'play') return;
+  const wd = WEATHER[c.name];
+  if(!wd) return;
+  const w = Math.min(W - 28, 330), h = 72;
+  const aIn = Math.min(1, c.t / 0.18);
+  const aOut = c.t > c.dur - 0.45 ? Math.max(0, (c.dur - c.t) / 0.45) : 1;
+  const alpha = Math.min(aIn, aOut);
+  const x = (W - w) / 2;
+  const y = H - h - 12 + (1 - aIn) * 14 + (1 - aOut) * 10;
+  const AC = c.name === 'rain' ? '#4a90d9' : c.name === 'wind' ? '#e8a13c' : '#5aa8d8';
+  const tx = x + 62, tw = w - 62 - 14;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = 'rgba(255,255,255,.96)';
+  rr(x, y, w, h, 18); ctx.fill();
+  ctx.strokeStyle = 'rgba(120,100,150,.14)'; ctx.lineWidth = 1; ctx.stroke();
+  /* 左侧色条 + 图标圆底 */
+  ctx.fillStyle = AC;
+  rr(x, y + 12, 5, h - 24, 3); ctx.fill();
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.16;
+  ctx.beginPath(); ctx.arc(x + 34, y + h / 2, 21, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+  ctx.font = '21px ' + UI_FONT;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#4c4058';
+  ctx.fillText(wd.icon, x + 34, y + h / 2 + 1);
+  /* 三行文字：标题 / 刚刚发生了什么 / 应对 */
+  ctx.textAlign = 'left';
+  ctx.font = '800 14px ' + UI_FONT;
+  ctx.fillText(fitText(c.title, tw, '800 14px ' + UI_FONT), tx, y + 18);
+  ctx.font = '600 11.5px ' + UI_FONT;
+  ctx.fillStyle = '#8b7c9b';
+  ctx.fillText(fitText(c.detail, tw, '600 11.5px ' + UI_FONT), tx, y + 37);
+  ctx.font = '700 10.5px ' + UI_FONT;
+  ctx.fillStyle = AC;
+  ctx.fillText(fitText('💡 ' + c.hint, tw, '700 10.5px ' + UI_FONT), tx, y + 56);
+  ctx.restore();
+}
+function draw(){
+  if(G.screen && G.state==='menu'){updatePlayHUD();return;}
+  ctx.clearRect(0, 0, W, H);
+  const th = theme();
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, th.bg[0]); bg.addColorStop(0.55, th.bg[1]); bg.addColorStop(1, th.bg[2]);
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  if(G.shake > 0){
+    const a = G.shake * 7;
+    ctx.translate((Math.random() - 0.5) * a, (Math.random() - 0.5) * a);
+  }
+  drawBoard();
+  drawFlowerGround(true);
+  drawWeatherPlan();drawToolSelection();
+  drawPath();
+  ctx.restore();
+
+  drawSliceFx();
+  drawBeeFlights();
+  drawParticles();
+  drawTexts();
+  drawBanner();
+  updatePlayHUD();
+  drawWeatherFx();
+  /* 天气播报复用底部信息卡，避免与连线预览叠加。 */
+
+  if(G.flashT > 0){
+    ctx.save(); ctx.globalAlpha = Math.min(0.45, G.flashT * 2);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.restore();
+  }
+  if(G.shuffleT > 0){
+    ctx.save(); ctx.globalAlpha = Math.min(0.35, G.shuffleT * 1.5);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.restore();
+  }
+}
+
+/* =========================================================
+   17. 弹层
+   ========================================================= */
+function showOverlay(){ cancelTool();overlay.inert=false; overlay.classList.add('show'); }
+function hideOverlay(){ overlay.inert=true; overlay.classList.remove('show'); }
+function starsHTML(n){
+  let s = '';
+  for(let i = 0; i < 3; i++) s += i < n ? '★' : '<span style="color:#ece4f3">★</span>';
+  return s;
+}
+function starsAnimHTML(n){
+  let s = '';
+  for(let i = 0; i < 3; i++) s += '<i class="star' + (i < n ? '' : ' off') + '" style="animation-delay:' + (0.12 + i * 0.22).toFixed(2) + 's">★</i>';
+  return s;
+}
+let scoreAnimId = 0;
+function countUp(el, to, dur){
+  cancelAnimationFrame(scoreAnimId);
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = String(Math.round(to * e));
+    if(k < 1) scoreAnimId = requestAnimationFrame(step);
+  };
+  scoreAnimId = requestAnimationFrame(step);
+}
+function goalsSummary(l){
+  return l.goals.map(g => g.fruit != null
+    ? fsq(g.fruit) + '×' + g.n
+    : (g.feature?featureIcon(g.feature):g.tool?toolIcon(g.tool):g.special === 'bomb' ? '💥' : '🌈') + '×' + g.n).join(' ');
+}
+function recommendedLevel(){const p=prog();const i=p.stars.findIndex((v,i)=>i<p.unlocked&&!v);return i<0?p.unlocked-1:i;}
+function resetLobby(screen){
+  saveRun();clearGesture();cancelTool();G.state='menu';G.screen=screen;G.level=0;G.grid=[];
+  G.parts=[];G.texts=[];G.slices=[];G.cutTrails=[];G.banner=null;G.cheer=null;G.wfx=null;G.wparts=[];G.wxCard=null;G.weatherPlan=null;G.forecast=null;
+  setMenuHUD();applyThemeVars();
+}
+function homeArt(){
+  const positions=[[68,63,0],[147,48,1],[228,72,2],[73,147,3],[157,132,4],[231,155,5]];
+  return '<svg viewBox="0 0 300 220" aria-hidden="true"><rect x="33" y="23" width="235" height="172" rx="29" fill="#e7ecdc"/>'+
+    positions.map(([x,y,type],i)=>'<g class="home-fruit fruit-'+i+'" transform="translate('+x+' '+y+')"><g>'+window.FruitArt.markup(type)+'</g></g>').join('')+
+    '<path d="M65 68Q116 105 157 135T242 163" stroke="#fffdf8" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="242" cy="163" r="5" fill="#e99a83"/></svg>';
+}
+function showMenu(){
+  resetLobby('home');
+  overlay.innerHTML='<section class="home-screen" aria-label="游戏主页"><div class="home-copy"><h1>一划果园<span>.</span></h1><div class="home-art">'+homeArt()+'</div><button class="start-game" data-act="home-start">开始 <span>→</span></button></div><button class="home-credits" data-act="credits" aria-label="特别感谢"><span aria-hidden="true">✳</span> 特别感谢</button><button class="home-help" data-act="help">玩法动画 ↗</button></section>';
+  showOverlay();
+}
+function homeStart(){
+  if(!prog().hasStarted){prog().hasStarted=true;persist();startLevel(0);}
+  else showLevelSelect();
+}
+function showLevelSelect(){
+  resetLobby('levels');
+  const pr=prog(),run=readSavedRun();
+  const items=LEVELS.map((l,i)=>'<button class="level-number'+(pr.stars[i]?' completed':'')+(i===recommendedLevel()?' recommended':'')+'" data-act="start" data-lv="'+i+'" aria-label="第'+(i+1)+'关'+(!isLevelOpen(i)?'，未解锁':'')+'" '+(!isLevelOpen(i)?'disabled':'')+'>'+ (i+1) +'</button>').join('');
+  overlay.innerHTML='<section class="level-screen" aria-label="选择关卡"><button class="lobby-back" data-act="home" aria-label="返回主页">←</button><h1>关卡<span>.</span></h1><button class="unlock-levels" data-act="unlock-all" '+(pr.allLevelsOpen?'disabled':'')+'>'+(pr.allLevelsOpen?'已开放全部 '+LEVEL_N+' 关':'开放全部关卡')+'</button>'+(run?'<button class="resume-run" data-act="continue-run">继续第 '+(run.level+1)+' 关<small>剩余 '+run.moves+' 步</small></button>':'')+'<div class="level-number-grid">'+items+'</div>'+(run?'<p class="resume-note">选择其他关卡将开始新一局</p>':'')+'</section>';
+  showOverlay();
+}
+function showCredits(){
+  resetLobby('credits');
+  overlay.innerHTML='<section class="credits-screen" role="dialog" aria-modal="true" aria-label="特别感谢"><button class="lobby-back" data-act="home" aria-label="返回主页">←</button><div class="credits-copy"><span class="credits-flower" aria-hidden="true">✳</span><h1>特别感谢<span>.</span></h1><h2>感谢每一位试玩的人</h2><p>每一次连线、每一条建议，<br>都让这片小果园变得更好。</p><p>也谢谢你，陪它慢慢长大。</p><h2>保持联系</h2><p class="credits-contact">联系微信：<span>13052090337</span></p></div></section>';
+  showOverlay();
+}
+function showIntro(idx){
+  if(idx<0||idx>=LEVEL_N)idx=0;
+  G.level=idx;G.state='intro';G.screen=null;G.grid=[];
+  elLvNum.textContent=String(idx+1).padStart(2,'0');
+  elLvName.textContent=LEVELS[idx].name;
+  elOrders.innerHTML='';elMoves.textContent='--';elMovesBox.classList.remove('low');
+  applyThemeVars();
+  showLesson(cfg().lesson,'menu','intro');
+}
+
+function showWin(s, newBest){
+  const isLast = G.level >= LEVEL_N - 1;
+  overlay.innerHTML = '<div class="panel">' +
+    '<div class="ribbon">' + (isLast ? '🏆 全部通关' : '过关啦') + '</div>' +
+    '<div class="stars">' + starsAnimHTML(s) + '</div>' +
+    '<div class="big" id="finalScore">0</div>' +
+    '<div class="rowline">★★ ' + cfg().star2 + ' 分 · ★★★ ' + cfg().star3 + ' 分 · 最高连锁 ' + Math.max(1, G.maxCombo) + ' 次</div>' +
+    '<div class="rowline">手动制作 · 💥 炸弹 ' + G.stats.bombMade + ' · 🌈 彩虹 ' + G.stats.rainbowMade + '</div>' +
+    (newBest ? '<div class="newbest">🎉 新纪录！</div>' : '') +
+    '<div class="btns">' +
+      '<button class="btn" data-act="home">返回</button>' +
+      '<button class="btn" data-act="retry">重玩</button>' +
+      (isLast ? '<button class="btn primary" data-act="home">完成</button>' : '<button class="btn primary" data-act="next">下一关</button>') +
+    '</div>' +
+  '</div>';
+  showOverlay();
+  const fs = document.getElementById('finalScore');
+  if(fs) countUp(fs, G.score, 900);
+}
+function showLose(){
+  const missing = G.orders.filter(o => orderGot(o) < o.n).map(o => {
+    const label = o.kind === 'fruit' ? fsq(o.fruit) + ' ' + FRUITS[o.fruit].name : o.kind==='feature'?featureIcon(o.feature)+' '+ORCHARD.names[o.feature]:(o.kind==='tool'?toolIcon(o.tool)+' '+TOOL_INFO[o.tool].name:o.special === 'bomb' ? '💥' : '🌈');
+    return label + ' 还差 ' + (o.n - orderGot(o));
+  }).join('，');
+  overlay.innerHTML = '<div class="panel">' +
+    '<div class="ribbon bad">步数用完了</div>' +
+    '<div class="big">' + G.score + '</div>' +
+    '<div class="rowline">★ 完成订单即过关 · ★★ ' + cfg().star2 + ' 分</div>' +
+    '<p class="sub">' + (missing ? '订单 ' + missing + '。' : '') + '<br>划长链——6 连出炸弹、8 连出彩虹、画成圈清全场同款！</p>' +
+    '<div class="btns">' +
+      '<button class="btn" data-act="home">返回</button>' +
+      '<button class="btn primary" data-act="retry">再来一次</button>' +
+    '</div>' +
+  '</div>';
+  showOverlay();
+}
+function pauseGame(){
+  if(G.state !== 'play') return;
+  const saved=saveRun();clearGesture();
+  G.state = 'paused';
+  overlay.innerHTML = '<div class="panel">' +
+    '<div class="logo">☕</div>' +
+    '<h2>歇一会儿</h2>' +
+    '<p class="sub">'+(saved?'当前进度已保存':'这一步尚未结算，返回后从上一步继续')+'</p>'+
+    '<p class="sub">第 ' + (G.level + 1) + ' 关' + '<br>分数 ' + G.score + ' · 剩余 ' + G.moves + ' 步</p>' +
+    '<div class="btns">' +
+      '<button class="btn" data-act="home">退出</button>' +
+      '<button class="btn primary" data-act="resume">继续</button>' +
+    '</div>' +
+  '</div>';
+  showOverlay();
+}
+/* ---- 天气教学卡（首次遇到）：发生了什么 / 这是什么 / 怎么应对，点"知道了"才关 ---- */
+function showWxTeach(name, blessed, detail, title){
+  showLesson(name,'play','weather',blessed ? '已蓄力 · '+title : '刚刚遇到'+WEATHER[name].name);
+}
+function showWxCodex(){
+  if(G.state!=='play')return;
+  const wd=WEATHER[G.forecast];
+  showLesson(wd?G.forecast:'rain','play','forecast',wd ? (G.wxArmed?'已蓄力 · ':'')+wd.name+' · '+G.weatherLeft+'步后' : '看看天气怎么用');
+}
+function showWeatherClass(){
+  if(G.state!=='play'&&G.state!=='menu')return;
+  showLesson('forecast',G.state,'forecast');
+}
+function rememberWeatherLesson(){
+  const id=lessonView.id;
+  if(TOOL_INFO[id]&&!prog().seenTools.includes(id))prog().seenTools.push(id);
+  if(ORCHARD.lessons[id]&&!prog().seenOrchard.includes(id))prog().seenOrchard.push(id);
+  if(id==='forecast')prog().seenWeatherIntro=true;
+  if(['rain','wind','frost'].includes(id)&&!prog().seenWeatherGuide.includes(id))prog().seenWeatherGuide.push(id);
+  persist();
+}
+let helpReturnState='menu';
+let lessonView={id:'connect',returnTo:'menu',mode:'help',note:''};
+function showHelp(){
+  if(G.state!=='play'&&G.state!=='menu')return;
+  helpReturnState=G.state;
+  showLesson('connect',G.state,'help');
+}
+function showLesson(id,returnTo=lessonView.returnTo,mode=lessonView.mode,note=lessonView.note){
+  const guide=window.FruitGuide;
+  if(!guide.lessons[id])id='connect';
+  clearGesture();
+  G.state=mode==='intro'?'intro':'paused';
+  lessonView={id,returnTo,mode,note};
+  const l=guide.lessons[id];
+  const lockedAt=ORCHARD.lessons[id]?({flowers:31,burst:36,cycle:41,bee:46}[id]):TOOL_INFO[id]?({scissors:16,glove:18,basket:20}[id]):['bomb','blast'].includes(id)?4:['rainbow','tap'].includes(id)?5:0;
+  const baseCopy=id==='bee'&&cfg().orchard?.bee?'本关连'+cfg().orchard.bee.chain+'颗起蓄1格，满'+cfg().orchard.bee.charges+'格出发，优先帮收订单。':l.copy;
+  const copy=['help','forecast'].includes(mode)&&lockedAt&&G.level+1<lockedAt?'第'+lockedAt+'关解锁 · '+baseCopy:baseCopy;
+  const topics=Object.keys(guide.lessons).filter(k=>guide.lessons[k].group===l.group);
+  const groupKeys=Object.keys(guide.groups);
+  const groups=groupKeys.map(k=>'<button data-act="lesson-group" data-group="'+k+'" aria-pressed="'+(k===l.group)+'">'+guide.groups[k]+'</button>').join('');
+  const topicButtons=topics.map(k=>'<button data-act="lesson-topic" data-topic="'+k+'" aria-pressed="'+(id===k)+'">'+guide.lessons[k].label+'</button>').join('');
+  const next=topics[(topics.indexOf(id)+1)%topics.length];
+  const notice=mode==='feature-intro'||mode==='tool-intro'||mode==='weather'||mode==='weather-before'||mode==='weather-intro';
+  const goals=mode==='intro' ? '<div class="lesson-goals"><span>收集</span>'+cfg().goals.map(g=>'<span>'+(g.fruit!=null?fsq(g.fruit):g.feature?featureIcon(g.feature):g.tool?toolIcon(g.tool):g.special==='bomb'?'手动 💥':'手动 🌈')+' ×'+g.n+'</span>').join('')+'<span>· '+cfg().moves+'步</span></div>' : '';
+  const kicker=mode==='intro'?'第 '+(G.level+1)+' 关 · '+cfg().name:note||'看动画，跟着划';
+  const controls='<div class="lesson-controls"><button data-act="lesson-replay">↻ 重播</button><button data-act="lesson-pause" aria-pressed="false">Ⅱ 暂停动画</button></div>';
+  const actions=mode==='intro'
+    ? '<button class="btn" data-act="home">返回</button><button class="btn primary" data-act="go">开始采摘</button>'
+    : notice ? '<button class="btn primary" data-act="wxok">'+(mode==='weather-before'?'明白了，准备迎接':'知道了，继续')+'</button>'
+    : returnTo==='play' ? '<button class="btn primary" data-act="lesson-close">继续采摘</button>'
+    : '<button class="btn" data-act="lesson-close">'+(returnTo==='menu'?'返回':'继续游戏')+'</button><button class="btn primary" data-act="lesson-try">'+(returnTo==='menu'?'去试试':'继续采摘')+'</button>';
+  overlay.innerHTML='<div class="panel lesson-panel" role="dialog" aria-modal="true" aria-label="动画玩法讲解">'+
+    '<div class="kicker">'+kicker+'</div>'+
+    (mode==='intro'||notice?'':'<nav class="lesson-groups" aria-label="选择讲解分类">'+groups+'</nav><nav class="lesson-topics" aria-label="选择动画">'+topicButtons+'</nav>')+
+    '<h2>'+l.title+'</h2><p class="lesson-copy">'+copy+'</p>'+goals+guide.render(id,FRUITS,{bee:cfg().orchard?.bee})+controls+
+    (mode==='intro'||notice?'':'<button class="lesson-next" data-act="lesson-topic" data-topic="'+next+'">下一个：'+guide.lessons[next].label+' →</button>')+
+    '<div class="btns">'+actions+'</div></div>';
+  showOverlay();
+  const svg=overlay.querySelector('svg');
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches&&svg&&svg.pauseAnimations)svg.pauseAnimations();
+}
+function closeLesson(tryNow=false){
+  rememberWeatherLesson();
+  if(lessonView.returnTo==='menu'){
+    if(tryNow)startLevel(recommendedLevel());else showMenu();
+  }else {const teachNext=lessonView.mode==='feature-intro';G.state='play';hideOverlay();if(teachNext)teachOrchard();}
+}
+function toggleLessonAnimation(button){
+  const panel=overlay.querySelector('.lesson-panel'),svg=overlay.querySelector('svg');
+  if(!panel)return;
+  const paused=button.getAttribute('aria-pressed')!=='true';
+  panel.classList.toggle('lesson-paused',paused);
+  button.setAttribute('aria-pressed',String(paused));
+  button.textContent=paused?'▶ 继续动画':'Ⅱ 暂停动画';
+  if(svg){if(paused&&svg.pauseAnimations)svg.pauseAnimations();else if(svg.unpauseAnimations)svg.unpauseAnimations();}
+}
+
+overlay.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-act]');
+  if(!btn) return;
+  const act = btn.dataset.act;
+  if(act === 'start'){const i=Number(btn.dataset.lv);if(isLevelOpen(i)){const r=readSavedRun();if(r&&r.level===i)resumeRun();else startLevel(i);}}
+  else if(act==='unlock-all')unlockAllLevels();
+  else if(act === 'go') startLevel(G.level);
+  else if(act === 'retry') startLevel(G.level);
+  else if(act === 'next') startLevel(Math.min(LEVEL_N - 1, G.level + 1));
+  else if(act === 'home') showMenu();
+  else if(act==='home-start')homeStart();
+  else if(act==='continue-run'){if(!resumeRun())showLevelSelect();}
+  else if(act==='credits')showCredits();
+  else if(act==='levels')showLevelSelect();
+  else if(act === 'resume'){ G.state = 'play'; hideOverlay(); }
+  else if(act === 'wxok'){G.path=[];closeLesson();}
+  else if(act === 'wxclose'){ G.state = 'play'; G.path = []; hideOverlay(); }
+  else if(act === 'help') showHelp();
+  else if(act === 'lesson-topic') showLesson(btn.dataset.topic);
+  else if(act === 'lesson-group'){
+    const first=Object.keys(window.FruitGuide.lessons).find(k=>window.FruitGuide.lessons[k].group===btn.dataset.group);
+    if(first)showLesson(first);
+  }
+  else if(act === 'lesson-replay') showLesson(lessonView.id);
+  else if(act === 'lesson-pause') toggleLessonAnimation(btn);
+  else if(act === 'lesson-close') closeLesson();
+  else if(act === 'lesson-try') closeLesson(true);
+  else if(act === 'helpclose'){ if(helpReturnState==='menu') showMenu(); else {G.state='play';hideOverlay();} }
+});
+elToolTray.addEventListener('click',e=>{const b=e.target.closest('[data-pocket]');if(b)selectPocketTool(b.dataset.pocket);});
+btnHelp.addEventListener('click',showHelp);
+btnForecast.addEventListener('click',showWxCodex);
+btnWeatherClass.addEventListener('click',showWeatherClass);
+btnPause.addEventListener('click', () => {
+  if(G.state === 'play') pauseGame();
+});
+btnSound.addEventListener('click', () => {
+  audioOn = !audioOn;
+  save.sound = audioOn;
+  persist();
+  btnSound.textContent = audioOn ? '🔊' : '🔇';
+  if(audioOn) sfxSelect();
+});
+window.addEventListener('pagehide',saveRun);
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden && G.state === 'play') pauseGame();
+});
+
+/* =========================================================
+   18. 输入
+   ========================================================= */
+let activePointer = null, lastPointerPoint = null;
+function clearGesture(){
+  G.path = [];
+  if(activePointer !== null && cv.hasPointerCapture && cv.hasPointerCapture(activePointer)) cv.releasePointerCapture(activePointer);
+  activePointer = null;
+  lastPointerPoint = null;
+}
+function toLocal(e){
+  const r = cv.getBoundingClientRect();
+  return {x:(e.clientX-r.left)*W/r.width, y:(e.clientY-r.top)*H/r.height};
+}
+function tracePointer(p){
+  if(!lastPointerPoint){ lastPointerPoint=p; return; }
+  const first=G.path[0];
+  const nearStart=q=>first&&Math.hypot(q.x-colX(first.c),q.y-rowY(first.r))<=TILE*.55+2;
+  // The drawn ring extends beyond the cell. Touching it closes a valid loop.
+  // Keep that closure on pointerup, even if the finger remains just outside the cell.
+  if(nearStart(p)&&(canCloseLoop(G.path)||pathIsLoop(G.path))){
+    if(!pathIsLoop(G.path))extendPath(first);
+    lastPointerPoint=p;return;
+  }
+  const from=lastPointerPoint;
+  const steps=Math.max(1,Math.ceil(Math.hypot(p.x-from.x,p.y-from.y)/(TILE*0.18)));
+  for(let i=1;i<=steps;i++){
+    const sample={x:from.x+(p.x-from.x)*i/steps,y:from.y+(p.y-from.y)*i/steps};
+    if(nearStart(sample)&&canCloseLoop(G.path)){extendPath(first);break;}
+    const cell=cellFromPoint(sample.x,sample.y);
+    if(cell) extendPath(cell);
+  }
+  lastPointerPoint=p;
+}
+cv.addEventListener('pointerdown', (e) => {
+  if(activePointer !== null || e.isPrimary === false || (e.button !== undefined && e.button !== 0)) return;
+  e.preventDefault();
+  const p = toLocal(e);
+  if(G.state !== 'play' || G.phase !== 'idle') return;
+  const cell = cellFromPoint(p.x, p.y);
+  if(G.activeTool){if(cell)usePocketTool(cell);return;}
+  if(!cell || !G.grid[cell.r][cell.c]) return;
+  G.hintT = 0; G.hint = null;
+  const t = G.grid[cell.r][cell.c];
+  if(t.frost){
+    G.shake = Math.max(G.shake, 0.16);
+    floatText(colX(cell.c), rowY(cell.r) - TILE * 0.5, '❄️ 划不动', '#6fa8dc', 13);
+    blip(190, 0.08, 'square', 0.03);
+    return;
+  }
+  activePointer = e.pointerId;
+  lastPointerPoint = p;
+  if(cv.setPointerCapture) cv.setPointerCapture(e.pointerId);
+  G.path = [cell];
+  sfxSelect();
+});
+cv.addEventListener('pointermove', (e) => {
+  if(e.pointerId !== activePointer || G.state !== 'play' || G.phase !== 'idle' || !G.path.length) return;
+  const samples = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
+  for(const sample of samples) tracePointer(toLocal(sample));
+  tracePointer(toLocal(e));
+});
+window.addEventListener('pointerup', (e) => {
+  if(e.pointerId !== activePointer) return;
+  if(G.state === 'play' && G.phase === 'idle'){
+    tracePointer(toLocal(e));
+    commitPath();
+  }
+  clearGesture();
+});
+window.addEventListener('pointercancel', (e) => { if(e.pointerId === activePointer) clearGesture(); });
+cv.addEventListener('lostpointercapture', (e) => { if(e.pointerId === activePointer) clearGesture(); });
+window.addEventListener('blur',clearGesture);
+cv.addEventListener('contextmenu', e => e.preventDefault());
+
+/* =========================================================
+   19. 主循环与启动
+   ========================================================= */
+let last = 0;
+function loop(ts){
+  if(!last) last = ts;
+  let dt = (ts - last) / 1000;
+  last = ts;
+  if(dt > 0.05) dt = 0.05;
+  nowMs = ts;
+  try{
+    update(dt);
+    draw();
+  }catch(e){
+    /* 单帧异常不应杀死主循环 */
+    if(!loop._err){ loop._err = 1; console.error(e); }
+  }
+  requestAnimationFrame(loop);
+}
+
+resize();
+btnSound.textContent = audioOn ? '🔊' : '🔇';
+G.level = 0;
+applyThemeVars();
+
+const QP = new URLSearchParams(location.search);
+const AUTO = parseInt(QP.get('auto'), 10);
+if(AUTO >= 1 && AUTO <= LEVEL_N) startLevel(AUTO - 1);
+else showMenu();
+requestAnimationFrame(loop);
+
+/* 调试/自动化入口 */
+window.__api = {
+  startLevel, update, draw, nextCascadeStep, finishPath, activateRainbow, triggerWeather, maybeWeather, rowShiftMatch,
+  findMatches, findHint, hasAnyMove, announceWeather, showWxCodex, scoreChipLayout, prog,
+  extendPath, pathIsLoop, canCloseLoop, pathPreview, pathLength, chainPraise, commitPath, tracePointer, clearGesture, updatePlayHUD,
+  showHelp, showIntro, showLesson, closeLesson,
+  G, LEVELS, cfg, selectPocketTool, usePocketTool, cancelTool, saveRun, readSavedRun, resumeRun, clearSavedRun, homeStart, showMenu, showLevelSelect, unlockAllLevels, isLevelOpen, showCredits, sfxBomb, processMatchGroups, ensureWeatherPlan, buildWeatherPlan,
+  setTile(r, c, type, special){ G.grid[r][c] = makeTile(type, r, c, special); },
+  forceWin(){
+    for(const o of G.orders){
+      if(o.kind === 'fruit') o.got = o.n;
+      else if(o.kind==='feature'){if(o.feature==='flowers'){G.orchard.flowers=[];G.orchard.gathered=cfg().orchard.flowers.length;}else G.orchard[o.feature]=o.n;}
+      else if(o.kind==='tool'){G.toolUses[o.tool]=o.n;G.tools[o.tool]=toolAllowance(cfg())[o.tool]-o.n;}
+      else if(o.special === 'bomb') G.stats.bombMade = o.n;
+      else G.stats.rainbowMade = o.n;
+    }
+    updateOrders();
+  },
+};
+
+})();
+</script>
+</body>
+</html>
