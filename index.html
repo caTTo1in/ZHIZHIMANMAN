@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f3ead4"><meta name="description" content="55关毛线整理小游戏，按10个玩法章节自由选关。慢慢织，让颜色一点点归位。"><title>织织慢慢</title><style>
+:root{--paper:#ede8df;--ink:#485649;--gold:#dfc58b;--stitch:none;color-scheme:light}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#faf7ef,var(--paper) 75%);color:var(--ink);font-family:"Segoe UI","Microsoft YaHei",sans-serif;min-height:100dvh}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;touch-action:manipulation;color:inherit}button:focus-visible,a:focus-visible{outline:3px solid #cda961;outline-offset:5px}button:disabled{cursor:default;opacity:.3}.topbar{max-width:600px;margin:auto;height:74px;display:flex;align-items:center;justify-content:space-between;padding:0 38px}.brand{color:var(--ink);text-decoration:none;letter-spacing:2px;font-weight:600;font-size:19px;display:flex;align-items:center;gap:12px}.brand>span{font-size:30px;font-weight:400}.icon-button{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #ccd0c25e;background:transparent;border-radius:50%;font-size:23px;position:relative}.sound-off{position:absolute;width:19px;height:1px;background:currentColor;transform:rotate(-45deg);left:8px;top:17px}main{max-width:528px;padding:0 20px 20px;margin:auto}.game-top{height:51px;display:flex;justify-content:space-between;align-items:center;padding:0 6px;margin-bottom:12px}.game-top>.icon-button{font-size:28px;border-color:transparent}#open-levels{display:flex;align-items:center;gap:13px;min-width:145px;justify-content:center;background:transparent;border:0;padding:12px;border-radius:12px;font-variant-numeric:tabular-nums;font-size:13px;letter-spacing:1px}#level-number{font-size:22px;font-weight:600}.level-divider{color:#b5b8a6;font-size:15px}#level-count{color:#8e9588}#open-levels svg{width:13px;height:13px;fill:#8d9785;margin-left:10px}.board-card{position:relative;border-radius:27px;padding:21px 23px 20px;overflow:hidden;background:radial-gradient(ellipse at 50% 20%,#35304e,#201d35 85%);border:1px solid #ffffff20;box-shadow:0 20px 45px #30283e1c,0 4px 12px #30283e12}.board-info{display:flex;justify-content:space-between;align-items:center;height:22px;padding:0 3px;color:#c8b8d4}.move-count{display:flex;gap:10px;align-items:center;font-size:19px}.move-count b{font-size:13px;font-weight:400;font-variant-numeric:tabular-nums}.move-count>span{color:#9f8eae}.completion{display:flex;gap:8px}.completion i{width:8px;height:8px;border-radius:50%;background:#ffffff15;transition:background .3s,box-shadow .3s}.completion i.filled{background:var(--color);box-shadow:0 0 7px color-mix(in srgb,var(--color) 30%,transparent)}.loom{position:relative;width:100%;height:470px}.feed{position:absolute;top:25px;left:0;right:0;display:flex;align-items:center;flex-direction:column;z-index:3}.spool{--yarn:#d79287;width:66px;height:47px;position:relative;filter:drop-shadow(0 7px 5px #08061220)}.spool:before,.empty-spool:before{content:'';position:absolute;background:linear-gradient(90deg,#a57e49,#ebd1a0 45%,#b5905d);height:100%;width:7px;left:0;top:0;border-radius:4px;box-shadow:59px 0 0 #c7a36b}.spool:after{content:'';position:absolute;inset:5px 6px;background:repeating-linear-gradient(174deg,transparent 0 2px,#ffffff38 2px 3px,#00000018 4px 5px),linear-gradient(#00000024,#ffffff32 32%,transparent 55%,#00000029),var(--yarn);border-radius:9px;box-shadow:inset 0 -3px 3px #00000010}.idle-thread{position:absolute;width:70px;height:28px;top:42px;fill:none;stroke:var(--thread-color,#8aaee6);stroke-width:2.5;stroke-linecap:round;opacity:.7}.columns{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:absolute;left:20px;right:20px;top:134px;height:243px;z-index:2}.column{border:0;padding:0;background:#17152b;height:100%;position:relative;overflow:visible;border-radius:3px 3px 6px 6px;box-shadow:inset 0 0 8px #00000025;transition:filter .2s}.column:disabled{opacity:1}.column:hover:not(:disabled){filter:brightness(1.07)}.column:before,.column.reverse:after{content:'';position:absolute;top:-9px;left:-5px;right:-5px;height:8px;z-index:3;border-radius:4px;background:linear-gradient(#ecd4a3,#b48c54);box-shadow:0 3px 5px #08051a50}.column.reverse:after{top:auto;bottom:-7px;box-shadow:0 -3px 5px #08051a30}.fabric{position:absolute;inset:0;overflow:hidden;border-radius:2px 2px 6px 6px;box-shadow:3px 4px 5px #00000025}.band{width:100%;background-color:var(--yarn);background-image:var(--stitch);background-size:12px 14px;box-shadow:inset 3px 0 5px #00000018,inset -3px 0 5px #00000022}.inlet{position:absolute;top:-32px;left:0;right:0;color:#e6cb8a;font-size:15px;font-weight:500;line-height:16px;text-shadow:0 0 9px #e6cb8a20}.column.reverse .inlet{top:auto;bottom:-32px;color:#a7d2cc}.check{position:absolute;bottom:-27px;left:0;right:0;color:#e8cf83;font-size:12px}.column.reverse .check{bottom:auto;top:-28px}.column.hinted{outline:2px solid #e6c77e;outline-offset:6px;animation:hintPulse 1s ease-in-out infinite}.column.hinted .inlet{animation:inletPulse .8s ease-in-out infinite}.column.working .fabric{visibility:hidden}.column.working:before{box-shadow:0 0 14px #f2cc7b44}.column.settled.pure .fabric{animation:softSettle .42s ease-out}.column.settled.pure .check{animation:checkPop .4s ease-out}.receive{position:absolute;top:426px;left:0;right:0;display:flex;align-items:center;justify-content:center;z-index:2}.empty-spool{height:28px;width:49px;position:relative;background:linear-gradient(#ac8d5c,#e1cda6 40%,#9d7f53);border-radius:3px;opacity:.62}.empty-spool:before{width:6px;box-shadow:43px 0 0 #c7a36b}.motion-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:7;pointer-events:none}.running .feed,.running .receive{visibility:hidden}.running .inlet{opacity:.3}.tools{position:relative;display:flex;gap:12px;justify-content:center;border-top:1px solid #ffffff12;padding-top:17px}.tools button{height:40px;flex:1;max-width:115px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #ffffff20;border-radius:12px;font-size:11px;background:#ffffff03;color:#d2c6db;transition:background .2s}.tools button span{font-size:22px;color:#ddc78d}.tools button:last-child{background:#ddc78d;color:#342b31;border-color:#ddc78d}.tools button:last-child span{color:#342b31}.tools button:active:not(:disabled){transform:translateY(1px)}.tools .searching span{animation:spin 1s linear infinite}.win{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#211e38ed;backdrop-filter:blur(9px);color:#f1e4ca}.win[hidden]{display:none}.win-icon{font-size:90px;color:#dec782;animation:celebrate 3s ease infinite}.win h1{font-size:29px;font-weight:400;letter-spacing:8px;margin:15px 0 5px}.win p{font-size:12px;color:#a89ab7}.win-mini{display:flex;gap:8px;margin:20px 0 25px}.win-mini i{display:block;width:26px;height:66px;border-radius:3px 3px 6px 6px;background-color:var(--yarn);background-image:var(--stitch);background-size:12px 14px;box-shadow:inset -3px 0 5px #00000022}.win #next{background:#dec782;color:#322b36;border:0;border-radius:12px;padding:15px 30px;font-size:12px;min-width:200px}.win #next span{margin-left:30px}.replay{border:0;background:transparent;font-size:11px;margin-top:18px;color:#b7a7c5}dialog{border:1px solid #fff;border-radius:23px;background:#f2eee5;color:var(--ink);padding:24px;width:min(400px,calc(100vw - 36px));box-shadow:0 20px 80px #201e3540}dialog::backdrop{background:#1c192b80;backdrop-filter:blur(4px)}.picker-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.picker-head h2{font-size:17px;font-weight:500;margin:0;letter-spacing:2px}.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.level-tile{height:65px;border:1px solid #d7d9c9;background:#ffffff38;border-radius:12px;position:relative;color:#7d8874}.level-tile b{font-size:17px;font-weight:400;letter-spacing:1px}.level-tile span{position:absolute;right:6px;bottom:4px;font-size:11px;color:#a6ad96}.level-tile.selected{border-color:#6c7c62;background:#6c7c62;color:#fff}.level-tile.passed:not(.selected){background:#e1e6d3}.level-tile.selected span{color:#dce3ca}@keyframes hintPulse{50%{outline-color:#e6c77e44}}@keyframes inletPulse{50%{transform:translateY(4px)}}@keyframes softSettle{0%{transform:scaleY(.98)}55%{transform:scaleY(1.012)}100%{transform:none}}@keyframes checkPop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}@keyframes celebrate{50%{transform:rotate(20deg) scale(1.03)}}@keyframes spin{to{transform:rotate(360deg)}}
+/* In alternating levels the recovered spool lands directly at the next
+   supply slot. Keep visual centres aligned across the two bobbin sizes. */
+.loom{--supply-y:25px;--collect-y:426px}.feed{top:var(--supply-y)}.receive{top:var(--collect-y)}.loom.up-flow .feed{top:calc(var(--collect-y) - 9.5px)}.loom.up-flow .receive{top:calc(var(--supply-y) + 9.5px)}.loom.up-flow .idle-thread{top:-24px;transform:scaleY(-1)}
+.flow-indicator{display:flex;align-items:center;gap:9px;line-height:18px;font-size:15px;letter-spacing:1px}.flow-indicator[hidden]{display:none}.flow-indicator b{color:#e6cb8a;font-size:19px;font-weight:500}.flow-indicator span{color:#716781}.flow-indicator i{font-style:normal;color:#958fa6}.phase-shift .inlet{animation:phaseSignal .4s ease-out}.planning .column:not(:disabled):hover{outline:1px solid #e6cb8a70;outline-offset:4px}.column.planned{outline:1px solid #b7bbd591;outline-offset:4px}.planned-mark{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);z-index:5;display:flex;align-items:center;justify-content:center;gap:4px;border:1px solid #efe1b98c;background:#211e39df;min-width:26px;height:24px;padding:0 8px;border-radius:12px;box-shadow:0 2px 10px #15101c45;pointer-events:none}.planned-mark i{display:block;flex:none;width:4px;height:4px;border-radius:50%;background:#f3e2ba}
+.relay-controls{position:relative;display:grid;grid-template-columns:auto 1fr 29px 33px;align-items:center;gap:8px;margin:0 0 16px;padding-top:1px}.relay-controls[hidden]{display:none}.relay-controls>button{height:33px;border:1px solid #ffffff20;border-radius:9px;background:#ffffff05;color:#b8aac6;font-size:17px}.relay-controls>#relay-toggle{font-size:11px;white-space:nowrap;padding:0 10px}.relay-controls>#relay-toggle[aria-pressed=true]{background:#d3be8530;border-color:#ddc78d91;color:#eedcaa}.relay-controls>#relay-run{background:#ddc78d;color:#342b31;border-color:#ddc78d;font-size:13px}.relay-queue{display:flex;justify-content:center;gap:6px}.queue-slot{display:flex;position:relative;align-items:center;justify-content:center;width:31px;height:31px;border:1px dashed #91849f3b;border-radius:50%;color:#7b6e8c;font-size:12px;transition:background .15s,transform .15s}.queue-slot b{font-size:12px;font-weight:400}.queue-position{display:flex;align-items:flex-end;justify-content:center;gap:2px;width:18px;height:14px}.queue-position i{display:block;flex:none;width:3px;height:10px;border-radius:1px;background:#756982}.queue-position i.is-target{height:14px;background:#ead091}.queue-slot.active .queue-position i{background:#9e875d}.queue-slot.active .queue-position i.is-target{background:#292339}.queue-slot small{position:absolute;right:-5px;bottom:-4px;background:#2b253f;border-radius:5px;color:#c5b389;font-size:10px;min-width:12px;text-align:center}.queue-slot.chosen{color:#ebdfc0;background:#ffffff09;border:1px solid #c7b88b80}.queue-slot.done{opacity:.35;background:#81997130}.queue-slot.active{background:#d4bd7d;color:#292339;border-color:#f3e1ac;box-shadow:0 0 12px #d4bd7d30;animation:queueBeat .8s ease-in-out infinite}.queue-slot.active small{background:#c9b37d;color:#292339}.relay-controls:not(.planning) .relay-queue{opacity:.3}#relay-help{position:absolute;left:0;right:0;bottom:41px;text-align:center;font-size:9px;color:#b0a3be;letter-spacing:.3px}#relay-help[hidden]{display:none}.relay-controls.running #relay-toggle{color:#ead8a4}.level-grid{max-height:65dvh;overflow-y:auto}.level-grid::-webkit-scrollbar{width:3px}.level-grid::-webkit-scrollbar-thumb{background:#b5bca9;border-radius:3px}
+#relay-help{position:static;grid-column:1/-1;line-height:14px;min-height:14px;margin:0}#relay-help[hidden]{display:block;visibility:hidden}
+@keyframes phaseSignal{0%{opacity:.25;transform:scale(.65)}70%{opacity:1;transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}@keyframes queueBeat{50%{box-shadow:0 0 0 4px #d4bd7d14}}
+/* Two persistent bobbins keep their own recovered colors. Only the active
+   bobbin is replaced by the canvas while the other remains on the loom. */
+.source-pair{display:flex;gap:18px;align-items:center}.spool{border:0;padding:0;background:transparent;flex:none}.spool[hidden]{display:none}.spool:disabled{opacity:1}.spool-id{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;width:20px;height:20px;border-radius:50%;background:#29213cc7;color:#fff0ca;font:600 10px/20px "Segoe UI",sans-serif}.dual .spool-id{display:block}.dual .spool.selected{outline:2px solid #efcf85;outline-offset:5px;border-radius:5px}.idle-thread{transform:translateX(var(--slot-x,0px))}.loom.up-flow .idle-thread{transform:translateX(var(--slot-x,0px)) scaleY(-1)}.running .feed{visibility:visible}.running .active-source,.moving-companion,.running .idle-thread{visibility:hidden}.queue-slot em{position:absolute;left:-5px;top:-5px;min-width:13px;border-radius:5px;background:#e5ce93;color:#32293a;font:600 8px/13px "Segoe UI",sans-serif;text-align:center}
+.learn-button{width:23px;height:23px;padding:0;border:1px solid #c6b68c66;border-radius:50%;background:#ffffff05;color:#d9c494;font-size:12px;line-height:21px;flex:none}.learn-button[hidden]{display:none}.learn-button:hover{background:#d9c49422}
+.queued .spool-id{display:none}.queued #hand{outline:2px solid #efcf85;outline-offset:5px;border-radius:5px}.queued .source-pair{position:relative}.queued .source-pair:after{content:'→';position:absolute;left:calc(50% - 6px);top:14px;width:12px;font-size:12px;color:#e6cf93;pointer-events:none}.queued .spool{cursor:default}
+.direction-controls{display:flex;align-items:center;gap:3px;padding:2px;border:1px solid #c6b68c47;border-radius:11px;background:#ffffff04;flex:none}.direction-controls[hidden]{display:none}.direction-controls>span{font-size:9px;color:#a99bb4;padding:0 4px}.direction-controls button{width:35px;height:28px;padding:0;border:0;border-radius:8px;background:transparent;color:#b9abc8;font-size:20px;line-height:26px}.direction-controls button[aria-pressed=true]{background:#dfc58b;color:#30273b;box-shadow:0 1px 6px #05010d28}.direction-controls button:disabled{opacity:.7}.manual-shift .feed,.manual-shift .receive{transition:top .3s cubic-bezier(.3,.1,.2,1)}.manual-shift .feed{animation:manualSupply .3s ease-in-out}.manual-shift .receive{animation:manualCollect .3s ease-in-out}@keyframes manualSupply{50%{transform:translateX(36px)}}@keyframes manualCollect{50%{transform:translateX(-36px)}}@media(max-width:350px){.direction-controls>span{display:none}.direction-controls button{width:31px}}
+/* A small swatch above each cloth is the exact top-to-bottom target. */
+.objective-label{font-size:10px;color:#e0c993;letter-spacing:2px}.objective-label[hidden]{display:none}.order-board .columns{top:150px;height:227px}.target-sample{position:absolute;top:-65px;left:4px;right:4px;height:28px;display:flex;flex-direction:column;border:1px solid #f1e6c9b0;border-radius:4px;overflow:hidden;box-shadow:0 2px 6px #09051d30}.target-sample i{display:block;flex:1}.order-board .idle-thread{height:20px}.win-mini i{overflow:hidden}.mini-band{display:block;background-color:var(--yarn);background-image:var(--stitch);background-size:12px 14px}
+@media(max-height:780px){.order-board .columns{top:146px;height:186px}}@media(max-height:690px){.order-board .columns{top:133px;height:153px}}
+/* A sleeve shows no hue, including in the accessibility description. Its
+   neutral swatch and marker match the animated receiving spool. */
+.band.concealed{position:relative;background-color:#77718e}
+.band.concealed:after{content:'?';position:absolute;left:50%;top:50%;width:22px;height:24px;border-radius:8px;background:#36304448;color:#f4edf7d9;font:600 18px/24px "Segoe UI",sans-serif;text-align:center;transform:translate(-50%,-50%)}
+.level-tile.secret:not(.passed) span{width:16px;height:17px;background:#77718e22;color:#77718e;border-radius:5px;font-size:11px;line-height:17px}.level-tile.secret.selected:not(.passed) span{background:#ffffff24;color:#fff}
+/* Completion is a short, local reward. The persistent check and progress
+   bead remain after the sweep, so the board stays readable between moves. */
+.column.rewarding{z-index:4;outline:2px solid #f9dea0;outline-offset:3px;border-radius:5px;box-shadow:0 0 18px color-mix(in srgb,var(--reward-color) 65%,transparent),0 0 32px #f3d38226;animation:rewardCloth .65s cubic-bezier(.2,.75,.3,1) both}
+.column.rewarding .fabric{box-shadow:inset 0 0 0 1px #fff3c599,0 0 18px color-mix(in srgb,var(--reward-color) 48%,transparent);filter:brightness(1.12)}
+.column.rewarding .fabric:after{content:'';position:absolute;inset:-70% -40%;background:linear-gradient(160deg,transparent 35%,#fff4d83b 44%,#fffbe8b3 48%,#fff6cf44 52%,transparent 61%);transform:translateY(-60%);animation:rewardSweep .72s ease-out both;pointer-events:none}
+.column.rewarding .check{color:#fff1b3;filter:drop-shadow(0 0 4px #ffdc7d);animation:checkPop .35s ease-out}
+.reward-stamp{position:absolute;left:50%;top:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff6d9;font-size:22px;font-weight:600;background:linear-gradient(145deg,#e3bf75,#a87740);border:2px solid #fff0b8;box-shadow:0 3px 8px #17101a5c,0 0 18px #fff2af55;z-index:9;transform:translate(-50%,-50%);animation:rewardStamp 1.05s cubic-bezier(.2,.75,.3,1) both;pointer-events:none}
+.reward-layer{position:absolute;inset:0;overflow:hidden;z-index:12;border-radius:inherit;pointer-events:none}
+.reward-particle{position:absolute;left:var(--x);top:var(--y);font-size:var(--size,12px);color:var(--particle-color,#f7d68c);line-height:1;opacity:0;will-change:transform,opacity;animation:rewardParticle .9s cubic-bezier(.15,.6,.35,1) var(--delay,0ms) both;pointer-events:none;filter:drop-shadow(0 0 3px #f9d79340)}
+.reward-particle.yarn{width:var(--size,12px);height:calc(var(--size,12px) * .62);border:1.7px solid var(--particle-color);border-left-color:transparent;border-radius:50%;background:transparent}
+.completion .dot-celebrate{animation:rewardBead .65s ease-out both}
+.board-card.victory-glow{box-shadow:0 0 0 2px #f6d7988c,0 0 45px #e8c47b42,0 20px 45px #30283e1c}
+.victory-glow .win-icon{position:relative;text-shadow:0 0 35px #f4d59555;animation:rewardCrown .8s cubic-bezier(.18,.8,.3,1) both}
+.victory-glow .win-icon:before{content:'';position:absolute;width:125px;height:125px;left:50%;top:50%;border:1px solid #e8c77d66;border-radius:50%;transform:translate(-50%,-50%);animation:rewardHalo 1s ease-out both}
+.victory-glow .win-mini i{animation:rewardMini .55s cubic-bezier(.18,.8,.3,1) both}.victory-glow .win-mini i:nth-child(2){animation-delay:.07s}.victory-glow .win-mini i:nth-child(3){animation-delay:.14s}.victory-glow .win-mini i:nth-child(4){animation-delay:.21s}
+@keyframes rewardCloth{0%{transform:scale(.98,.99)}28%{transform:scale(1.045,1.015)}54%{transform:scale(.995,.996)}76%{transform:scale(1.014,1.004)}100%{transform:scale(1)}}
+@keyframes rewardSweep{0%{transform:translateY(-62%);opacity:0}15%{opacity:1}85%{opacity:.9}100%{transform:translateY(62%);opacity:0}}
+@keyframes rewardStamp{0%{transform:translate(-50%,-35%) scale(.15) rotate(-20deg);opacity:0}20%{transform:translate(-50%,-50%) scale(1.17) rotate(6deg);opacity:1}38%{transform:translate(-50%,-50%) scale(.97) rotate(-2deg)}55%{transform:translate(-50%,-50%) scale(1.03);opacity:1}74%{opacity:1}100%{transform:translate(-50%,-90%) scale(.8);opacity:0}}
+@keyframes rewardParticle{0%{transform:translate(-50%,-50%) scale(.15);opacity:0}12%{opacity:1}75%{opacity:.8}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--rot,90deg)) scale(.35);opacity:0}}
+@keyframes rewardBead{0%{transform:scale(.6)}35%{transform:scale(2.2);box-shadow:0 0 15px var(--color)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+@keyframes rewardCrown{0%{transform:scale(.4) rotate(-35deg);opacity:0}65%{transform:scale(1.15) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes rewardHalo{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}30%{opacity:1}100%{transform:translate(-50%,-50%) scale(1.4);opacity:0}}
+@keyframes rewardMini{from{transform:translateY(14px) scale(.8);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:600px){.topbar{height:62px;padding:0 25px}.brand{font-size:18px}.game-top{height:45px;margin-bottom:10px}.board-card{padding:18px 19px;border-radius:24px}main{padding:0 16px 16px;max-width:480px}.columns{gap:18px;left:18px;right:18px}.tools{gap:10px}.loom{height:470px}}@media(max-height:780px){.topbar{height:52px}.game-top{height:40px;margin-bottom:8px}.board-card{padding-top:16px}.loom{height:410px;--supply-y:21px;--collect-y:365px}.feed{top:var(--supply-y)}.columns{top:122px;height:210px}.receive{top:var(--collect-y)}.tools{padding-top:14px}.tools button{height:37px}.game-top #level-number{font-size:20px}}@media(max-height:690px){.topbar{height:47px}.loom{height:355px;--supply-y:15px;--collect-y:314px}.columns{top:112px;height:174px}.game-top{height:35px}.board-info{height:20px}.tools{padding-top:12px}.tools button{height:35px}.spool{transform:scale(.9)}.relay-controls{margin-bottom:12px;gap:5px}.queue-slot{width:27px;height:27px}}@media(max-width:350px){main{padding-left:10px;padding-right:10px}.board-card{padding-left:16px;padding-right:16px}.columns{gap:14px;left:14px;right:14px}.tools{gap:6px}.tools button{font-size:10px}.relay-controls>#relay-toggle{padding:0 8px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reward-particle,.column.rewarding .fabric:after,.victory-glow .win-icon:before{display:none}.reward-stamp{opacity:1}.column.rewarding{box-shadow:0 0 12px color-mix(in srgb,var(--reward-color) 40%,transparent)}}
+
+/* Desktop uses the available height as well as width; geometry stays in
+   layout pixels so canvas knitting paths continue to meet the fabric edges. */
+@media (min-width:900px) and (min-height:700px){
+ body[data-view=game] .topbar{max-width:clamp(740px,82dvh,1040px);height:70px;padding:0 30px}
+ #game-screen{max-width:clamp(740px,82dvh,1040px);padding:0 30px 24px}
+ #game-screen .game-chapter{font-size:13px;margin:4px 0 8px}
+ #game-screen .game-top{height:52px;margin-bottom:14px}
+ #game-screen .board-card{padding:24px 32px;border-radius:30px}
+ #game-screen .board-info{height:28px}
+ #game-screen .loom{height:clamp(390px,calc(100dvh - 410px),880px);--supply-y:25px;--collect-y:calc(100% - 44px)}
+ #game-screen .columns{left:28px;right:28px;gap:30px;top:134px;height:calc(100% - 227px)}
+ #game-screen .order-board .columns{top:146px;height:calc(100% - 239px)}
+ #game-screen .tools{gap:16px;padding-top:18px}
+ #game-screen .tools button{max-width:none;height:48px;font-size:14px}
+ #game-screen .relay-controls{grid-template-columns:auto 1fr 40px 44px;gap:12px;margin-bottom:18px}
+ #game-screen .relay-controls>button{height:40px}
+ #game-screen .relay-controls>#relay-toggle{font-size:13px;padding:0 15px}
+ #game-screen .queue-slot{width:36px;height:36px}
+ #game-screen .learn-button{width:28px;height:28px;font-size:14px}
+ #game-screen .direction-controls button{width:42px;height:32px}
+ #game-screen .move-count b{font-size:15px}
+ #game-screen .completion{gap:10px}
+ #game-screen .completion i{width:10px;height:10px}
+}
+
+/* Open loom on warm paper, without a surrounding board panel. */
+:root{--paper:#f3ead4;--ink:#485649}
+body{background:radial-gradient(ellipse at 50% 0,#fff9e9,var(--paper) 85%)}
+.board-card,.board-card.victory-glow{background:transparent;border-color:transparent;box-shadow:none}
+.board-info{color:#65705d}.move-count>span{color:#7b866b}
+.completion i{background:#6f795d26}.completion i.filled{box-shadow:0 0 0 1px #77826345}
+.column{background:#e1d6bb}.inlet,.flow-indicator b{color:#8b6525;text-shadow:none}
+.column.reverse .inlet{color:#477b6b}.check,.column.rewarding .check{color:#527545;filter:none}
+.flow-indicator i{color:#7e866d}.flow-indicator span{color:#a5a78e}
+.tools{border-top-color:#8d92752b}
+.tools button{background:#fffaf044;border-color:#959d7959;color:#526044}
+.tools button span{color:#84703e}.tools button:last-child{background:#d9bf78;border-color:#c4a654;color:#424c36}
+.tools button:last-child span{color:#424c36}
+.learn-button{border-color:#a08b566b;background:#fff9e866;color:#786334}
+.learn-button:hover{background:#e8dbb7}
+.objective-label{color:#786334}.target-sample{border-color:#96835c80;box-shadow:0 2px 6px #75644020}
+.relay-controls>button{background:#fff9e84d;border-color:#959d7959;color:#59664c}
+.relay-controls>#relay-toggle[aria-pressed=true]{background:#d9bf783d;border-color:#a48b48;color:#655022}
+.relay-controls>#relay-run{background:#d9bf78;border-color:#c4a654;color:#424c36}
+.queue-slot{border-color:#939a7366;color:#737c60}.queue-slot.chosen{background:#fff9e8a6;border-color:#a1905f;color:#66532d}
+.queue-position i{background:#a1a58c}.queue-position i.is-target{background:#78602d}
+.queue-slot small{background:#efe4c9;color:#66532d}.queue-slot em{background:#dac38a;color:#4b4e36}
+.queue-slot.active{background:#d4bd7d;border-color:#a48b48;color:#424c36}
+#relay-help{color:#6e775e}.relay-controls.running #relay-toggle{color:#786334}
+.planned-mark{background:#fbf4dfeb;border-color:#9b895a80;box-shadow:0 2px 8px #75644020}
+.planned-mark i{background:#77612e}.column.planned{outline-color:#948452}
+.direction-controls{border-color:#959d7959;background:#fff9e84d}.direction-controls>span{color:#737c60}
+.direction-controls button{color:#59664c}.direction-controls button[aria-pressed=true]{background:#d9bf78;color:#424c36}
+.queued .source-pair:after{color:#786334}
+.dual .spool.selected,.queued #hand{outline-color:#a08237}
+.column.hinted{outline-color:#9b792e}.column.hinted .inlet{color:#785819}
+.win{background:#f8efd9ed;color:#485649}.win-icon{color:#a4833a}.win p{color:#727b62}
+.win #next{background:#d9bf78;color:#424c36}.replay{color:#657253}
+@keyframes hintPulse{50%{outline-color:#9b792e55}}
+
+</style><style>
+.knit-coach{box-sizing:border-box;width:calc(100vw - 28px);max-width:360px;max-height:calc(100vh - 28px);max-height:calc(100dvh - 28px);margin:auto;padding:25px 22px 20px;border:1px solid #dfd4bc;border-radius:25px;background:#faf7ef;color:#35304e;box-shadow:0 24px 90px #17112466;overflow:auto;font-family:inherit;text-align:center}
+.knit-coach::backdrop{background:#211b35a8;backdrop-filter:blur(5px)}
+.knit-coach *{box-sizing:border-box}
+.knit-coach [hidden]{display:none!important}
+.knit-coach button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.knit-coach button:focus-visible{outline:3px solid #b58c40;outline-offset:4px}
+.kc-close{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:#776e83;font-size:27px!important;line-height:1}
+.kc-close:hover{background:#eae3d9}
+.kc-eyebrow{margin:0 26px 7px;color:#a48449;font-size:10px;font-weight:700;letter-spacing:3px}
+.knit-coach h2{margin:0 0 11px;font-size:22px;font-weight:800;line-height:1.35;letter-spacing:1px;color:#35304e}
+.knit-coach p{margin:0;min-height:61px;font-size:13px;line-height:1.75;text-align:left;color:#746a7e}
+.kc-demo{position:relative;height:184px;margin:14px 0 18px;border:1px solid #e9e0ce;border-radius:20px;background:radial-gradient(ellipse at 50% 20%,#fffaf0,#f0eadd);overflow:hidden;isolation:isolate}
+.kc-start{display:flex;align-items:center;justify-content:center;gap:20px;width:100%;min-height:46px;border:1px solid #51465e;border-radius:14px;background:#35304e;color:#fff8e8;font-size:15px;font-weight:700;box-shadow:0 4px 0 #e3d9c4}
+.kc-start:hover{background:#49415f}
+.kc-start:active{transform:translateY(1px);box-shadow:0 3px 0 #e3d9c4}
+.kc-start span{font-size:20px;color:#e3c780;font-weight:400}
+.kc-thread-path{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke-width:2.5;stroke-linecap:round}
+.kc-thread-a{stroke:#cf7896;opacity:.18}
+.kc-thread-b{stroke:#77a691;opacity:.85}
+.kc-spool{position:absolute;top:19px;width:48px;height:65px;--yarn:#e786a0;--shade:#bb5b7a}
+.kc-spool-a{left:calc(50% - 74px)}
+.kc-spool-b{left:calc(50% + 26px);--yarn:#80b99a;--shade:#548c70}
+.kc-spool:before,.kc-spool:after{content:"";position:absolute;left:0;width:48px;height:12px;border:1px solid #c6ab72;border-radius:50%;background:linear-gradient(#efddb1,#d8bd86);z-index:2}
+.kc-spool:before{top:7px}
+.kc-spool:after{bottom:3px}
+.kc-yarn{position:absolute;left:5px;top:14px;width:38px;height:41px;border-radius:6px;background:repeating-linear-gradient(174deg,transparent 0 3px,#ffffff35 3px 4px,transparent 4px 6px),linear-gradient(90deg,var(--shade),var(--yarn) 28%,var(--yarn) 68%,var(--shade));box-shadow:inset 0 0 0 1px #0000000d;z-index:3}
+.kc-spool b{position:absolute;top:-6px;left:14px;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#fffaf0;color:#51465e;border:1px solid #d6c8ad;font-size:11px;z-index:4}
+.kc-spool-ring{position:absolute;inset:1px -7px -3px;border:2px solid #c8a85b;border-radius:15px;background:#e4ca8620;opacity:0}
+.kc-spool-b .kc-spool-ring{opacity:1}
+.kc-tiny-cloth{position:absolute;left:calc(50% - 24px);top:111px;display:flex;flex-direction:column;width:48px;height:57px;border-radius:4px 4px 9px 9px;overflow:hidden;box-shadow:0 5px 9px #61504719}
+.kc-tiny-cloth i{height:19px;background-color:#e786a0;background-image:repeating-linear-gradient(58deg,transparent 0 5px,#ffffff40 5px 7px,transparent 7px 11px),repeating-linear-gradient(-58deg,transparent 0 5px,#3a2f3012 5px 7px,transparent 7px 11px);border-bottom:1px solid #00000010}
+.kc-tiny-cloth i:nth-child(2){background-color:#edc35d}
+.kc-tiny-cloth i:nth-child(3){background-color:#80b99a}
+.kc-needle{position:absolute;top:0;left:-4px;width:56px;height:3px;border-radius:3px;background:#a78b5d;box-shadow:0 1px #fff9}
+.kc-finger{position:absolute;left:50%;top:37px;width:27px;height:33px;fill:#fffaf0;stroke:#51465e;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px #35304e29);z-index:5;transform:translate(43px,0)}
+.kc-dual-check{position:absolute;left:calc(50% + 28px);top:127px;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#c7a45c;color:#fffaf0;font-size:16px;box-shadow:0 2px 5px #ab8b4833}
+.kc-order-target{position:absolute;left:calc(50% - 105px);top:23px;width:61px;height:136px;padding:9px;border:1px solid #d8c8a6;border-radius:12px;background:#fffcf5;box-shadow:0 3px 6px #5b494511}
+.kc-order-target>span{display:block;margin-bottom:6px;color:#9a7c44;font-size:10px;font-weight:700;line-height:14px;letter-spacing:1px}
+.kc-color-sample{display:flex;flex-direction:column;gap:6px}
+.kc-color-sample i{height:30px;border-radius:4px;background:#e786a0}
+.kc-color-sample i:nth-child(2){background:#edc35d}
+.kc-color-sample i:nth-child(3){background:#8aaee6}
+.kc-order-cloth{position:absolute;left:calc(50% + 19px);top:49px;display:flex;flex-direction:column;width:58px;height:108px;overflow:hidden;border-radius:5px 5px 10px 10px;box-shadow:0 5px 10px #61504720}
+.kc-order-cloth>i{height:36px;flex-shrink:0;background-color:#e786a0;background-image:repeating-linear-gradient(58deg,transparent 0 5px,#ffffff45 5px 7px,transparent 7px 11px),repeating-linear-gradient(-58deg,transparent 0 5px,#3a2f3015 5px 7px,transparent 7px 11px);border-bottom:1px solid #00000010}
+.kc-order-cloth>i:nth-child(2){background-color:#edc35d}
+.kc-order-cloth>i:nth-child(3){background-color:#8aaee6}
+.kc-order-guide{position:absolute;left:calc(50% - 37px);top:67px;width:48px;display:flex;flex-direction:column;gap:35px}
+.kc-order-guide i{height:1px;width:48px;background:repeating-linear-gradient(90deg,#c4b28e 0 3px,transparent 3px 7px);transform-origin:left;opacity:.7}
+.kc-order-guide i:after{content:"";float:right;width:5px;height:5px;border-top:1px solid #b39968;border-right:1px solid #b39968;transform:translateY(-2px) rotate(45deg)}
+.kc-order-check{position:absolute;top:22px;left:calc(50% + 54px);display:grid;place-items:center;width:25px;height:25px;background:#c7a45c;color:#fffaf0;border-radius:50%;font-size:17px;box-shadow:0 2px 5px #ab8b4833}
+.kc-order-scan{position:absolute;left:0;right:0;top:0;height:34px;opacity:0;background:linear-gradient(transparent,#fff6cfce,transparent);border-bottom:1px solid #fff8d8}
+.is-playing .kc-finger{animation:kc-point 2.8s ease-in-out 2}
+.is-playing .kc-spool-a .kc-spool-ring{animation:kc-select-a 2.8s linear 2}
+.is-playing .kc-spool-b .kc-spool-ring{animation:kc-select-b 2.8s linear 2}
+.is-playing .kc-thread-a{animation:kc-thread-a 2.8s ease 2}
+.is-playing .kc-thread-b{animation:kc-thread-b 2.8s ease 2}
+.is-playing .kc-tiny-cloth{animation:kc-weave 2.8s ease 2}
+.is-playing .kc-dual-check{animation:kc-dual-done 2.8s ease 2}
+.is-playing .kc-order-scan{animation:kc-scan 2.8s ease-in-out 2}
+.is-playing .kc-order-check{animation:kc-match 2.8s ease 2}
+.is-playing .kc-order-cloth{animation:kc-cloth-glow 2.8s ease 2}
+.is-playing .kc-order-guide i{animation:kc-guide 2.8s ease 2}
+.is-playing .kc-order-guide i:nth-child(2){animation-delay:.15s}
+.is-playing .kc-order-guide i:nth-child(3){animation-delay:.3s}
+@keyframes kc-point{0%,9%{transform:translate(-57px,0)}14%{transform:translate(-57px,4px) scale(.88)}20%{transform:translate(-57px,0)}32%,39%{transform:translate(-3px,90px)}43%{transform:translate(-3px,93px) scale(.88)}53%,60%{transform:translate(43px,0)}65%{transform:translate(43px,4px) scale(.88)}71%{transform:translate(43px,0)}83%,88%{transform:translate(-3px,90px)}92%{transform:translate(-3px,93px) scale(.88)}100%{transform:translate(43px,0)}}
+@keyframes kc-select-a{0%,48%{opacity:1}51%,100%{opacity:0}}
+@keyframes kc-select-b{0%,48%{opacity:0}51%,100%{opacity:1}}
+@keyframes kc-thread-a{0%,18%,49%,100%{opacity:.18;stroke-dasharray:5 7;stroke-dashoffset:0}22%,46%{opacity:.95;stroke-dasharray:5 7;stroke-dashoffset:-44}}
+@keyframes kc-thread-b{0%,69%{opacity:.18;stroke-dasharray:5 7;stroke-dashoffset:0}74%,96%{opacity:.95;stroke-dasharray:5 7;stroke-dashoffset:-44}100%{opacity:.85}}
+@keyframes kc-weave{0%,29%,49%,79%,100%{transform:translateY(0)}37%,87%{transform:translateY(3px)}}
+@keyframes kc-dual-done{0%,43%,69%{opacity:0;transform:scale(.65)}47%,59%,95%,100%{opacity:1;transform:scale(1)}}
+@keyframes kc-scan{0%,12%{opacity:0;transform:translateY(-32px)}18%{opacity:1}66%{opacity:1;transform:translateY(94px)}74%,100%{opacity:0;transform:translateY(108px)}}
+@keyframes kc-match{0%,67%{opacity:0;transform:scale(.6)}78%{opacity:1;transform:scale(1.17)}86%,100%{opacity:1;transform:scale(1)}}
+@keyframes kc-cloth-glow{0%,66%,100%{filter:none}76%,85%{filter:brightness(1.18);box-shadow:0 0 0 3px #d4b67566,0 0 20px #dfc58b80}}
+@keyframes kc-guide{0%,12%{opacity:.2;transform:scaleX(.7)}26%,76%{opacity:1;transform:scaleX(1)}100%{opacity:.7;transform:scaleX(1)}}
+.kc-direction-options{position:absolute;left:13px;top:52px;display:flex;flex-direction:column;gap:13px;z-index:3}
+.kc-direction-option{display:flex;align-items:center;gap:6px;height:33px;color:#8b8190;font-size:10px;white-space:nowrap}
+.kc-direction-option b{display:grid;place-items:center;width:29px;height:33px;border:1px solid #dbd0ba;border-radius:10px;background:#fffaf0;color:#8b8190;font-size:20px;font-weight:600;box-shadow:0 2px 0 #e3d9c4}
+.kc-direction-down b{background:#35304e;border-color:#35304e;color:#f2d68f;box-shadow:0 0 0 2px #dfc58b70}
+.kc-direction-down>span{color:#51465e}
+.kc-direction-thread{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#cf9d58;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:3 5}
+.kc-direction-thread-up{opacity:0}
+.kc-direction-actor{position:absolute;left:50%;top:-2px;width:48px;height:65px;z-index:2}
+.kc-direction-receiver{top:112px}
+.kc-direction-actor>span{position:absolute;left:41px;top:28px;color:#97825b;font-size:9px;line-height:12px;white-space:nowrap}
+.kc-direction-spool{left:0;top:0;transform:scale(.52)}
+.kc-direction-receiver .kc-direction-spool{--yarn:#e5dcc7;--shade:#c1af8a}
+.kc-direction-cloth{position:absolute;left:calc(50% + 2px);top:63px;display:flex;flex-direction:column;width:44px;height:54px;overflow:hidden;border-radius:4px 4px 7px 7px;box-shadow:0 4px 8px #61504720;z-index:2}
+.kc-direction-cloth>i{height:18px;flex-shrink:0;background-color:#e786a0;background-image:repeating-linear-gradient(58deg,transparent 0 4px,#ffffff45 4px 6px,transparent 6px 9px),repeating-linear-gradient(-58deg,transparent 0 4px,#3a2f3015 4px 6px,transparent 6px 9px);border-bottom:1px solid #00000010}
+.kc-direction-cloth>i:nth-child(2){background-color:#edc35d}
+.kc-direction-cloth>i:nth-child(3){background-color:#8aaee6}
+.kc-direction-scan{position:absolute;left:0;right:0;top:0;height:13px;opacity:0;background:linear-gradient(transparent,#fff5cfc9,transparent)}
+.kc-direction-flow{position:absolute;left:calc(50% + 70px);top:69px;display:flex;flex-direction:column;gap:3px;line-height:20px;font-size:21px;color:#b5975d}
+.kc-direction-flow-up{opacity:.22}
+.kc-direction-finger{position:absolute;left:22px;top:69px;width:24px;height:29px;fill:#fffaf0;stroke:#51465e;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px #35304e29);z-index:4}
+.is-playing .kc-direction-finger{animation:kc-direction-point 2.8s ease-in-out 2}
+.is-playing .kc-direction-down b{animation:kc-direction-key-down 2.8s linear 2}
+.is-playing .kc-direction-up b{animation:kc-direction-key-up 2.8s linear 2}
+.is-playing .kc-direction-supply{animation:kc-direction-supply 2.8s ease-in-out 2}
+.is-playing .kc-direction-receiver{animation:kc-direction-receiver 2.8s ease-in-out 2}
+.is-playing .kc-direction-actor>span{animation:kc-direction-role 2.8s ease-in-out 2}
+.is-playing .kc-direction-thread-down{animation:kc-direction-down-flow 2.8s linear 2}
+.is-playing .kc-direction-thread-up{animation:kc-direction-up-flow 2.8s linear 2}
+.is-playing .kc-direction-flow-down{animation:kc-direction-down-arrow 2.8s linear 2}
+.is-playing .kc-direction-flow-up{animation:kc-direction-up-arrow 2.8s linear 2}
+.is-playing .kc-direction-scan{animation:kc-direction-scan 2.8s ease-in-out 2}
+@keyframes kc-direction-point{0%,8%,35%,100%{transform:translateY(0)}13%{transform:translateY(3px) scale(.86)}45%,50%,83%{transform:translateY(46px)}55%{transform:translateY(49px) scale(.86)}96%{transform:translateY(3px) scale(.86)}}
+@keyframes kc-direction-key-down{0%,52%,97%,100%{background:#35304e;border-color:#35304e;color:#f2d68f;box-shadow:0 0 0 2px #dfc58b70}56%,92%{background:#fffaf0;border-color:#dbd0ba;color:#8b8190;box-shadow:0 2px 0 #e3d9c4}}
+@keyframes kc-direction-key-up{0%,52%,97%,100%{background:#fffaf0;border-color:#dbd0ba;color:#8b8190;box-shadow:0 2px 0 #e3d9c4}56%,92%{background:#35304e;border-color:#35304e;color:#f2d68f;box-shadow:0 0 0 2px #dfc58b70}}
+@keyframes kc-direction-supply{0%,53%,100%{transform:translate(0,0)}59%,94%{transform:translate(37px,57px)}65%,87%{transform:translate(0,114px)}}
+@keyframes kc-direction-receiver{0%,53%,100%{transform:translate(0,0)}59%,94%{transform:translate(-37px,-57px)}65%,87%{transform:translate(0,-114px)}}
+@keyframes kc-direction-role{0%,53%,65%,87%,100%{opacity:1}59%,94%{opacity:0}}
+@keyframes kc-direction-down-flow{0%,15%,100%{opacity:.8;stroke-dashoffset:0}18%{opacity:1;stroke-dashoffset:0}45%{opacity:1;stroke-dashoffset:-32}53%,96%{opacity:0;stroke-dashoffset:-40}97%{opacity:.8;stroke-dashoffset:0}}
+@keyframes kc-direction-up-flow{0%,63%,100%{opacity:0;stroke-dashoffset:0}66%{opacity:1;stroke-dashoffset:0}87%{opacity:1;stroke-dashoffset:32}91%{opacity:0;stroke-dashoffset:40}}
+@keyframes kc-direction-down-arrow{0%,53%,97%,100%{opacity:1}56%,92%{opacity:.22}}
+@keyframes kc-direction-up-arrow{0%,53%,97%,100%{opacity:.22}56%,92%{opacity:1}}
+@keyframes kc-direction-scan{0%,15%,42%,64%,90%,100%{opacity:0;transform:translateY(0)}18%{opacity:1;transform:translateY(0)}36%{opacity:1;transform:translateY(43px)}65%{opacity:1;transform:translateY(43px)}85%{opacity:1;transform:translateY(0)}}
+.kc-q-actor{position:absolute;left:calc(50% - 75px);top:12px;width:48px;height:65px;z-index:2}.kc-q-actor>.kc-spool{top:0;left:0;transform:scale(.72)}.kc-q-main{opacity:0}.kc-q-next{left:calc(50% + 25px);transform:translateX(-100px)}.kc-q-next .kc-spool{--yarn:#edc35d;--shade:#ba923f}.kc-q-recovered{left:calc(50% - 24px);top:129px;transform:translate(49px,-117px)}.kc-q-recovered .kc-spool{--yarn:#80b99a;--shade:#548c70}.kc-q-label{position:absolute;top:7px;left:calc(50% - 67px);z-index:4;display:grid;place-items:center;width:32px;height:19px;border-radius:7px;background:#fffaf0;border:1px solid #d0bd8f;font-size:9px;color:#51465e}.kc-q-label-two{left:calc(50% + 33px)}.kc-q-arrow{position:absolute;top:30px;left:calc(50% - 7px);color:#b49657;font-size:18px}.kc-q-thread{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#c2a463;stroke-width:2;stroke-dasharray:3 5;opacity:.65}.kc-q-cloth{position:absolute;left:calc(50% - 23px);top:90px;width:46px;height:48px;display:flex;flex-direction:column;border-radius:4px 4px 7px 7px;overflow:hidden;box-shadow:0 4px 9px #61504720}.kc-q-cloth i{height:16px;background:#e786a0;background-image:repeating-linear-gradient(58deg,transparent 0 4px,#ffffff40 4px 6px,transparent 6px 9px),repeating-linear-gradient(-58deg,transparent 0 4px,#3a2f3015 4px 6px,transparent 6px 9px)}.kc-q-cloth i:nth-child(2){background-color:#edc35d}.kc-q-cloth i:nth-child(3){background-color:#80b99a}.kc-q-caption{position:absolute;left:12px;bottom:12px;color:#9b855c;font-size:10px}.kc-q-finger{position:absolute;left:calc(50% - 8px);top:107px;width:25px;height:29px;fill:#fffaf0;stroke:#51465e;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px #35304e29);z-index:5;opacity:0}.is-playing .kc-q-main{animation:kc-queue-use 2.8s ease-in-out 2}.is-playing .kc-q-next{animation:kc-queue-advance 2.8s ease-in-out 2}.is-playing .kc-q-recovered{animation:kc-queue-return 2.8s ease-in-out 2}.is-playing .kc-q-thread{animation:kc-queue-thread 2.8s linear 2}.is-playing .kc-q-finger{animation:kc-queue-tap 2.8s ease-in-out 2}.is-playing .kc-q-cloth{animation:kc-weave 2.8s ease 2}
+@keyframes kc-queue-use{0%,22%{opacity:1;transform:scale(1)}45%{opacity:.4;transform:scale(.9)}55%,100%{opacity:0;transform:scale(.85)}}@keyframes kc-queue-advance{0%,45%{transform:translateX(0)}80%,100%{transform:translateX(-100px)}}@keyframes kc-queue-return{0%,27%{transform:translate(0,0) scale(.5);opacity:0}43%{transform:translate(0,0) scale(.7);opacity:1}61%{transform:translate(76px,-65px) scale(.85);opacity:1}83%,100%{transform:translate(49px,-117px);opacity:1}}@keyframes kc-queue-thread{0%,13%{stroke-dashoffset:0;opacity:.4}40%{stroke-dashoffset:-28;opacity:1}53%,100%{stroke-dashoffset:-36;opacity:.4}}@keyframes kc-queue-tap{0%,10%,40%,100%{opacity:0;transform:translateY(0)}16%,29%{opacity:1;transform:translateY(0)}23%{opacity:1;transform:translateY(4px) scale(.88)}}
+@media(prefers-reduced-motion:reduce){.kc-q-finger{display:none}.kc-q-thread{stroke-dasharray:none}}
+@media(max-height:600px){.knit-coach{padding:21px 19px 17px}.kc-eyebrow{margin-bottom:5px}.knit-coach h2{font-size:20px;margin-bottom:9px}.knit-coach p{font-size:12px;min-height:57px}.kc-demo{height:174px;margin:10px 0 14px}.kc-start{min-height:43px}}
+@media(prefers-reduced-motion:reduce){.knit-coach *,.knit-coach *:before,.knit-coach *:after{animation:none!important;transition:none!important}.kc-finger{transform:translate(43px,0)}.kc-spool-a .kc-spool-ring{opacity:0}.kc-spool-b .kc-spool-ring{opacity:1}.kc-thread-a{opacity:.18}.kc-thread-b{opacity:.85}.kc-order-check,.kc-dual-check{opacity:1;transform:none}.kc-order-scan,.kc-direction-scan,.kc-direction-finger{display:none}.kc-direction-option b{background:#fffaf0;border-color:#c7a45c;color:#51465e;box-shadow:0 0 0 1px #dfc58b70}.kc-direction-flow-up,.kc-direction-flow-down{opacity:1}.kc-direction-thread{stroke-dasharray:none}}
+
+</style><style>
+[hidden]{display:none!important}
+body[data-view=home]{--kp-top:72px}
+body[data-view=home] .topbar{height:var(--kp-top);max-width:1160px;padding:0 36px}
+body[data-view=home] .brand{visibility:hidden}
+body[data-view=chapters] .topbar{max-width:1080px}
+#shell-screen{width:100%;overflow:clip}
+.top-actions{display:flex;align-items:center;gap:10px}.game-chapter{display:flex;align-items:center;justify-content:center;gap:8px;min-height:18px;margin:0 0 4px;color:#929d83;font-size:10px;letter-spacing:.5px}
+.knit-home{min-height:calc(100dvh - var(--kp-top,72px));display:flex;flex-direction:column;color:#35473c}
+.kp-home-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 20px 20px}
+.kp-kicker{margin:0 0 12px;color:#92998a;font-size:9px;line-height:1.6;letter-spacing:3px;font-weight:500}
+.kp-home-center h1{font-size:clamp(43px,6vw,70px);line-height:1.15;letter-spacing:2px;font-weight:800;margin:0;color:#34453a}
+.kp-home-center h1>span{color:#d78e87;margin-left:5px}
+.kp-home-center h1:focus,.kp-page-heading h1:focus{outline:none}
+.kp-home-art{position:relative;width:280px;height:214px;margin:21px 0 6px;flex:none}
+.kp-home-bobbin{position:absolute;left:107px;top:0;transform:rotate(-8deg) scale(.84);animation:kp-bobbin-sway 5s ease-in-out infinite}
+.kp-home-thread{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#cf8b95;stroke-width:2;stroke-linecap:round;opacity:.7}
+.kp-home-loom{position:absolute;left:31px;right:31px;top:80px;height:126px;display:grid;grid-template-columns:repeat(4,1fr);gap:13px;transform:rotate(-3deg)}
+.kp-home-wood{position:absolute;left:-7px;right:-7px;top:-7px;height:7px;border-radius:5px;background:linear-gradient(#dfc99b,#b79862);box-shadow:0 3px 5px #5c47391a}
+.kp-home-cloth{display:flex;position:relative;flex-direction:column;border-radius:1px 1px 8px 8px;overflow:hidden;box-shadow:inset -3px 0 5px #00000018,3px 5px 7px #4b3a3412;animation:kp-cloth-breathe 5s ease-in-out infinite}
+.kp-home-cloth:after{content:'';position:absolute;inset:0;box-shadow:inset 3px 0 4px #0000000c,inset -3px 0 4px #00000012;border-radius:inherit;pointer-events:none}
+.kp-home-cloth>span{flex:1;background-color:#e786a0;background-image:var(--stitch);background-size:12px 14px}
+.kp-pink>span:nth-child(2){background-color:#edc35d}.kp-pink>span:nth-child(3){background-color:#e786a0}
+.kp-yellow>span{background-color:#edc35d}.kp-yellow>span:nth-child(2){background-color:#80b99a}.kp-yellow{animation-delay:.2s}
+.kp-green>span{background-color:#80b99a}.kp-green>span:nth-child(2){background-color:#8aaee6}.kp-green{animation-delay:.4s}
+.kp-blue>span{background-color:#8aaee6}.kp-blue>span:nth-child(2){background-color:#e786a0}.kp-blue{animation-delay:.6s}
+.kp-home-line{font-size:12px;color:#899280;letter-spacing:1px;line-height:1.8;margin:8px 0 25px}
+.kp-primary{border:1px solid #35483b;border-radius:13px;background:#3a4d3f;color:#fff9e9;min-width:226px;min-height:51px;padding:12px 22px;display:inline-flex;align-items:center;justify-content:center;gap:55px;font-size:14px;box-shadow:0 5px 0 #29382f;transition:background .18s,transform .18s}
+.kp-primary:hover{background:#485f4d}.kp-primary:active{transform:translateY(2px);box-shadow:0 3px 0 #29382f}.kp-primary>span{font-size:20px;font-weight:400}
+.kp-home-counts{font-size:10px;letter-spacing:.5px;color:#919786;margin:20px 0 9px}
+.kp-home-progress{display:flex;min-height:28px;align-items:center;justify-content:center;gap:13px;flex-wrap:wrap;color:#a0a58f;font-size:9px}
+.kp-continue{border:0;background:transparent;color:#6c7b63;font-size:10px;padding:6px 4px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#a3ac944d}
+.kp-home-footer{width:100%;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:20px 37px 25px;color:#929a87;font-size:10px}
+.kp-home-footer button{border:0;background:transparent;padding:7px 0;color:#7c886e;font-size:10px;letter-spacing:.5px}.kp-home-footer p{margin:0;font-size:10px}.kp-home-footer>span{opacity:.65;font-size:9px;letter-spacing:2px}
+.knit-chapters{max-width:900px;margin:0 auto;padding:8px 28px 28px;color:#41523f}
+.kp-chapter-top{display:flex;align-items:center;margin-bottom:19px}.kp-back{border:0;background:transparent;color:#849078;padding:7px 0;font-size:11px}.kp-back:hover{color:#44573d}
+.kp-page-heading{margin-bottom:28px}.kp-page-heading h1{margin:0;font-size:27px;line-height:1.4;letter-spacing:2px;color:#3e513d;font-weight:600}
+.kp-chapter-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:44px;row-gap:23px;align-items:start}.kp-chapter-group{min-width:0;padding:0 0 22px;border-bottom:1px solid #c4cbb743;scroll-margin-top:20px}.kp-chapter-group h2{display:flex;align-items:baseline;gap:10px;font-size:13px;line-height:1.6;font-weight:500;color:#6a7c59;letter-spacing:.5px;margin:0 0 13px}.kp-chapter-group h2>span{font-size:10px;font-weight:400;color:#a2af90;letter-spacing:1px}.kp-chapter-group h2:focus{outline:none}
+.kp-level-grid{display:flex;flex-wrap:wrap;gap:7px}.kp-level{position:relative;flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;padding:0;border:1px solid #ccd3bc8c;border-radius:9px;background:#fffdf857;color:#7d8a6d}.kp-level>b{font-size:15px;font-weight:400;letter-spacing:1px;font-variant-numeric:tabular-nums}.kp-level>span{position:absolute;right:4px;bottom:3px;font-size:8px;line-height:1;color:#7f9863}.kp-level.passed{background:#dce6ce75;border-color:#b8c9a066}.kp-level.current{border-color:#82996a}.kp-level:hover{background:#e5ead7}
+.kp-chapter-footer{margin-top:20px;padding-top:3px}
+.kp-credits{width:calc(100vw - 32px);max-width:420px;max-height:calc(100dvh - 28px);overflow:auto;border:1px solid #dfdfcc;background:#f7f4e9;color:#485a40;padding:27px 29px 26px;border-radius:23px;box-shadow:0 25px 90px #313b2a30}
+.kp-credits::backdrop{background:#303a2c69;backdrop-filter:blur(6px)}.kp-credits-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.kp-credits-head .kp-kicker{font-size:8px;letter-spacing:2px;margin:0}.kp-credit-close{width:30px;height:30px;flex:none;border:0;background:#dedfcd43;border-radius:50%;color:#8c977c;font-size:22px;line-height:1}.kp-credits>h2{font-size:25px;font-weight:600;letter-spacing:2px;margin:15px 0 24px}.kp-thanks-mark{font-size:32px;color:#b8bb8e;display:block;line-height:1;margin-bottom:18px}.kp-credits>h3{font-size:15px;font-weight:500;letter-spacing:.5px;margin:0 0 13px}.kp-credits>p{font-size:12px;color:#909b80;line-height:2;margin:0 0 15px}.kp-credits .kp-thanks-last{color:#788b65}.kp-contact{border-top:1px solid #cad1bb6b;margin-top:22px;padding-top:19px}.kp-contact h3{font-size:12px;font-weight:500;color:#6d805c;margin:0 0 10px}.kp-contact p{font-size:12px;color:#879676;margin:0;line-height:1.9}.kp-contact strong{font-weight:500;color:#536b42;letter-spacing:1px;white-space:nowrap}
+@keyframes kp-bobbin-sway{50%{transform:rotate(-3deg) scale(.84) translateY(-2px)}}@keyframes kp-cloth-breathe{50%{transform:translateY(3px)}}
+@media(min-width:1000px){.kp-home-footer{padding-left:39px;padding-right:39px}.kp-home-footer p{position:absolute;left:50%;transform:translateX(-50%)}}
+@media(max-width:650px){body[data-view=home]{--kp-top:62px}body[data-view=home] .topbar{padding:0 24px}.kp-home-center{padding-bottom:12px}.kp-home-center h1{font-size:49px}.kp-home-footer{padding:15px 23px 20px;gap:12px}.kp-home-footer>span{display:none}.kp-home-footer p{font-size:9px}.knit-chapters{padding:5px 16px 22px}.kp-chapter-top{margin-bottom:17px}.kp-page-heading{margin-bottom:24px}.kp-page-heading h1{font-size:26px}.kp-chapter-list{grid-template-columns:1fr;row-gap:20px}.kp-chapter-group{padding-bottom:20px}.kp-credits{padding:22px}.kp-credits>p{font-size:11px}.kp-credits>p br{display:none}}
+@media(max-height:690px){body[data-view=home]{--kp-top:52px}.kp-home-center{padding-top:0;padding-bottom:3px}.kp-home-center .kp-kicker{margin-bottom:7px;font-size:8px}.kp-home-center h1{font-size:43px}.kp-home-art{height:214px;transform:scale(.76);transform-origin:top center;margin-top:14px;margin-bottom:-51px}.kp-home-line{font-size:11px;margin-bottom:17px}.kp-home-center .kp-primary{min-height:44px;min-width:205px;font-size:12px;border-radius:11px}.kp-home-counts{font-size:9px;margin-top:15px;margin-bottom:5px}.kp-home-footer{padding-top:9px;padding-bottom:12px}.kp-home-progress{min-height:24px;font-size:8px}.kp-continue{font-size:9px}}
+@media(max-width:350px){.kp-home-center h1{font-size:42px}.kp-credits{padding:21px 19px}.kp-contact strong{letter-spacing:.7px}}
+@media(prefers-reduced-motion:reduce){.kp-home-art *{animation:none!important}.kp-primary{transition:none!important}}
+
+</style></head><body>
+<header class="topbar"><a class="brand" id="brand" href="#home" aria-label="织织慢慢，返回主页"><span aria-hidden="true">✳</span> 织织慢慢</a><div class="top-actions"><button id="back-home" class="icon-button" aria-label="返回主页" title="返回主页" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 10 12 3l9 7M6 9v11h5v-6h3v6h5V9"/></svg></button><button id="sound" class="icon-button" aria-label="开启音效" title="音效">♫<span class="sound-off"></span></button></div></header>
+<div id="shell-screen"></div><main id="game-screen" tabindex="-1" hidden><section class="play-area" aria-label="毛线整理游戏"><p class="game-chapter"><span id="game-chapter-name"></span></p><nav class="game-top" aria-label="关卡导航"><button id="prev-level" class="icon-button" aria-label="上一关">‹</button><button id="open-levels" aria-label="选择章节与关卡" title="章节选关"><span id="level-number">01</span><span class="level-divider">/</span><span id="level-count">55</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h4v4H1zm10 0h4v4h-4zM1 11h4v4H1zm10 0h4v4h-4z"/></svg></button><button id="next-level" class="icon-button" aria-label="下一关">›</button></nav>
+<div class="board-card"><div class="board-info"><span class="move-count" aria-label="步数"><span aria-hidden="true">↝</span><b id="moves">0</b></span><span id="flow-indicator" class="flow-indicator" hidden></span><div id="direction-controls" class="direction-controls" role="group" aria-label="织入方向" hidden><span aria-hidden="true">织入</span><button id="direction-down" aria-label="从上向下织入" aria-pressed="true" title="从上向下织入">↓</button><button id="direction-up" aria-label="从下向上织入" aria-pressed="false" title="从下向上织入">↑</button></div><span id="objective-label" class="objective-label" hidden>色样</span><button id="learn" class="learn-button" aria-label="玩法说明" title="玩法说明" hidden>?</button><div class="completion" id="completion" aria-label="已完成0列"><i></i><i></i><i></i><i></i></div></div>
+<div class="loom" id="loom"><div class="feed"><div class="source-pair"><button id="hand" class="spool"><span class="spool-id" aria-hidden="true">A</span></button><button id="reserve" class="spool" hidden><span class="spool-id" aria-hidden="true">B</span></button></div><svg class="idle-thread" viewBox="0 0 70 28" aria-hidden="true"><path d="M55 0C68 8 43 10 44 20Q45 29 34 24"/></svg></div><div class="columns" id="columns"></div><div class="receive"><div class="empty-spool" id="receiver" aria-hidden="true"></div></div></div>
+<div class="relay-controls" id="relay-controls" hidden><button id="relay-toggle" aria-label="接力预选模式" aria-pressed="false">↝ 接力</button><div class="relay-queue" id="relay-queue" role="group" aria-label="接力路线"></div><button id="relay-pop" aria-label="移除最后一个预选" disabled>↶</button><button id="relay-run" aria-label="执行接力" disabled>▶</button><small id="relay-help" hidden>预选 2–3 步，再按 ▶</small></div>
+<div class="tools"><button id="undo" aria-label="撤回一步"><span>↶</span> 撤回</button><button id="reset" aria-label="重新开始本关"><span>⟳</span> 重织</button><button id="hint" aria-label="提示下一步"><span>✧</span> 提示</button></div>
+<div class="win" id="win" hidden><div class="win-icon" aria-hidden="true">✳</div><h1>完成</h1><p id="win-steps"></p><div class="win-mini" id="win-mini" aria-hidden="true"></div><button id="next">下一关 <span>↗</span></button><button id="replay" class="replay">再织一次</button></div></div></section></main>
+<script>
+(function(root){
+ 'use strict';
+ const DEFAULT_DIRS=[1,1,1,1];
+ const routes=new Map(),preferred=new Set(),objectRoutes=new WeakMap(),MAX_ROUTES=3000,MAX_ROUTE_STEPS=90000;
+ let routeWeight=0;
+ const hasReserve=s=>Number.isInteger(s.reserve);
+ const hasQueue=s=>Number.isInteger(s.queueTail);
+ const decodeAction=action=>{if(!Number.isInteger(action)||action<0||action>15)throw new RangeError('Unknown knitting action');return {column:action%4,spool:(action>>2)&1,...(action>=8?{reverse:true}:{})};};
+ const encodeAction=(column,spool=0,reverse=false)=>{if(!Number.isInteger(column)||column<0||column>3||(spool!==0&&spool!==1)||typeof reverse!=='boolean')throw new RangeError('Unknown knitting action');return column+spool*4+(reverse?8:0);};
+ const actions=s=>{const base=Array.from({length:hasReserve(s)&&!hasQueue(s)?8:4},(_,i)=>i);return s.freeDirection&&!hasQueue(s)?[...base,...base.map(i=>i+8)]:base;};
+ const rhythmBeat=s=>((s.beat||0)%s.rhythm.length+s.rhythm.length)%s.rhythm.length;
+ const copy=s=>({hand:s.hand,cols:s.cols.map(c=>c.slice()),dirs:(s.dirs||DEFAULT_DIRS).slice(),...(s.hidden?{hidden:s.hidden.map(c=>c.map(Boolean))}:{}),...(s.alternating?{alternating:true,phase:s.phase===-1?-1:1}:{}),...(s.rhythm?{rhythm:s.rhythm.slice(),beat:rhythmBeat(s)}:{}),...(hasReserve(s)?{reserve:s.reserve}:{}),...(s.targets?{targets:s.targets.map(c=>c.slice())}:{}),...(s.freeDirection?{freeDirection:true}:{}),...(hasQueue(s)?{queueTail:s.queueTail}:{})});
+ const direction=(s,i)=>s.rhythm?s.rhythm[rhythmBeat(s)]:s.alternating?(s.phase===-1?-1:1):(s.dirs||DEFAULT_DIRS)[i];
+ const actionDirection=(s,action)=>{const {column,reverse}=decodeAction(action);return s.freeDirection?(reverse?-1:1):direction(s,column);};
+ const previewDirections=(s,count=3,column=0)=>Array.from({length:Math.max(0,Math.floor(count))},(_,j)=>s.rhythm?s.rhythm[(rhythmBeat(s)+j)%s.rhythm.length]:s.alternating?direction(s,column)*(j%2?-1:1):direction(s,column));
+ function clone(s){const n=copy(s),route=known(s);if(route)objectRoutes.set(n,{key:key(n),route});return n;}
+ const hasHidden=s=>Boolean(s.hidden?.some(c=>c.some(Boolean)));
+ const completeColumn=(s,i)=>Boolean(s.cols[i]?.length)&&(s.targets?Boolean(s.targets[i])&&s.targets[i].length===s.cols[i].length&&s.cols[i].every((v,j)=>v===s.targets[i][j]):s.cols[i].every(v=>v===s.cols[i][0]))&&!s.hidden?.[i]?.some(Boolean);
+ const won=s=>s.cols.every((_,i)=>completeColumn(s,i));
+ // Revealing a wrapped band is progress even if the colors make a complete
+ // revolution. Clear masks deliberately share keys with classic states.
+ const key=s=>(s.dirs||DEFAULT_DIRS).join(',')+':'+s.hand+':'+s.cols.map(c=>c.join(',')).join('|')+(hasHidden(s)?':h'+s.hidden.map(c=>c.map(v=>v?'1':'0').join('')).join('|'):'')+(s.alternating?':a'+direction(s,0):'')+(s.rhythm?':r'+s.rhythm.join(',')+':'+rhythmBeat(s):'')+(hasReserve(s)?':s'+s.reserve:'')+(s.targets?':t'+s.targets.map(c=>c.join(',')).join('|'):'')+(s.freeDirection?':f':'')+(hasQueue(s)?':q'+s.queueTail:'');
+ function step(s,action,inverse=false){
+  const {column:i,spool}=decodeAction(action);
+  if(spool&&!hasReserve(s))throw new RangeError('This loom has no second spool');
+  const n=copy(s),col=n.cols[i],slot=spool?'reserve':'hand';
+  if(!col)throw new RangeError('Unknown knitting column');
+  if(hasQueue(n)){
+   // Queue lessons keep one direction and one fixed supply order. The next
+   // bobbin advances; recovered yarn joins the back instead of replacing hand.
+   if(hasReserve(n)||n.rhythm||n.alternating||n.freeDirection)throw new RangeError('Queue lessons use fixed directions');
+   const up=actionDirection(n,action)===-1;
+   if(inverse){const oldHand=up?col.pop():col.shift(),out=n.queueTail;n.queueTail=n.hand;n.hand=oldHand;if(up)col.unshift(out);else col.push(out);if(n.hidden){if(up){n.hidden[i].pop();n.hidden[i].unshift(false);}else{n.hidden[i].shift();n.hidden[i].push(false);}}}
+   else{const input=n.hand;n.hand=n.queueTail;n.queueTail=up?col.shift():col.pop();if(up)col.push(input);else col.unshift(input);if(n.hidden){if(up){n.hidden[i].shift();n.hidden[i].push(false);}else{n.hidden[i].pop();n.hidden[i].unshift(false);}}}
+   return n;
+  }
+  // An inverse step first restores the phase that was used for that move.
+  // With global alternation, pressing the same column twice is a true
+  // inverse of colors and phase (revelation itself stays irreversible).
+  if(n.rhythm&&inverse)n.beat=(n.beat+n.rhythm.length-1)%n.rhythm.length;
+  else if(n.alternating&&inverse)n.phase*=-1;
+  // The recovered spool is revealed after the animation. It enters the next
+  // column as a known color; an existing wrapper travels with its own band.
+  // back() remains the inverse of colors, not of irreversible revelation.
+  if((actionDirection(n,action)===-1)!==inverse){col.push(n[slot]);n[slot]=col.shift();if(n.hidden){n.hidden[i].push(false);n.hidden[i].shift();}}
+  else{col.unshift(n[slot]);n[slot]=col.pop();if(n.hidden){n.hidden[i].unshift(false);n.hidden[i].pop();}}
+  if(n.rhythm&&!inverse)n.beat=(n.beat+1)%n.rhythm.length;
+  else if(n.alternating&&!inverse)n.phase*=-1;
+  return n;
+ }
+ function known(s){
+  if(won(s))return [];
+  const k=key(s),entry=objectRoutes.get(s),own=entry?.key===k?entry.route:undefined,cached=routes.get(k);
+  return own&&(!cached||own.length<cached.length)?own:cached;
+ }
+ // Erase loops, including complete revolutions of a column, and stop as
+ // soon as the cloth is sorted. A hint never asks for a move after win.
+ function compact(initial,route){
+  let s=copy(initial),path=[],seen=new Map([[key(s),0]]),keys=[key(s)];
+  if(won(s))return [];
+  for(const i of route){
+   s=step(s,i);const k=key(s);
+   if(seen.has(k)){
+    const index=seen.get(k);
+    while(keys.length>index+1)seen.delete(keys.pop());
+    path.length=index;
+   }else{path.push(i);keys.push(k);seen.set(k,path.length);}
+   if(won(s))return path;
+  }
+  return path;
+ }
+ function remember(s,route){
+  const k=key(s),old=routes.get(k);
+  const best=old&&old.length<route.length?old:route.slice();
+  // Weak references also preserve an undo snapshot's route after its string
+  // key ages out of the shared bounded cache. They disappear with the state.
+  objectRoutes.set(s,{key:k,route:best});
+  if(!old||best.length<old.length){routes.set(k,best);routeWeight+=best.length-(old?.length||0);}
+  while(routes.size>MAX_ROUTES||routeWeight>MAX_ROUTE_STEPS){const first=routes.keys().next().value;routeWeight-=routes.get(first).length;routes.delete(first);preferred.delete(first);}
+ }
+ function rememberRoute(initial,route){
+  const path=compact(initial,route);let s=clone(initial);
+  for(let j=0;j<=path.length;j++){remember(s,path.slice(j));preferred.add(key(s));if(j<path.length)s=step(s,path[j]);}
+  return path;
+ }
+ function sameColumnPeriod(s,action){
+  const i=decodeAction(action).column;
+  if(hasQueue(s))return s.cols[i].length+2;
+  if(s.freeDirection){
+   const ring=s.cols[i].length+1,timing=s.rhythm?s.rhythm.length:s.alternating?2:1;
+   let a=ring,b=timing;while(b){const next=a%b;a=b;b=next;}return ring*timing/a;
+  }
+  if(!s.rhythm)return s.alternating?2:s.cols[i].length+1;
+  const ring=s.cols[i].length+1,shift=Math.abs(s.rhythm.reduce((sum,d)=>sum+d,0));
+  let a=ring,b=shift;while(b){const next=a%b;a=b;b=next;}
+  // One full rhythm cycle rotates the hand+column ring by sum(rhythm).
+  // Repeating enough cycles restores both the colors and the next beat.
+  return s.rhythm.length*ring/a;
+ }
+ function move(s,i){
+  const n=step(s,i),route=known(s);
+  // Preserve a recovery route even when a short hint search reaches its
+  // budget. Rhythm cycles need to restore their beat as well as colors.
+  if(route){
+   const repair=s.freeDirection&&!s.rhythm&&!s.alternating?[i^8]:Array(sameColumnPeriod(s,i)-1).fill(i);
+   remember(n,compact(n,[...repair,...route]));
+  }
+  return n;
+ }
+ function back(s,i){
+  const n=step(s,i,true),route=known(s);
+  if(route)remember(n,compact(n,[i,...route]));
+  return n;
+ }
+ const configs=[
+  {h:3,dirs:[1,1,1,1],scramble:[0,1,2,3]},
+  {h:4,dirs:[1,1,1,1],scramble:[0,2,1,3,0,2,3,1]},
+  {h:5,dirs:[1,1,1,1],scramble:[2,0,3,1,0,2,1,3,2,0,1,3]},
+  {h:4,dirs:[1,1,1,1],scramble:[1,3,2,0,2,3,1,0,3,2]},
+  {h:5,dirs:[1,1,1,1],scramble:[3,0,2,1,3,2,0,3,1,0,2,1,3,2]},
+  {h:4,dirs:[1,1,1,-1],scramble:[3,1,0,2,3,0,1,3,2,0,3,1]},
+  {h:5,dirs:[1,-1,1,1],scramble:[1,3,0,1,2,0,3,2,1,0,2,3,1,2,0]},
+  {h:4,dirs:[1,-1,1,-1],scramble:[2,0,3,1,2,3,0,2,1,0,3,2,0,1],solution:[1,2,3,2,2,1,0,0,1,3,0,3]},
+  {h:5,dirs:[-1,1,-1,1],scramble:[0,2,1,3,0,1,2,3,1,0,3,2,0,1,2,3,0]},
+  {h:5,dirs:[1,-1,-1,1],scramble:[3,1,2,0,1,3,0,2,1,0,3,2,3,1,0,2,1,3,2]},
+  {h:5,dirs:[-1,-1,1,-1],scramble:[1,0,3,2,1,3,0,1,2,3,0,2,1,3,2,0,3,1,0,2,3]},
+  {h:5,dirs:[-1,-1,-1,-1],scramble:[2,3,0,1,2,0,3,1,0,2,1,3,2,1,0,3,1,2,3,0,2,1,3]},
+  {h:5,dirs:[-1,1,-1,1],scramble:[0,3,1,2,0,1,3,2,1,0,2,3,0,2,1,3,2,0,3,1,2,3,0,1,3,2]},
+  {h:4,dirs:[1,1,1,1],scramble:[3,1,0,2,3,0,1,2,0,3,2,1],hidden:[[1,3],[2,2]]},
+  {h:4,dirs:[1,1,1,1],scramble:[2,0,3,1,0,2,1,3,0,1,2,3,1,0,3,2],hidden:[[0,2],[1,3],[2,2],[3,1]]},
+  {h:5,dirs:[1,1,1,-1],scramble:[3,0,2,1,3,1,0,2,3,0,1,2,1,3,2,0,3,1,2,0],hidden:[[0,4],[0,2],[1,3],[2,4],[3,0],[3,2]]},
+  {h:5,dirs:[1,-1,1,-1],scramble:[1,3,0,2,1,0,3,2,0,1,2,3,1,2,0,3,2,1,3,0,2,3,1,0],hidden:[[0,4],[0,2],[1,0],[1,2],[2,3],[2,1],[3,0],[3,3]]},
+  {h:5,dirs:[-1,1,-1,1],scramble:[0,2,3,1,2,0,1,3,0,1,2,3,2,1,0,3,1,2,3,0,2,0,3,1,0,2,1,3],hidden:[[0,0],[0,2],[0,4],[1,4],[1,2],[2,0],[2,1],[2,3],[3,3],[3,1]]},
+  {h:3,dirs:[1,1,1,1],alternating:true,scramble:[3,1,2,0,3,2]},
+  {h:3,dirs:[1,1,1,1],alternating:true,scramble:[2,3,1,0,1,3,2,0]},
+  {h:3,dirs:[1,1,1,1],alternating:true,relay:true,scramble:[0,1,2,3,1,3,2,0,1,0]},
+  {h:4,dirs:[1,1,1,1],alternating:true,relay:true,scramble:[3,2,0,2,1,2,0,3,1,3,1,0]},
+  {h:4,dirs:[1,1,1,1],alternating:true,relay:true,scramble:[3,2,0,1,3,1,0,3,0,1,3,2,3,0],hidden:[[0,3],[3,0],[1,2]]},
+  // Rhythm challenges grow across all four fabrics; dual spools and fixed
+  // stripe orders then introduce a new choice without adding a timer.
+  {"h":4,"rhythm":[1,1,-1],"relay":true,"dirs":[1,1,1,1],"scramble":[1,3,2,3,2,3,0,2,3,1],"solution":[1,3,2,0,0,0,3,3,2,1]},
+  {"h":4,"rhythm":[1,-1,-1],"relay":true,"dirs":[1,1,1,1],"scramble":[0,1,3,2,1,0,3,2,0,3,0,2],"solution":[1,0,3,0,1,3,0,1,2,3,1]},
+  {"h":4,"rhythm":[1,1,-1],"relay":true,"dirs":[1,1,1,1],"scramble":[1,0,1,3,2,1,0,3,1,0,2,3,0,3],"solution":[1,0,3,1,2,3,2,1,2,1,1,2]},
+  {"h":5,"rhythm":[1,-1,-1],"relay":true,"dirs":[1,1,1,1],"scramble":[2,1,2,0,3,0,1,2,1,0,2,3,0,2,1,0],"solution":[0,1,2,0,3,3,0,1,2,3,2,2,1]},
+  {"h":5,"rhythm":[1,1,-1],"relay":true,"dirs":[1,1,1,1],"scramble":[3,0,1,2,1,2,1,3,1,2,1,0,2,0,1,0,2,1],"solution":[1,3,0,1,0,2,1,1,3,1,0,1,0,3]},
+  {"h":4,"reserve":1,"dirs":[1,1,1,1],"relay":true,"scramble":[1,0,5,6,2,7],"solution":[2,0,1,7,6,1]},
+  {"h":4,"reserve":1,"dirs":[1,1,1,1],"relay":true,"scramble":[6,2,7,4,6,1,0,2],"solution":[2,0,1,2,0,3,2,6]},
+  {"h":4,"reserve":1,"rhythm":[1,1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[7,5,0,7,5,4,6,2,0,2,7],"solution":[0,0,2,0,7,4,1,3,4,1,3]},
+  {"h":5,"reserve":1,"rhythm":[1,-1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[5,6,4,0,2,3,4,1,5,3,6,5,7,6],"solution":[6,3,1,2,1,7,5,0,7,6,0,4,6]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"dirs":[1,1,1,1],"relay":true,"scramble":[1,2,1,2,1,2],"solution":[2,1,2,1,2,1]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"rhythm":[1,1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[3,0,1,3,2,0,1,3,2],"solution":[2,3,1,0,2,3,1,0,3]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"reserve":1,"rhythm":[1,1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[3,0,6,0,7,5,7,3,7,3,2,3,6,2],"solution":[2,0,3,6,4,0,3,7,5,7,2,6,4]},
+  // Familiar mechanics build up before free-direction lessons let each
+  // action choose its own edge, then add a fixed stripe sample.
+  {"h":4,"reserve":1,"dirs":[1,1,1,1],"relay":true,"scramble":[4,7,6,2,0,3,0,1,2],"solution":[2,1,0,3,0,6,4,2,3]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"dirs":[1,1,1,1],"relay":true,"scramble":[1,3,1,3,0,2,3,2,3,0],"solution":[0,3,2,3,2,0,3,1,3,1]},
+  {"h":4,"reserve":1,"rhythm":[1,1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[7,3,4,1,5,4,6,3,4,6,7],"solution":[3,2,0,2,7,0,1,5,0,3,7]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"rhythm":[1,-1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[1,3,0,3,0,2,0,1,0,3,0,1],"solution":[0,0,0,0,0,3,2,3,3,0,0,1]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"reserve":1,"rhythm":[1,1,-1],"dirs":[1,1,1,1],"relay":true,"scramble":[5,6,0,4,0,5,6,4,5,6,3,2,6,3],"solution":[3,7,1,0,2,5,4,0,4,2,2,6,1]},
+  {"h":3,"freeDirection":true,"dirs":[1,1,1,1],"relay":true,"scramble":[9,2,1,2,1],"solution":[10,9,2,2]},
+  {"h":4,"freeDirection":true,"dirs":[1,1,1,1],"relay":true,"scramble":[11,2,9,0,1,2,11],"solution":[11,2,2,11,0,1]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"freeDirection":true,"dirs":[1,1,1,1],"relay":true,"scramble":[11,1,2,8,2,3,8,3],"solution":[3,3,2,8,11,8,2,1]},
+  {"h":4,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"freeDirection":true,"dirs":[1,1,1,1],"relay":true,"scramble":[9,10,1,2,1,3,0,2,3,9],"solution":[1,3,1,2,2,0,3,1,1,10]},
+  {"h":3,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"scramble":[2,1,2,1,2],"solution":[2,1,2,1,2]},
+  {"h":3,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"scramble":[0,1,3,2,1,3],"solution":[3,1,2,3,1,0]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"scramble":[3,2,0,2,1,2,3],"solution":[3,2,1,2,0,2,3]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"scramble":[2,3,2,0,1,3,0,1],"solution":[1,0,3,1,0,2,3,2]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"scramble":[3,0,2,3,1,2,3,0,2],"solution":[2,0,3,2,1,3,2,0,3]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"scramble":[3,1,2,0,3,1,3,2,1,0],"solution":[0,1,2,3,1,3,0,2,1,3]},
+  {"h":3,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"targets":[[0,0,1],[1,1,2],[2,2,3],[3,3,0]],"scramble":[0,3,1,0,2,0,2,0,1,2],"solution":[2,0,0,1,0,2,3,2,0,1]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"targets":[[0,0,1,1],[1,1,2,2],[2,2,3,3],[3,3,0,0]],"scramble":[2,3,0,1,2,3,0,3,1,0,1],"solution":[1,0,1,0,0,2,2,3,1,3,3]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"targets":[[0,1,1,0],[1,2,2,1],[2,3,3,2],[3,0,0,3]],"scramble":[3,0,2,0,3,2,1,2,0,3,2,3],"solution":[3,2,3,0,2,0,2,3,1,2,0,3]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"targets":[[0,1,0,1],[1,2,1,2],[2,3,2,3],[3,0,3,0]],"scramble":[1,3,1,2,3,0,1,0,3,0,2,0,1],"solution":[1,0,2,0,3,0,1,0,3,2,1,3,1]},
+  {"h":4,"dirs":[1,1,1,1],"queueTail":1,"relay":true,"targets":[[0,0,1,2],[1,1,2,3],[2,2,3,0],[3,3,0,1]],"scramble":[3,2,0,1,0,1,2,0,1,0,1,3,1,2],"solution":[1,1,2,0,3,1,0,2,0,0,0,3,2,1]}
+ ];
+ function level(i){
+  const config=configs[i];if(!config)throw new RangeError('Unknown knitting level');
+  let s={hand:0,cols:config.targets?config.targets.map(c=>c.slice()):[0,1,2,3].map(v=>Array(config.h).fill(v)),dirs:config.dirs.slice(),...(config.alternating?{alternating:true,phase:config.scramble.length%2?-1:1}:{}),...(config.rhythm?{rhythm:config.rhythm.slice(),beat:config.scramble.length%config.rhythm.length}:{}),...(Number.isInteger(config.reserve)?{reserve:config.reserve}:{}),...(config.targets?{targets:config.targets.map(c=>c.slice())}:{}),...(config.freeDirection?{freeDirection:true}:{}),...(Number.isInteger(config.queueTail)?{queueTail:config.queueTail}:{})};
+  for(const column of config.scramble)s=back(s,column);
+  if(config.hidden){s.hidden=s.cols.map(c=>c.map(()=>false));for(const [column,row] of config.hidden)s.hidden[column][row]=true;}
+  const solution=rememberRoute(s,config.solution||config.scramble.slice().reverse());
+  return {state:s,solution:solution.slice(),meta:{bands:config.h,variant:hasQueue(s)?(config.targets?'queue-order':'queue'):config.freeDirection?(config.targets?'free-order':'free'):config.targets?(hasReserve(s)?'dual-order':'order'):hasReserve(s)?'dual':config.rhythm?(config.relay?'rhythm-relay':'rhythm'):config.alternating?(config.hidden?'alternating-hidden':config.relay?'relay':'alternating'):config.hidden?'hidden':config.dirs.some(d=>d===-1)?'bidirectional':'classic',alternating:Boolean(config.alternating),rhythm:config.rhythm?config.rhythm.slice():null,relay:Boolean(config.relay),dual:hasReserve(s),targets:config.targets?config.targets.map(c=>c.slice()):null,freeDirection:Boolean(config.freeDirection),queue:hasQueue(s),hiddenCount:config.hidden?.length||0,reverseColumns:config.dirs.flatMap((d,c)=>d===-1?[c]:[]),benchmark:solution.length}};
+ }
+ function goals(s){
+  const h=s.cols[0].length,counts=new Map(),result=[];
+  for(const v of [s.hand,...(hasReserve(s)?[s.reserve]:[]),...(hasQueue(s)?[s.queueTail]:[]),...s.cols.flat()])counts.set(v,(counts.get(v)||0)+1);
+  const colors=[...counts.keys()].sort();
+  const timings=s.rhythm?s.rhythm.map((_,beat)=>({rhythm:s.rhythm.slice(),beat})):s.alternating?[{alternating:true,phase:1},{alternating:true,phase:-1}]:[{}];
+  function addBoard(cols){
+   const remaining=new Map(counts);
+   for(const v of cols.flat())remaining.set(v,(remaining.get(v)||0)-1);
+   if([...remaining.values()].some(n=>n<0))return;
+   const extra=[];for(const [color,n] of remaining)for(let i=0;i<n;i++)extra.push(color);
+   if(extra.length!==((hasReserve(s)||hasQueue(s))?2:1))return;
+   const hands=(hasReserve(s)||hasQueue(s))&&extra[0]!==extra[1]?[extra,[extra[1],extra[0]]]:[extra];
+   for(const hand of hands)for(const timing of timings)result.push({hand:hand[0],cols:cols.map(c=>c.slice()),dirs:(s.dirs||DEFAULT_DIRS).slice(),...timing,...(hasReserve(s)?{reserve:hand[1]}:{}),...(hasQueue(s)?{queueTail:hand[1]}:{}),...(s.targets?{targets:s.targets.map(c=>c.slice())}:{}),...(s.freeDirection?{freeDirection:true}:{})});
+  }
+  if(s.targets){addBoard(s.targets);return result;}
+  if(colors.length!==4)return result;
+  function permute(a,left){if(!left.length){addBoard(a.map(v=>Array(h).fill(v)));return;}left.forEach((v,j)=>permute([...a,v],left.filter((_,k)=>k!==j)));}
+  permute([],colors);return result;
+ }
+ const searchTime=()=>typeof performance!=='undefined'?performance.now():Date.now();
+ function solve(s,limit=40000){
+  const count=Number.isFinite(limit)?Math.max(0,Math.floor(limit)):40000;
+  return search(s,{remaining:count,deadline:searchTime()+75});
+ }
+ function search(s,budget){
+  if(won(s))return [];
+  const fallback=known(s);
+  // Hidden masks disappear rather than run backwards. Reverse search from a
+  // visible goal therefore cannot reconstruct them; use the authored reveal
+  // route, or clear wrappers with color-preserving revolutions before search.
+  if(hasHidden(s)){
+   if(fallback)return fallback.slice();
+   let revealed=copy(s),prefix=[];
+   if(s.alternating||s.rhythm){
+    // A static revolution cannot reveal interior bands on an alternating
+    // loom: same-column pairs cancel. Search from this wrapped state until
+    // it reaches a known reveal route or a fully visible state instead.
+    if(budget.remaining<1)return null;
+    budget.remaining--;
+    const queue=[{s:revealed,path:[]}],seen=new Set([key(revealed)]);
+    for(let head=0;head<queue.length;head++){
+     const entry=queue[head];
+     for(const i of actions(entry.s)){
+      if(searchTime()>budget.deadline||budget.remaining<1)return null;
+      const next=step(entry.s,i),k=key(next);if(seen.has(k))continue;
+      budget.remaining--;seen.add(k);const path=[...entry.path,i],tail=known(next);
+      if(tail)return rememberRoute(s,[...path,...tail]).slice();
+      if(!hasHidden(next)){const solved=search(next,budget);if(solved)return rememberRoute(s,[...path,...solved]).slice();if(searchTime()>budget.deadline)return null;}
+      queue.push({s:next,path});
+     }
+    }
+    return null;
+   }
+   for(let i=0;i<revealed.cols.length;i++)if(revealed.hidden[i].some(Boolean)){
+    for(let n=0;n<=revealed.cols[i].length;n++){prefix.push(i);revealed=step(revealed,i);}
+   }
+   const tail=search(revealed,budget);return tail?rememberRoute(s,[...prefix,...tail]).slice():null;
+  }
+  // Later puzzles get a bounded bidirectional search. When a player
+  // experiments, the precomputed recovery route is the guaranteed fallback.
+  // Prefer a shorter repair after an experiment before falling back to the
+  // guaranteed cycle-recovery route.
+  if(fallback&&(preferred.has(key(s))||(!s.rhythm&&fallback.length<=12)))return fallback.slice();
+  if(budget.remaining<1||searchTime()>budget.deadline)return fallback?fallback.slice():null;
+  const start={s:clone(s),path:[]},a=new Map([[key(s),start]]),b=new Map(goals(s).map(t=>[key(t),{s:t,path:[]}]));
+  if(searchTime()>budget.deadline||budget.remaining<a.size+b.size)return fallback?fallback.slice():null;
+  budget.remaining-=a.size+b.size;
+  let fa=[start],fb=[...b.values()];
+  while(fa.length&&fb.length){
+   const forward=fa.length<=fb.length,front=forward?fa:fb,own=forward?a:b,other=forward?b:a,next=[];
+   for(const n of front){
+    for(const i of actions(n.s)){
+     if(searchTime()>budget.deadline||budget.remaining<1)return fallback?fallback.slice():null;
+     const t=step(n.s,i,!forward),k=key(t);if(own.has(k))continue;
+     budget.remaining--;
+     const path=forward?[...n.path,i]:[i,...n.path];
+     if(other.has(k)){
+      const route=forward?[...path,...other.get(k).path]:[...other.get(k).path,...path];
+      const best=fallback&&fallback.length<route.length?fallback:route;
+      return rememberRoute(s,best).slice();
+     }
+     own.set(k,{s:t,path});next.push({s:t,path});
+    }
+   }
+   if(forward)fa=next;else fb=next;
+  }
+  return fallback?fallback.slice():null;
+ }
+ root.KnitEngine={clone,move,back,won,key,level,solve,completeColumn,direction,actionDirection,previewDirections,decodeAction,encodeAction,actions,count:configs.length};
+ if(typeof module!=='undefined')module.exports=root.KnitEngine;
+})(globalThis);
+
+</script><script>
+/* The needle, cloth and two spools share a clock. The caller commits the move
+   only after the recovered spool reaches the supply position. */
+(function(){
+ const NS=window.KnitMotion={};
+ NS.hiddenColor='#77718e';
+ const clamp=v=>Math.max(0,Math.min(1,v)),mix=(a,b,t)=>a+(b-a)*t,smooth=t=>t*t*(3-2*t);
+ const bounded=(v,lo,hi)=>Math.max(lo,Math.min(Math.max(lo,hi),v));
+ const tile=document.createElement('canvas');tile.width=12;tile.height=14;
+ const tc=tile.getContext('2d');
+ function stitch(ctx,x,y,w,h){
+  ctx.lineCap='round';ctx.lineJoin='round';
+  function arms(color,width,dx,dy){
+   ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();
+   ctx.moveTo(x+w*.14+dx,y-h*.1+dy);ctx.bezierCurveTo(x+w*.12+dx,y+h*.28+dy,x+w*.39+dx,y+h*.43+dy,x+w*.49+dx,y+h*.79+dy);
+   ctx.moveTo(x+w*.86+dx,y-h*.1+dy);ctx.bezierCurveTo(x+w*.88+dx,y+h*.28+dy,x+w*.61+dx,y+h*.43+dy,x+w*.51+dx,y+h*.79+dy);ctx.stroke();
+  }
+  arms('#18232e45',w*.33,0,h*.09);arms('#ffffff70',w*.27,0,0);arms('#ffffff35',w*.075,-w*.045,-h*.03);
+ }
+ for(let y=-14;y<28;y+=14)stitch(tc,0,y,12,14);
+ NS.texture=tile.toDataURL();
+ NS.play=async function({loom,column,hand,receiver,previous,incoming,outgoing,colors,tick,direction=1,previousHidden=[],hiddenOutgoing=false,onReveal,returnToReceiver=false,returnSlotOffset=0,companionElement,companionColor,queueRotation=false}){
+  const canvas=document.createElement('canvas');canvas.className='motion-canvas';canvas.setAttribute('aria-hidden','true');
+  let started=false,companionToRestore=null;
+  try{
+   const bounds=loom.getBoundingClientRect(),c=column.getBoundingClientRect(),h=hand.getBoundingClientRect(),r=receiver.getBoundingClientRect(),W=bounds.width,H=bounds.height;
+   if(!W||!H||!c.width||!c.height||!previous.length||document.hidden)return;
+   const ctx=canvas.getContext('2d');if(!ctx)return;
+   const ratio=Math.min(window.devicePixelRatio||1,2),sgn=direction===-1?-1:1;
+   // Every visible path from an unknown segment uses the same neutral sleeve.
+   // The actual color is used only after the collection phase is finished.
+   const outgoingIndex=sgn===1?previous.length-1:0,maskedOutgoing=Boolean(hiddenOutgoing||previousHidden?.[outgoingIndex]),collectedColor=maskedOutgoing?NS.hiddenColor:colors[outgoing];
+   const hiddenAt=j=>Boolean(previousHidden?.[j]||(maskedOutgoing&&j===outgoingIndex));
+   canvas.width=Math.round(W*ratio);canvas.height=Math.round(H*ratio);ctx.scale(ratio,ratio);
+   const col={x:c.left-bounds.left,y:c.top-bounds.top,w:c.width,h:c.height};
+   const home={x:h.left-bounds.left+h.width/2,y:h.top-bounds.top+h.height/2},away={x:r.left-bounds.left+r.width/2,y:r.top-bounds.top+r.height/2};
+   // The caller supplies the selected slot's offset when two supply spools
+   // share the next side. Same-side returns still use the measured hand.
+   const slotOffset=Number.isFinite(returnSlotOffset)?returnSlotOffset:0;let landing=returnToReceiver?{x:away.x+slotOffset,y:away.y}:home;
+   let companion=null;
+   if((returnToReceiver||queueRotation)&&companionElement&&companionElement!==hand&&colors[companionColor]){
+    const other=companionElement.getBoundingClientRect();
+    if(other.width&&other.height){const waiting={x:other.left-bounds.left+other.width/2,y:other.top-bounds.top+other.height/2};companion={element:companionElement,color:colors[companionColor],home:waiting,landing:queueRotation?home:{x:away.x-slotOffset,y:away.y}};if(queueRotation)landing=waiting;}
+   }
+   const center=col.x+col.w/2,margin=Math.min(35,W/2);
+   const edgePoint=y=>({x:bounded(center,margin,W-margin),y:bounded(y,27,H-27)});
+   const top=edgePoint(col.y-47),bottom=edgePoint(col.y+col.h+45),supply=sgn===1?top:bottom,collect=sgn===1?bottom:top;
+   const bh=col.h/previous.length,rows=Math.max(3,Math.round(bh/14)),rh=bh/rows;
+   // u points from the knitting edge toward the unravelling edge. Reverse
+   // geometry without flipping the V-shaped stitches in the cloth texture.
+   const yAt=u=>sgn===1?col.y+u:col.y+col.h-u;
+   const sideShade=ctx.createLinearGradient(col.x,0,col.x+col.w,0);
+   sideShade.addColorStop(0,'#00000024');sideShade.addColorStop(.16,'#ffffff04');sideShade.addColorStop(.7,'#ffffff08');sideShade.addColorStop(1,'#00000029');
+   function surface(width,height,paint){
+    const el=document.createElement('canvas');el.width=Math.max(1,Math.ceil(width*ratio));el.height=Math.max(1,Math.ceil(height*ratio));const sc=el.getContext('2d');sc.scale(ratio,ratio);paint(sc);return el;
+   }
+   function question(sc,x,y,size){
+    sc.save();sc.fillStyle='#f4edf7d9';sc.font=`600 ${size}px "Segoe UI", sans-serif`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText('?',x,y);sc.restore();
+   }
+   function paintBand(sc,y,height,color,hidden=false){
+    sc.save();sc.beginPath();sc.rect(0,y,col.w,height);sc.clip();sc.fillStyle=hidden?NS.hiddenColor:color;sc.fillRect(0,y,col.w,height);sc.translate(0,y);sc.fillStyle=sc.createPattern(tile,'repeat');sc.fillRect(0,0,col.w,height);
+    if(hidden){sc.fillStyle='#36304448';sc.beginPath();sc.roundRect(col.w/2-11,height/2-12,22,24,8);sc.fill();question(sc,col.w/2,height/2+.5,18);}
+    sc.restore();
+   }
+   // Finished cloth is rasterized once; frames only move and clip swatches.
+   const oldCloth=surface(col.w,col.h,sc=>previous.forEach((v,j)=>paintBand(sc,j*bh,bh,hiddenAt(j)?NS.hiddenColor:colors[v],hiddenAt(j)))),newCloth=surface(col.w,bh,sc=>paintBand(sc,0,bh,colors[incoming]));
+   const wood=surface(80,60,sc=>{
+    sc.translate(40,30);const g=sc.createLinearGradient(0,-17,0,17);g.addColorStop(0,'#a9814b');g.addColorStop(.35,'#eddbb8');g.addColorStop(.6,'#c4a16d');g.addColorStop(1,'#9e794e');sc.fillStyle=g;sc.beginPath();sc.roundRect(-31,-7,62,14,4);sc.fill();
+    [-31,27].forEach(x=>{const cap=sc.createLinearGradient(x,0,x+6,0);cap.addColorStop(0,'#98713e');cap.addColorStop(.45,'#ebd1a0');cap.addColorStop(1,'#b5905d');sc.fillStyle=cap;sc.beginPath();sc.roundRect(x,-24,6,48,3);sc.fill();});
+   });
+   const barrelShade=surface(52,40,sc=>{const g=sc.createLinearGradient(0,0,0,40);g.addColorStop(0,'#00000038');g.addColorStop(.28,'#ffffff30');g.addColorStop(.6,'#ffffff00');g.addColorStop(1,'#00000040');sc.fillStyle=g;sc.fillRect(0,0,52,40);});
+   const metal=surface(40,6,sc=>{const g=sc.createLinearGradient(0,0,0,6);g.addColorStop(0,'#75654e');g.addColorStop(.4,'#fff9e9');g.addColorStop(.75,'#d0ba92');g.addColorStop(1,'#9d8967');sc.fillStyle=g;sc.beginPath();sc.moveTo(0,1.6);sc.lineTo(33,1.6);sc.lineTo(40,3);sc.lineTo(33,4.4);sc.lineTo(0,4.4);sc.closePath();sc.fill();});
+   function logicalRect(x,u,w,height){const yy=yAt(u),end=yAt(u+height);ctx.rect(x,Math.min(yy,end),w,Math.abs(end-yy));}
+   function yarn(path,color,width,phase=0){
+    ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#080b192c';ctx.lineWidth=width+1.5;ctx.stroke(path);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke(path);
+    ctx.strokeStyle='#ffffff65';ctx.lineWidth=.7;ctx.setLineDash([1.6,2.6]);ctx.lineDashOffset=-phase*8;ctx.stroke(path);ctx.setLineDash([]);
+   }
+   function bobbin(x,y,color,fill,turn,scale=1,alpha=1,sleeved=false){
+    ctx.save();ctx.globalAlpha=alpha;ctx.translate(bounded(x,margin,W-margin),bounded(y,26,H-26));ctx.scale(scale,scale);
+    ctx.fillStyle='#09091b26';ctx.beginPath();ctx.ellipse(1,25,30,4.5,0,0,Math.PI*2);ctx.fill();ctx.drawImage(wood,0,0,wood.width,wood.height,-40,-30,80,60);
+    const thickness=4.5+clamp(fill)*14.5;ctx.save();ctx.scale(1,thickness/20);ctx.beginPath();ctx.roundRect(-25,-20,50,40,10);ctx.clip();ctx.fillStyle=color;ctx.fillRect(-26,-20,52,40);ctx.drawImage(barrelShade,0,0,barrelShade.width,barrelShade.height,-26,-20,52,40);
+    // Grooves roll continuously around the barrel; its radius follows fill.
+    const offset=(turn*12)%4;
+    for(let k=-6;k<7;k++){
+     const yy=k*4+offset;ctx.beginPath();ctx.moveTo(-26,yy+2.7);ctx.bezierCurveTo(-11,yy-1,13,yy+3,26,yy-1.5);ctx.strokeStyle='#ffffff4d';ctx.lineWidth=1.1;ctx.stroke();ctx.strokeStyle='#0000001a';ctx.lineWidth=.55;ctx.translate(0,1.6);ctx.stroke();ctx.translate(0,-1.6);
+    }ctx.restore();
+    if(sleeved){ctx.fillStyle='#36304466';ctx.beginPath();ctx.roundRect(-8,-10,16,20,6);ctx.fill();question(ctx,0,.5,14);}
+    [-31,27].forEach(x=>{ctx.fillStyle='#fff2cd65';ctx.beginPath();ctx.ellipse(x+3,Math.sin(turn*2)*15,1.25,2,0,0,Math.PI*2);ctx.fill();});ctx.restore();
+   }
+   function needles(x,y,phase){
+    ctx.save();ctx.translate(x,y);ctx.scale(Math.min(1,col.w/64),1);ctx.rotate(Math.sin(phase)*.12);
+    for(let i=0;i<2;i++){
+     ctx.save();ctx.rotate((i?-.52:.46)+Math.sin(phase+(i?1.6:0))*.12);ctx.translate(i?2:-2,i?1:-1);ctx.drawImage(metal,0,0,metal.width,metal.height,-18,-3,40,6);ctx.restore();
+    }ctx.restore();
+   }
+   function actorTravel(from,to,t,bend){const e=smooth(t);return{x:bounded(mix(from.x,to.x,e)+Math.sin(e*Math.PI)*bend,margin,W-margin),y:mix(from.y,to.y,e)};}
+   function roundClip(){ctx.beginPath();ctx.roundRect(col.x,col.y,col.w,col.h,5);ctx.clip();}
+   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,dock=reduced?0:140,weave=reduced?120:1100,transfer=reduced?80:330,revealHold=maskedOutgoing&&!reduced?120:0,duration=dock+weave+revealHold+transfer;
+   let lastRow=-1;loom.append(canvas);column.classList.add('working');loom.classList.add('running');started=true;
+   await new Promise((resolve,reject)=>{
+    let animationId=0,watchdog=0,finished=false,revealed=false,start;
+    function finish(error){if(finished)return;finished=true;cancelAnimationFrame(animationId);clearTimeout(watchdog);document.removeEventListener('visibilitychange',onVisibility);if(error)reject(error);else resolve();}
+    function onVisibility(){if(document.hidden)finish();}
+    document.addEventListener('visibilitychange',onVisibility);watchdog=setTimeout(()=>finish(),duration+1200);
+    function frame(now){
+     if(finished)return;
+     try{
+      start??=now;const ms=now-start,p=clamp((ms-dock)/weave),d=clamp(ms/Math.max(dock,1)),returning=ms>=dock+weave,returnMs=Math.max(0,ms-dock-weave),q=smooth(clamp((returnMs-revealHold)/transfer));
+      ctx.clearRect(0,0,W,H);
+      // The open edge leads slightly, leaving space for the cloth to feed
+      // through smoothly instead of translating an intact colored block.
+      const knit=clamp((p-.12)/.88),unravel=clamp(p*1.24),grown=bh*knit;
+      const undoRows=unravel*rows,removed=Math.floor(undoRows),loose=undoRows-removed,end=col.h+grown-removed*rh;
+      ctx.save();roundClip();ctx.save();ctx.beginPath();
+      if(loose>0&&unravel<1){logicalRect(col.x,0,col.w,Math.max(0,end-rh));const keep=col.w*(1-loose),left=removed%2?col.x:col.x+col.w-keep;logicalRect(left,end-rh,keep,rh);}else logicalRect(col.x,0,col.w,Math.max(0,end));
+      ctx.clip();ctx.drawImage(oldCloth,0,0,oldCloth.width,oldCloth.height,col.x,col.y+sgn*grown,col.w,col.h);ctx.restore();
+      const knittedRows=knit*rows,full=Math.floor(knittedRows),part=knittedRows-full;
+      ctx.save();ctx.beginPath();if(full)logicalRect(col.x,0,col.w,Math.min(bh,full*rh));if(full<rows&&part>0){const rw=col.w*part,xx=full%2?col.x+col.w-rw:col.x;logicalRect(xx,full*rh,rw,rh);}
+      ctx.clip();ctx.drawImage(newCloth,0,0,newCloth.width,newCloth.height,col.x,sgn===1?col.y:col.y+col.h-bh,col.w,bh);ctx.restore();
+      ctx.globalCompositeOperation='source-atop';ctx.fillStyle=sideShade;ctx.fillRect(col.x,col.y,col.w,col.h);ctx.globalCompositeOperation='source-over';ctx.restore();
+      const travelSide=center<W/2?-1:1,source=actorTravel(home,supply,d,sgn===1?0:travelSide*Math.min(55,W*.13)),target=actorTravel(away,collect,d,sgn===1?0:-travelSide*Math.min(55,W*.13));
+      if(!returning){
+       if(p>0&&p<1){
+        const scan=full%2?1-part:part,nx=col.x+5+(col.w-10)*scan,ny=yAt(Math.min(bh,full*rh+rh*.56));
+        const feed=new Path2D();feed.moveTo(source.x+20,source.y+sgn*8);feed.bezierCurveTo(source.x+36,source.y+sgn*24,nx+Math.sin(ms*.025)*2.5,ny-sgn*17,nx,ny);yarn(feed,colors[incoming],3.1,knit*20);
+        if(knit>0){const loopSize=2.8+Math.sin(part*Math.PI)*2.3,loop=new Path2D();loop.moveTo(nx-3,ny-sgn*2);loop.bezierCurveTo(nx-loopSize,ny+sgn*loopSize*1.8,nx+loopSize,ny+sgn*loopSize*1.6,nx+3,ny-sgn*2);yarn(loop,colors[incoming],2.2,knit*20);needles(nx,ny,ms*.05);}
+        if(unravel<1){
+         const scanRip=removed%2?1-loose:loose,ux=col.x+5+(col.w-10)*scanRip,uy=yAt(Math.min(col.h,end-rh*.15)),curl=4.5+Math.sin(loose*Math.PI)*3.5,opening=new Path2D();
+         opening.moveTo(ux-5,uy-sgn*3);opening.bezierCurveTo(ux-curl*1.5,uy+sgn*curl*2,ux+curl,uy+sgn*curl*2.3,ux+3,uy+sgn*2);opening.bezierCurveTo(ux+curl,uy-sgn*2,ux+curl*1.4,uy+sgn*curl,ux+curl*.7,uy+sgn*curl*1.6);opening.bezierCurveTo(ux+Math.sin(ms*.018)*3,uy+sgn*27,target.x-25,target.y-sgn*16,target.x-17,target.y-sgn*5);yarn(opening,collectedColor,2.9,unravel*-22);
+         ctx.strokeStyle=collectedColor;ctx.lineWidth=.65;
+         for(let k=0;k<4;k++){const life=(ms/180+k*.23)%1,drift=Math.sin(k*2.4+ms*.003)*6;ctx.globalAlpha=(1-life)*.3;ctx.beginPath();ctx.moveTo(ux+drift*life,uy+sgn*(7+life*15));ctx.quadraticCurveTo(ux+drift*life+2,uy+sgn*(10+life*15),ux+drift*life-1,uy+sgn*(13+life*15));ctx.stroke();}ctx.globalAlpha=1;
+        }
+        const rowEvent=full+removed;if(rowEvent!==lastRow){lastRow=rowEvent;tick?.(rowEvent);}
+       }
+       // Drawing spools over their incoming threads hides the join in the
+       // wrapping, so a strand never ends in a detached dot above the spool.
+       bobbin(source.x,source.y,colors[incoming],1-knit,knit*10,1);bobbin(target.x,target.y,collectedColor,unravel,-unravel*10,mix(.62,.92,smooth(d)),1,maskedOutgoing);
+      }else{
+       // The full receiving spool is uncovered in place before it returns to
+       // the hand. No hue from the answer appears during the collection.
+       if(maskedOutgoing&&!revealed){revealed=true;try{onReveal?.();}catch{}}
+       // The unused supply spool is already known. Only a change of side
+       // moves it, and it follows the same return clock as the recovered one.
+       if(companion){
+        if(!companionToRestore){companionToRestore=companion.element;companionToRestore.classList.add('moving-companion');}
+        const side=companion.home.x<W/2?-1:1,otherFly=actorTravel(companion.home,companion.landing,q,side*Math.min(32,W*.09));
+        bobbin(otherFly.x,otherFly.y,companion.color,1,-q*2,1);
+       }
+       bobbin(supply.x,supply.y,colors[incoming],0,10,1,1-q);
+       const fly=actorTravel(collect,landing,q,travelSide*Math.min(49,W*.13)),settle=Math.sin(clamp((q-.72)/.28)*Math.PI)*.035,uncover=maskedOutgoing?smooth(clamp(returnMs/Math.max(1,revealHold*.8))):1,scale=mix(.92,1,q)+settle+(maskedOutgoing&&!reduced?Math.sin(clamp(returnMs/Math.max(1,revealHold))*Math.PI)*.035:0);
+       bobbin(fly.x,fly.y,colors[outgoing],1,-10-q*2,scale);
+       if(maskedOutgoing&&uncover<1)bobbin(fly.x,fly.y,NS.hiddenColor,1,-10-q*2,scale,1-uncover,true);
+       if(maskedOutgoing&&!reduced&&returnMs<revealHold){
+        const pulse=clamp(returnMs/revealHold);ctx.save();ctx.globalAlpha=Math.sin(pulse*Math.PI)*.6;ctx.strokeStyle='#f7edda';ctx.lineWidth=1.2;ctx.beginPath();ctx.ellipse(bounded(fly.x,margin,W-margin),bounded(fly.y,26,H-26),36+pulse*6,24+pulse*5,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+       }
+      }
+      if(ms>=duration)finish();else animationId=requestAnimationFrame(frame);
+     }catch(error){finish(error);}
+    }animationId=requestAnimationFrame(frame);
+   });
+  }finally{if(companionToRestore)companionToRestore.classList.remove('moving-companion');if(started){column.classList.remove('working');loom.classList.remove('running');}canvas.remove();}
+ };
+})();
+
+</script><script>
+/* Small, self-contained feedback. Game rules and once-per-column policy live
+   in app.js; this module owns only disposable visuals and synthesised audio. */
+(function(){
+ 'use strict';
+ let sound=false,context=null;
+ const voices=new Set(),timers=new Set(),particles=new Set(),targets=new Set(),boards=new Set();
+ const columnTimers=new WeakMap(),gold='#f2d494',palette=['#e786a0','#edc35d','#80b99a','#8aaee6'];
+ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+ const safely=fn=>{try{return fn();}catch{return undefined;}};
+ const reduced=()=>safely(()=>matchMedia('(prefers-reduced-motion: reduce)').matches)===true;
+ function later(fn,ms){
+  const timer=setTimeout(()=>{timers.delete(timer);safely(fn);},ms);timers.add(timer);return timer;
+ }
+ function clearLater(timer){if(timer){clearTimeout(timer);timers.delete(timer);}}
+ function audio(){
+  if(!sound)return null;
+  if(!context||context.state==='closed'){
+   const Audio=window.AudioContext||window.webkitAudioContext;
+   if(!Audio)return null;
+   context=new Audio();
+  }
+  return context;
+ }
+ function prime(){
+  safely(()=>{const ctx=audio();if(ctx&&ctx.state==='suspended'){const resume=ctx.resume();resume?.catch?.(()=>{});}});
+ }
+ function release(voice){
+  voices.delete(voice);safely(()=>voice.source.disconnect());safely(()=>voice.gain.disconnect());
+ }
+ function silence(){
+  for(const voice of [...voices]){
+   safely(()=>{const now=voice.ctx.currentTime;voice.gain.gain.cancelScheduledValues(now);voice.gain.gain.setValueAtTime(.0001,now);voice.source.stop(now+.004);});
+   release(voice);
+  }
+ }
+ function setSound(value){sound=Boolean(value);if(!sound)silence();}
+ // Each oscillator is tracked even before its scheduled start, so muting
+ // cancels the remaining notes in a chime immediately.
+ function tone(frequency,delay=0,length=.3,peak=.04,type='sine'){
+  safely(()=>{
+   if(!sound||document.hidden)return;
+   const ctx=audio();if(!ctx||ctx.state!=='running')return;
+   if(voices.size>=48){const first=voices.values().next().value;safely(()=>first.source.stop());release(first);}
+   const source=ctx.createOscillator(),gain=ctx.createGain(),start=ctx.currentTime+delay,end=start+length,voice={source,gain,ctx};
+   source.type=type;source.frequency.setValueAtTime(frequency,start);
+   gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),start+.006);gain.gain.exponentialRampToValueAtTime(.0001,end);
+   source.connect(gain);gain.connect(ctx.destination);voices.add(voice);source.onended=()=>release(voice);source.start(start);source.stop(end+.015);
+  });
+ }
+ function bell(frequency,delay,peak=.052,length=.38){
+  tone(frequency,delay,length,peak,'sine');
+  tone(frequency*2.004,delay,length*.45,peak*.15,'sine');
+ }
+ function note(index,soft=false){
+  if(!sound)return;
+  prime();const i=((Math.floor(Number(index)||0)%4)+4)%4;
+  if(soft){tone([330,370,415,466][i],0,.055,.011,'triangle');}
+  else tone([523.25,587.33,659.25,783.99][i],0,.17,.026,'sine');
+ }
+ function reveal(){
+  // The discovery cue does not encode the answer's hue.
+  prime();bell(659.25,0,.027,.22);bell(987.77,.065,.025,.3);
+ }
+ function getLayer(board){
+  let layer=board.querySelector('.reward-layer');
+  if(!layer){layer=document.createElement('div');layer.className='reward-layer';layer.setAttribute('aria-hidden','true');board.append(layer);}
+  boards.add(board);return layer;
+ }
+ function removeParticle(el){particles.delete(el);el.remove();}
+ function burst(board,x,y,color,count=15,large=false){
+  if(reduced())return;
+  const layer=getLayer(board),bounds=board.getBoundingClientRect();
+  for(let i=0;i<count;i++){
+   while(particles.size>=40)removeParticle(particles.values().next().value);
+   const el=document.createElement('span'),star=i%3===0,angle=-Math.PI*.92+Math.random()*Math.PI*.84,distance=(large?60:35)+Math.random()*(large?85:55);
+   el.className='reward-particle '+(star?'gold':'yarn');if(star)el.textContent='✦';
+   const dx=clamp(Math.cos(angle)*distance,10-x,bounds.width-10-x),dy=Math.sin(angle)*distance;
+   const styles={'--x':x+'px','--y':y+'px','--dx':dx+'px','--dy':dy+'px','--rot':(Math.random()*170-85)+'deg','--delay':(i*5)+'ms','--size':(star?8+Math.random()*6:4+Math.random()*5)+'px','--particle-color':star?gold:color};
+   for(const [name,value] of Object.entries(styles))el.style.setProperty(name,value);
+   layer.append(el);particles.add(el);later(()=>removeParticle(el),1000+i*5);
+  }
+ }
+ function column({column:el,color,progress=1,last=false}={}){
+  safely(()=>{
+   if(!el?.classList||!el.isConnected)return;
+   const board=el.closest('.board-card');if(!board)return;
+   const prior=columnTimers.get(el);clearLater(prior);el.querySelector('.reward-stamp')?.remove();
+   el.style.setProperty('--reward-color',color||gold);el.classList.add('rewarding');targets.add(el);
+   const stamp=document.createElement('span');stamp.className='reward-stamp';stamp.textContent='✓';stamp.setAttribute('aria-hidden','true');el.append(stamp);
+   const timer=later(()=>{el.classList.remove('rewarding');stamp.remove();targets.delete(el);columnTimers.delete(el);},reduced()?700:1050);columnTimers.set(el,timer);
+   const b=board.getBoundingClientRect(),r=el.getBoundingClientRect();
+   burst(board,r.left-b.left+r.width/2,r.top-b.top+r.height*.35,color||gold,15,false);
+   if(!reduced())safely(()=>navigator.vibrate?.(12));
+   // A restrained final-column cadence leaves room for the later victory
+   // phrase instead of stacking two full, bright arpeggios.
+   const n=clamp(Math.floor(Number(progress)||1),1,4),base=[392,440,493.88,523.25][n-1];
+   prime();bell(base,0,last?.043:.052,.32);bell(base*1.25,.085,last?.036:.047,.35);
+   if(!last)bell(base*1.5,.17,.043,.4);
+  });
+ }
+ function victory(){
+  safely(()=>{
+   const board=document.querySelector('.board-card');if(!board)return;
+   board.classList.add('victory-glow');boards.add(board);later(()=>board.classList.remove('victory-glow'),1350);
+   const b=board.getBoundingClientRect();
+   if(!reduced()){
+    // Split the burst so the celebration frames the finished cloth rather
+    // than hiding it behind one dense patch of confetti.
+    burst(board,b.width*.31,b.height*.42,palette[0],13,true);
+    burst(board,b.width*.69,b.height*.42,palette[2],13,true);
+    safely(()=>navigator.vibrate?.([12,35,18]));
+   }
+   prime();[[523.25,0],[659.25,.095],[783.99,.19],[1046.5,.34]].forEach(([frequency,delay],i)=>bell(frequency,delay,i===3?.047:.04,i===3?.65:.35));
+  });
+ }
+ function reset(){
+  for(const timer of timers)clearTimeout(timer);timers.clear();silence();
+  for(const el of targets){safely(()=>el.classList.remove('rewarding'));safely(()=>el.querySelector('.reward-stamp')?.remove());columnTimers.delete(el);}targets.clear();
+  for(const el of particles)safely(()=>el.remove());particles.clear();
+  for(const board of boards){safely(()=>board.classList.remove('victory-glow'));safely(()=>board.querySelector('.reward-layer')?.remove());}boards.clear();
+  safely(()=>navigator.vibrate?.(0));
+ }
+ window.KnitRewards={setSound,prime,note,reveal,column,victory,reset};
+})();
+
+</script><script>
+/* Self-contained, illustrative lessons. No game state or unrevealed colors are read. */
+(function () {
+  'use strict';
+
+  const storageKey = 'knit-learned-v1';
+  const lessons = {
+    dual: {
+      title: '试试换一筒线',
+      description: '点选 A 或 B，再点一列织布。收回的毛线会补到刚才选的线筒。'
+    },
+    order: {
+      title: '照着色样织',
+      description: '每列上方是目标色样。把织布从上到下的颜色顺序织得一样，就完成这一列。'
+    },
+    direction: {
+      title: '这次，想从哪边织？',
+      description: '点 ↓ 从上面织入，点 ↑ 从下面织入。换个方向，让颜色更快归位。'
+    },
+    queue: {
+      title: '让下一筒接上',
+      description: '两筒毛线依次轮换织入。收回的颜色排到后面，下一筒会自动补上。'
+    }
+  };
+  const isKind = kind => kind === 'dual' || kind === 'order' || kind === 'direction' || kind === 'queue';
+  const learned = new Set();
+  let dialog;
+  let currentKind = null;
+  let previousFocus = null;
+  let animationTimer = null;
+  let focusTimer = null;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    if (Array.isArray(saved)) saved.forEach(kind => { if (isKind(kind)) learned.add(kind); });
+  } catch (_) { /* Storage is optional in private browsing and local previews. */ }
+
+  function remember(kind) {
+    if (!kind) return;
+    learned.add(kind);
+    try { localStorage.setItem(storageKey, JSON.stringify(Array.from(learned))); } catch (_) {}
+  }
+
+  function create() {
+    if (dialog) return;
+    dialog = document.createElement('dialog');
+    dialog.id = 'knit-coach';
+    dialog.className = 'knit-coach';
+    dialog.setAttribute('aria-labelledby', 'coach-title');
+    dialog.setAttribute('aria-describedby', 'coach-description');
+    dialog.innerHTML = `
+      <button class="kc-close" type="button" aria-label="关闭教学"><span aria-hidden="true">×</span></button>
+      <div class="kc-eyebrow" aria-hidden="true">小小织布课堂</div>
+      <h2 id="coach-title"></h2>
+      <p id="coach-description"></p>
+      <div class="kc-demo kc-dual" data-coach-demo="dual" aria-hidden="true">
+        <svg class="kc-thread-path" viewBox="0 0 280 184" preserveAspectRatio="none">
+          <path class="kc-thread-a" d="M90 63 C90 95 124 88 140 115" />
+          <path class="kc-thread-b" d="M190 63 C190 95 156 88 140 115" />
+        </svg>
+        <div class="kc-spool kc-spool-a"><i class="kc-spool-ring"></i><i class="kc-yarn"></i><b>A</b></div>
+        <div class="kc-spool kc-spool-b"><i class="kc-spool-ring"></i><i class="kc-yarn"></i><b>B</b></div>
+        <div class="kc-tiny-cloth"><i></i><i></i><i></i><span class="kc-needle"></span></div>
+        <svg class="kc-finger" viewBox="0 0 32 38"><path d="M10 20V6a3 3 0 0 1 6 0v10-3a3 3 0 0 1 6 0v3-1a3 3 0 0 1 5 2v8c0 5-4 9-9 9h-1c-4 0-6-2-8-5l-5-7c-2-3 2-6 4-3l2 2" /></svg>
+        <span class="kc-dual-check">✓</span>
+      </div>
+      <div class="kc-demo kc-order" data-coach-demo="order" aria-hidden="true" hidden>
+        <div class="kc-order-target"><span>色样</span><div class="kc-color-sample"><i></i><i></i><i></i></div></div>
+        <div class="kc-order-guide"><i></i><i></i><i></i></div>
+        <div class="kc-order-cloth"><i></i><i></i><i></i><span class="kc-order-scan"></span></div>
+        <span class="kc-order-check">✓</span>
+      </div>
+      <div class="kc-demo kc-direction" data-coach-demo="direction" aria-hidden="true" hidden>
+        <div class="kc-direction-options">
+          <span class="kc-direction-option kc-direction-down"><b>↓</b><span>上面织入</span></span>
+          <span class="kc-direction-option kc-direction-up"><b>↑</b><span>下面织入</span></span>
+        </div>
+        <svg class="kc-direction-thread" viewBox="0 0 280 184" preserveAspectRatio="none">
+          <path class="kc-direction-thread-down" d="M164 44 V66 M164 114 V137" />
+          <path class="kc-direction-thread-up" d="M164 44 V66 M164 114 V137" />
+        </svg>
+        <div class="kc-direction-actor kc-direction-supply"><div class="kc-spool kc-direction-spool"><i class="kc-yarn"></i></div><span>供线</span></div>
+        <div class="kc-direction-actor kc-direction-receiver"><div class="kc-spool kc-direction-spool"><i class="kc-yarn"></i></div><span>回收</span></div>
+        <div class="kc-direction-cloth"><i></i><i></i><i></i><span class="kc-direction-scan"></span></div>
+        <div class="kc-direction-flow"><span class="kc-direction-flow-down">↓</span><span class="kc-direction-flow-up">↑</span></div>
+        <svg class="kc-direction-finger" viewBox="0 0 32 38"><path d="M10 20V6a3 3 0 0 1 6 0v10-3a3 3 0 0 1 6 0v3-1a3 3 0 0 1 5 2v8c0 5-4 9-9 9h-1c-4 0-6-2-8-5l-5-7c-2-3 2-6 4-3l2 2" /></svg>
+      </div>
+      <div class="kc-demo kc-queue" data-coach-demo="queue" aria-hidden="true" hidden>
+        <span class="kc-q-label kc-q-label-one">当前</span><span class="kc-q-label kc-q-label-two">下一</span><span class="kc-q-arrow">→</span>
+        <svg class="kc-q-thread" viewBox="0 0 280 184" preserveAspectRatio="none"><path d="M89 51 C89 78 140 66 140 90 M140 137 V155"/></svg>
+        <div class="kc-q-actor kc-q-main"><div class="kc-spool"><i class="kc-yarn"></i></div></div>
+        <div class="kc-q-actor kc-q-next"><div class="kc-spool"><i class="kc-yarn"></i></div></div>
+        <div class="kc-q-actor kc-q-recovered"><div class="kc-spool"><i class="kc-yarn"></i></div></div>
+        <div class="kc-q-cloth"><i></i><i></i><i></i></div>
+        <svg class="kc-q-finger" viewBox="0 0 32 38"><path d="M10 20V6a3 3 0 0 1 6 0v10-3a3 3 0 0 1 6 0v3-1a3 3 0 0 1 5 2v8c0 5-4 9-9 9h-1c-4 0-6-2-8-5l-5-7c-2-3 2-6 4-3l2 2"/></svg>
+        <span class="kc-q-caption">下一筒自动补上</span>
+      </div>
+      <button class="kc-start" type="button" autofocus>试试看 <span aria-hidden="true">→</span></button>`;
+
+    dialog.querySelector('.kc-close').addEventListener('click', close);
+    dialog.querySelector('.kc-start').addEventListener('click', close);
+    dialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      close();
+    });
+    // A queued native close event may arrive after the next lesson was opened.
+    dialog.addEventListener('close', () => { if (!dialog.open) finishClose(); });
+    document.body.appendChild(dialog);
+  }
+
+  function finishClose() {
+    if (!currentKind) return;
+    remember(currentKind);
+    currentKind = null;
+    clearTimeout(animationTimer);
+    clearTimeout(focusTimer);
+    dialog.classList.remove('is-playing');
+    window.dispatchEvent(new CustomEvent('knit-coach-closed'));
+    // The caller may unlock the trigger or immediately open another lesson.
+    if (!dialog.open) {
+      const restore = previousFocus;
+      previousFocus = null;
+      if (restore && restore.isConnected && !restore.disabled && typeof restore.focus === 'function') {
+        try { restore.focus({ preventScroll: true }); } catch (_) { restore.focus(); }
+      }
+    }
+  }
+
+  function close() {
+    if (!dialog || !dialog.open) return;
+    dialog.close();
+    // Native close is queued; finish now so callers can open a follow-up lesson.
+    finishClose();
+  }
+
+  function open(kind = 'dual', { force = false } = {}) {
+    if (!isKind(kind) || (learned.has(kind) && !force)) return false;
+    create();
+    if (dialog.open && currentKind === kind) return true;
+    if (dialog.open) remember(currentKind);
+    else if (!previousFocus) previousFocus = document.activeElement;
+    currentKind = kind;
+    clearTimeout(animationTimer);
+    clearTimeout(focusTimer);
+    dialog.querySelector('#coach-title').textContent = lessons[kind].title;
+    dialog.querySelector('#coach-description').textContent = lessons[kind].description;
+    dialog.querySelectorAll('[data-coach-demo]').forEach(demo => {
+      demo.hidden = demo.dataset.coachDemo !== kind;
+    });
+    dialog.classList.remove('is-playing');
+    if (!dialog.open) dialog.showModal();
+    void dialog.offsetWidth;
+    dialog.classList.add('is-playing');
+    animationTimer = setTimeout(() => dialog.classList.remove('is-playing'), 5700);
+    focusTimer = setTimeout(() => {
+      if (dialog.open) dialog.querySelector('.kc-start').focus({ preventScroll: true });
+    }, 0);
+    return true;
+  }
+
+  window.KnitCoach = { open, close, isOpen: () => Boolean(dialog && dialog.open) };
+})();
+
+</script><script>
+(function (root) {
+  'use strict';
+
+  const items = [
+    {
+      id: 1, name: '基础织造', start: 1, end: 5,
+      summary: '从单筒换手开始，认识织入、拆线与四列纯色目标。',
+      stages: [
+        {name: '入门', start: 1, end: 2, summary: '短织带练习，熟悉一端织入、另一端回收。'},
+        {name: '练习', start: 3, end: 5, summary: '逐步增加布段和颜色交错，学习跨列换手。'}
+      ],
+      milestones: [{level: 1, label: '基础操作'}, {level: 3, label: '增加布段'}, {level: 5, label: '跨列练习'}]
+    },
+    {
+      id: 2, name: '反向织带', start: 6, end: 13,
+      summary: '入口来到织带下方，观察箭头，尝试从不同方向整理颜色。',
+      stages: [
+        {name: '入门', start: 6, end: 7, summary: '先认识单列反向织入，核心换手规则保持一致。'},
+        {name: '练习', start: 8, end: 11, summary: '交错安排上下入口，规划不同织带的回收颜色。'},
+        {name: '组合', start: 12, end: 13, summary: '体验全反向与混合方向布局。'}
+      ],
+      milestones: [{level: 6, label: '首次反向'}, {level: 12, label: '全反向'}, {level: 13, label: '混合方向'}]
+    },
+    {
+      id: 3, name: '隐藏色', start: 14, end: 18,
+      summary: '未知布段先保持中性色，收线完成后才揭晓真实颜色。',
+      stages: [
+        {name: '入门', start: 14, end: 15, summary: '从少量未知布段开始，学习边揭晓边整理。'},
+        {name: '练习', start: 16, end: 17, summary: '更多遮罩随织带移动，保留已知颜色的判断线索。'},
+        {name: '进阶', start: 18, end: 18, summary: '集中体验更多隐藏布段的揭晓与回收。'}
+      ],
+      milestones: [{level: 14, label: '首次揭晓'}, {level: 16, label: '隐藏扩展'}, {level: 18, label: '更多未知'}]
+    },
+    {
+      id: 4, name: '动态换向', start: 19, end: 23,
+      summary: '每步自动上下交替，再用接力预选连续织造。',
+      stages: [
+        {name: '入门', start: 19, end: 20, summary: '根据方向预览，在上下交替中整理颜色。'},
+        {name: '练习', start: 21, end: 22, summary: '加入接力，预选两到三步并观察连续收织。'},
+        {name: '组合', start: 23, end: 23, summary: '将自动换向、接力与少量隐藏色结合。'}
+      ],
+      milestones: [{level: 19, label: '自动换向'}, {level: 21, label: '接力预选'}, {level: 23, label: '隐藏组合'}]
+    },
+    {
+      id: 5, name: '三拍节奏', start: 24, end: 28,
+      summary: '方向按固定三拍循环，让同向连织与换向形成新的节奏。',
+      stages: [
+        {name: '入门', start: 24, end: 25, summary: '认识下下上、下上上的两种循环，并查看未来三步。'},
+        {name: '练习', start: 26, end: 27, summary: '在四列混色布局中练习接力与三拍规划。'},
+        {name: '进阶', start: 28, end: 28, summary: '用更长织带巩固三拍节奏。'}
+      ],
+      milestones: [{level: 24, label: '三拍入门'}, {level: 26, label: '节奏练习'}, {level: 28, label: '长带节奏'}]
+    },
+    {
+      id: 6, name: '双线筒', start: 29, end: 32,
+      summary: '点选 A 或 B 供线，回收颜色只补回本次使用的线筒。',
+      stages: [
+        {name: '入门', start: 29, end: 30, summary: '先固定向下织，专门练习两筒选择与换手。'},
+        {name: '练习', start: 31, end: 31, summary: '恢复熟悉的三拍方向，考虑每步使用哪一筒。'},
+        {name: '组合', start: 32, end: 32, summary: '在五段织带中组合双筒与三拍。'}
+      ],
+      milestones: [{level: 29, label: 'A/B 入门'}, {level: 31, label: '双筒三拍'}, {level: 32, label: '五段组合'}]
+    },
+    {
+      id: 7, name: '条纹色样', start: 33, end: 35,
+      summary: '目标从纯色变为色样，按每列从上到下的颜色顺序织造成品。',
+      stages: [
+        {name: '入门', start: 33, end: 33, summary: '左右两列已完成，只练习中间两列的色样对应。'},
+        {name: '练习', start: 34, end: 34, summary: '四列都需要整理，并重新加入三拍方向。'},
+        {name: '组合', start: 35, end: 35, summary: '使用两筒毛线完成条纹色样。'}
+      ],
+      milestones: [{level: 33, label: '色样入门'}, {level: 34, label: '四列色样'}, {level: 35, label: '双筒色样'}]
+    },
+    {
+      id: 8, name: '综合练习', start: 36, end: 40,
+      summary: '用短关重新组合已学规则，巩固双筒、色样和三拍规划。',
+      stages: [
+        {name: '复习', start: 36, end: 37, summary: '分别回顾双筒纯色与单筒条纹目标。'},
+        {name: '练习', start: 38, end: 39, summary: '将双筒或色样与三拍方向结合。'},
+        {name: '组合', start: 40, end: 40, summary: '集中体验双筒、色样与三拍的组合。'}
+      ],
+      milestones: [{level: 36, label: '双筒复习'}, {level: 38, label: '三拍组合'}, {level: 40, label: '综合色样'}]
+    },
+    {
+      id: 9, name: '自由换向', start: 41, end: 44,
+      summary: '每一步主动选择向上或向下织入，让颜色从更合适的一端归位。',
+      stages: [
+        {name: '入门', start: 41, end: 41, summary: '两列短练习，认识主动换向的作用。'},
+        {name: '练习', start: 42, end: 42, summary: '在四列纯色目标中选择每步的织入方向。'},
+        {name: '组合', start: 43, end: 44, summary: '自由选择方向，完成逐列对应的条纹色样。'}
+      ],
+      milestones: [{level: 41, label: '主动换向'}, {level: 42, label: '四列练习'}, {level: 44, label: '换向色样'}]
+    },
+    {
+      id: 10, name: '轮换线筒', start: 45, end: 55,
+      summary: '两筒按顺序自动供线，回收色排到队尾，提前观察下一筒。',
+      stages: [
+        {name: '入门', start: 45, end: 46, summary: '从两列练习过渡到四列，熟悉下一筒自动补位。'},
+        {name: '练习', start: 47, end: 50, summary: '固定向下织，逐步增加纯色整理中的轮换规划。'},
+        {name: '组合', start: 51, end: 55, summary: '结合双色、对称、交错和三色色样。'}
+      ],
+      milestones: [{level: 45, label: '轮换入门'}, {level: 51, label: '轮换色样'}, {level: 55, label: '三色组合'}]
+    }
+  ];
+
+  function forLevel(index) {
+    if (!Number.isInteger(index) || index < 0) return null;
+    const level = index + 1;
+    return items.find(item => level >= item.start && level <= item.end) || null;
+  }
+
+  const api = {items, forLevel};
+  root.KnitChapters = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(globalThis);
+
+</script><script>
+/* Home, chapter browsing and credits. Gameplay remains in app.js. */
+(function(){
+ 'use strict';
+ let options={},view='home',mounted=false,visitedGame=false,restoreFocus=null;
+ const $=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0');
+ const items=()=>window.KnitChapters?.items||[];
+ const total=()=>window.KnitEngine?.count||55;
+ function progress(){
+  let p={};try{p=options.getProgress?.()||{};}catch{}
+  const passed=new Set((Array.isArray(p.passed)?p.passed:[]).filter(n=>Number.isInteger(n)&&n>=0&&n<total()));
+  const lastLevel=Number.isInteger(p.lastLevel)?Math.max(0,Math.min(total()-1,p.lastLevel)):0;
+  return {passed,lastLevel,played:visitedGame||Boolean(p.hasPlayed)||passed.size>0||lastLevel>0};
+ }
+ function play(level){options.onPlay?.(level-1);}
+ function focusTitle(selector){const el=$(selector);if(el){try{el.focus({preventScroll:true});}catch{el.focus();}}}
+ function show(next){
+  if(!mounted)return;
+  view=next;document.body.dataset.view=next;
+  $('#shell-screen').hidden=next==='game';$('#game-screen').hidden=next!=='game';
+  $('#home-screen').hidden=next!=='home';$('#chapters-screen').hidden=next!=='chapters';
+  window.scrollTo(0,0);
+  options.onViewChange?.(next);
+ }
+ function home(){if(!mounted)return;refreshHome();show('home');focusTitle('#home-title');}
+ function chapters(id){
+  if(!mounted)return;
+  renderChapters();show('chapters');focusTitle('#chapters-title');
+  const chapter=items().find(c=>c.id===Number(id));
+  if(chapter){const heading=$(`#kp-chapter-${chapter.id} h2`);focusTitle(`#kp-chapter-${chapter.id} h2`);heading?.scrollIntoView({block:'start'});}
+ }
+ function game(){if(!mounted)return;visitedGame=true;show('game');}
+ function refreshHome(){
+  if(!mounted)return;const p=progress();
+  $('#home-progress').textContent=`已完成 ${p.passed.size} / ${total()} 关`;
+  $('#home-counts').textContent=`${items().length} 个章节 · ${total()} 关 · 自由选关`;
+  const resume=$('#home-continue');resume.hidden=!p.played;resume.textContent=`继续第 ${pad(p.lastLevel+1)} 关 ↗`;resume.onclick=()=>play(p.lastLevel+1);
+ }
+ function makeBack(label,action){const b=document.createElement('button');b.className='kp-back';b.type='button';b.textContent=label;b.onclick=action;return b;}
+ function renderChapters(){
+  const root=$('#chapters-screen'),p=progress();root.replaceChildren();
+  const top=document.createElement('div');top.className='kp-chapter-top';
+  top.append(makeBack('← 返回主页',home));root.append(top);
+  const heading=document.createElement('header');heading.className='kp-page-heading';
+  heading.innerHTML='<h1 id="chapters-title" tabindex="-1">选择关卡</h1>';
+  root.append(heading);
+  const groups=document.createElement('div');groups.className='kp-chapter-list';
+  for(const c of items()){
+   const section=document.createElement('section');section.className='kp-chapter-group';section.id=`kp-chapter-${c.id}`;section.setAttribute('aria-labelledby',`kp-chapter-title-${c.id}`);
+   const title=document.createElement('h2');title.id=`kp-chapter-title-${c.id}`;title.tabIndex=-1;title.innerHTML=`<span>${pad(c.id)}</span> ${c.name}`;section.append(title);
+   const grid=document.createElement('div');grid.className='kp-level-grid';
+   for(let level=c.start;level<=c.end;level++){
+    const b=document.createElement('button');b.type='button';b.className='kp-level'+(p.passed.has(level-1)?' passed':'')+(p.lastLevel===level-1?' current':'');b.dataset.level=level-1;
+    b.setAttribute('aria-label',`第${level}关，${c.name}${p.passed.has(level-1)?'，已完成':''}`);
+    b.innerHTML=`<b>${pad(level)}</b>${p.passed.has(level-1)?'<span aria-hidden="true">✓</span>':''}`;b.onclick=()=>play(level);grid.append(b);
+   }
+   section.append(grid);groups.append(section);
+  }
+  root.append(groups);
+  const footer=document.createElement('footer');footer.className='kp-chapter-footer';footer.append(makeBack('✳ 特别感谢',credits));root.append(footer);
+ }
+ function credits(){
+  const d=$('#credits-dialog');if(!d||d.open)return;restoreFocus=document.activeElement;d.showModal();$('#credits-close').focus();
+ }
+ function refresh(){if(!mounted)return;if(view==='home')refreshHome();else if(view==='chapters')renderChapters();}
+ function init(config){
+  options=config||{};if(mounted){home();return;}
+  const host=$('#shell-screen');if(!host||!$('#game-screen'))throw new Error('Missing page hosts');
+  host.innerHTML=`
+   <section id="home-screen" class="knit-home" aria-label="游戏主页">
+    <div class="kp-home-center">
+     <p class="kp-kicker">KNIT &amp; UNWIND</p>
+     <h1 id="home-title" tabindex="-1">织织慢慢<span>.</span></h1>
+     <div class="kp-home-art" aria-hidden="true">
+      <div class="kp-home-bobbin spool" style="--yarn:#e786a0"></div>
+      <svg class="kp-home-thread" viewBox="0 0 280 210"><path d="M165 38C203 55 166 67 134 58S74 63 79 80"/></svg>
+      <div class="kp-home-loom"><i class="kp-home-wood"></i><div class="kp-home-cloth kp-pink"><span></span><span></span><span></span></div><div class="kp-home-cloth kp-yellow"><span></span><span></span><span></span></div><div class="kp-home-cloth kp-green"><span></span><span></span><span></span></div><div class="kp-home-cloth kp-blue"><span></span><span></span><span></span></div></div>
+     </div>
+     <p class="kp-home-line">把颜色织回刚刚好的位置。</p>
+     <button id="home-start" class="kp-primary" type="button">开 始 <span aria-hidden="true">↗</span></button>
+     <p id="home-counts" class="kp-home-counts"></p>
+     <div class="kp-home-progress"><span id="home-progress"></span><button id="home-continue" class="kp-continue" type="button" hidden></button></div>
+    </div>
+    <footer class="kp-home-footer"><button id="home-credits" type="button">✳ 特别感谢</button><p>慢慢织，一点点归位。</p><span aria-hidden="true">一缕一缕</span></footer>
+   </section>
+   <section id="chapters-screen" class="knit-chapters" aria-label="章节选关" hidden></section>`;
+  const dialog=document.createElement('dialog');dialog.id='credits-dialog';dialog.className='kp-credits';dialog.setAttribute('aria-labelledby','credits-title');
+  dialog.innerHTML=`<div class="kp-credits-head"><p class="kp-kicker">MADE BETTER, TOGETHER</p><button id="credits-close" class="kp-credit-close" type="button" aria-label="关闭特别感谢">×</button></div><h2 id="credits-title">特别感谢</h2><span class="kp-thanks-mark" aria-hidden="true">✳</span><h3>感谢每一位试玩的人</h3><p>关于毛线、色样、线筒和每一次织入的反馈，<br>让这个小游戏一点点变得更好。</p><p class="kp-thanks-last">也谢谢你，陪它慢慢织下去。</p><div class="kp-contact"><h3>保持联系</h3><p>联系微信：<strong>13052090337</strong></p></div>`;
+  document.body.append(dialog);dialog.querySelector('#credits-close').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{if(restoreFocus?.isConnected&&!restoreFocus.disabled)restoreFocus.focus({preventScroll:true});restoreFocus=null;});
+  $('#home-start').onclick=()=>chapters();$('#home-credits').onclick=credits;mounted=true;home();
+ }
+ window.KnitPages={init,home,chapters,game,refresh,isGame:()=>view==='game',hasDialog:()=>Boolean($('#credits-dialog')?.open)};
+})();
+
+</script><script>
+const E=KnitEngine,$=s=>document.querySelector(s);
+const colors=['#e786a0','#edc35d','#80b99a','#8aaee6'],names=['粉','黄','绿','蓝'],total=E.count||55;
+let level=0,state,history=[],busy=false,sound=true,token=0,passed=[],hintToken=0,rewarded=new Set(),winRewarded=false;
+let relayAvailable=false,planning=false,queue=[],relayRunning=false,relayPlan=[],relayIndex=-1,relayDirections=[],relayRunId=0,selectedSpool=0,selectionHistory=[];
+let coachQueue=[],replayCoach=false;
+let selectedDirection=1,directionHistory=[],directionChanging=false;
+let booting=true;
+try{passed=JSON.parse(localStorage.getItem('knit-passed')||'[]');if(!Array.isArray(passed))passed=[];}catch{}
+try{if(localStorage.getItem('knit-queue-chapter-v1')!=='on'){passed=passed.filter(i=>i<44);localStorage.setItem('knit-passed',JSON.stringify(passed));localStorage.setItem('knit-queue-chapter-v1','on');}}catch{}
+try{sound=localStorage.getItem('knit-sound')!=='off';}catch{}
+document.documentElement.style.setProperty('--stitch',`url("${KnitMotion.texture}")`);$('#level-count').textContent=String(total).padStart(2,'0');
+const locked=()=>busy||relayRunning||directionChanging||KnitCoach.isOpen()||KnitPages.hasDialog(),complete=(s,i)=>E.completeColumn(s,i),hiddenAt=(s,i,j)=>Boolean(s.hidden?.[i]?.[j]),directionAt=(s,i)=>s.freeDirection?selectedDirection:E.direction(s,i);
+const hasFlow=s=>Boolean(s.alternating||s.rhythm?.length),futureDirections=(s,n=3)=>E.previewDirections(s,n);
+const dual=s=>Number.isInteger(s.reserve),queued=s=>Number.isInteger(s.queueTail),decode=a=>E.decodeAction(a),planDirections=(s,plan)=>s.freeDirection?Array.from({length:3},(_,j)=>plan[j]===undefined?selectedDirection:E.actionDirection(s,plan[j])):hasFlow(s)?futureDirections(s):Array.from({length:3},(_,j)=>directionAt(s,plan[j]===undefined?0:decode(plan[j]).column));
+const teachingKinds=()=>[...(queued(state)?['queue']:[]),...(state.freeDirection?['direction']:[]),...(dual(state)?['dual']:[]),...(state.targets?['order']:[])];
+async function turnDirection(dir){
+ if(!state.freeDirection||selectedDirection===dir)return;
+ const t=token,loom=$('#loom'),delay=matchMedia('(prefers-reduced-motion: reduce)').matches?0:320;
+ directionChanging=true;loom.classList.add('manual-shift');void loom.offsetWidth;selectedDirection=dir;render();
+ if(delay)await new Promise(r=>setTimeout(r,delay));
+ if(t===token){directionChanging=false;loom.classList.remove('manual-shift');render();}
+}
+function selectDirection(dir){if(locked()||!state.freeDirection||E.won(state))return;void turnDirection(dir);}
+function advanceCoach(){
+ if(KnitCoach.isOpen())return;
+ while(coachQueue.length){if(KnitCoach.open(coachQueue.shift(),{force:replayCoach})){render();return;}}
+ render();
+}
+function showCoach(force=false){if(locked())return;coachQueue=teachingKinds();replayCoach=force;if(coachQueue.length)advanceCoach();}
+window.addEventListener('knit-coach-closed',advanceCoach);
+function spool(el,c,slot=0){el.className='spool';el.style.setProperty('--yarn',colors[c]);el.querySelector('.spool-id').textContent=queued(state)?'':slot?'B':'A';el.classList.toggle('selected',dual(state)&&selectedSpool===slot);el.classList.toggle('active-source',busy&&selectedSpool===slot);el.disabled=locked()||!dual(state);el.setAttribute('aria-label',queued(state)?`第${slot+1}筒，${slot?'下一筒':'当前供线'}，${names[c]}色`:`线筒${slot?'B':'A'}，${names[c]}色`);if(queued(state))el.removeAttribute('aria-pressed');else el.setAttribute('aria-pressed',String(selectedSpool===slot));if(selectedSpool===slot)$('#loom').style.setProperty('--thread-color',colors[c]);}
+function selectSpool(slot){if(locked()||(!dual(state)&&slot))return;selectedSpool=slot;render();}
+function note(c,soft=false){KnitRewards.note(c,soft);}
+function syncSound(){KnitRewards.setSound(sound);$('#sound').innerHTML=sound?'♫':'♫<span class="sound-off"></span>';$('#sound').setAttribute('aria-label',sound?'关闭音效':'开启音效');$('#sound').setAttribute('aria-pressed',String(sound));}
+function renderPlan(){
+ const strip=$('#relay-controls');strip.hidden=!relayAvailable;
+ $('#relay-toggle').setAttribute('aria-pressed',String(planning));$('#relay-toggle').disabled=locked()||E.won(state);
+ $('#loom').classList.toggle('planning',planning&&!relayRunning);strip.classList.toggle('running',relayRunning);strip.classList.toggle('planning',planning);
+ const plan=relayRunning?relayPlan:queue,preview=relayRunning?relayDirections:planDirections(state,plan),slots=$('#relay-queue');slots.replaceChildren();
+ for(let j=0;j<3;j++){
+  const entry=document.createElement('span'),action=plan[j],part=action===undefined?null:decode(action),dir=preview[j];entry.className='queue-slot'+(part?' chosen':'')+(relayRunning&&j<relayIndex?' done':'')+(relayRunning&&j===relayIndex?' active':'');
+  if(!part){entry.innerHTML='<b>+</b>';entry.setAttribute('aria-label',`预选第${j+1}步`);}else{entry.innerHTML=`<span class="queue-position" aria-hidden="true">${Array.from({length:4},(_,c)=>`<i${c===part.column?' class="is-target"':''}></i>`).join('')}</span>${dual(state)?`<em aria-hidden="true">${part.spool?'B':'A'}</em>`:''}<small aria-hidden="true">${dir===1?'↓':'↑'}</small>`;entry.setAttribute('aria-label',`第${j+1}步，${dual(state)?`线筒${part.spool?'B':'A'}，`:''}第${part.column+1}列，${dir===1?'向下':'向上'}织入`);}slots.append(entry);
+ }
+ $('#relay-pop').disabled=locked()||!planning||queue.length===0;$('#relay-run').disabled=locked()||!planning||queue.length<2||E.won(state);$('#relay-help').hidden=!planning||queue.length>0||relayRunning;
+ document.querySelectorAll('[data-col]').forEach(col=>{col.querySelector('.planned-mark')?.remove();const steps=plan.flatMap((v,j)=>decode(v).column===Number(col.dataset.col)&&(!relayRunning||j>=relayIndex)?[j+1]:[]);col.classList.toggle('planned',planning&&steps.length>0);if(planning&&steps.length){const mark=document.createElement('span');mark.className='planned-mark';mark.setAttribute('aria-hidden','true');mark.replaceChildren(...steps.map(()=>document.createElement('i')));col.append(mark);}});
+}
+function render(){
+ const lock=locked();$('#level-number').textContent=String(level+1).padStart(2,'0');$('#moves').textContent=history.length;$('#reserve').hidden=!dual(state)&&!queued(state);$('#loom').classList.toggle('dual',dual(state));$('#loom').classList.toggle('queued',queued(state));$('.board-card').classList.toggle('order-board',Boolean(state.targets));$('#objective-label').hidden=!state.targets;spool($('#hand'),state.hand,0);if(dual(state)||queued(state))spool($('#reserve'),queued(state)?state.queueTail:state.reserve,1);$('#loom').style.setProperty('--slot-x',dual(state)?`${selectedSpool?42:-42}px`:queued(state)?'-42px':'0px');
+ $('#loom').classList.toggle('up-flow',Boolean((state.freeDirection||hasFlow(state))&&directionAt(state,0)===-1));
+ $('#direction-controls').hidden=!state.freeDirection;for(const [id,dir] of [['direction-down',1],['direction-up',-1]]){const button=$('#'+id);button.setAttribute('aria-pressed',String(selectedDirection===dir));button.disabled=lock||E.won(state);}
+ const flow=$('#flow-indicator'),preview=futureDirections(state);flow.hidden=!hasFlow(state);flow.innerHTML=preview.map((d,j)=>`${j?'<span>·</span>':''}<${j?'i':'b'}>${d===1?'↓':'↑'}</${j?'i':'b'}>`).join('');flow.setAttribute('aria-label',`未来三步：${preview.map(d=>d===1?'向下':'向上').join('、')}`);
+ const pure=state.cols.map((_,i)=>complete(state,i));$('#completion').setAttribute('aria-label',`已完成${pure.filter(Boolean).length}列`);[...$('#completion').children].forEach((el,i)=>{el.className=pure[i]?'filled':'';el.style.setProperty('--color',state.hidden?.[i]?.some(Boolean)?KnitMotion.hiddenColor:colors[state.cols[i][0]]);});
+ const container=$('#columns'),glowing=new Map([...container.querySelectorAll('.rewarding')].map(el=>[Number(el.dataset.col),el]));container.replaceChildren();
+ state.cols.forEach((c,i)=>{
+  const reverse=directionAt(state,i)===-1,signature=c.map((v,j)=>hiddenAt(state,i,j)?'?':v).join(','),old=glowing.get(i),reuse=old?.dataset.signature===signature,b=reuse?old:document.createElement('button');
+  if(!reuse){b.className='column';b.dataset.col=i;b.dataset.signature=signature;b.innerHTML='<span class="fabric"></span><span class="inlet" aria-hidden="true"></span><span class="check" aria-hidden="true"></span>';c.forEach((v,j)=>{const hidden=hiddenAt(state,i,j),band=document.createElement('div');band.className='band'+(hidden?' concealed':'');band.style.setProperty('--yarn',hidden?KnitMotion.hiddenColor:colors[v]);band.style.height=(100/c.length)+'%';b.querySelector('.fabric').append(band);});if(state.targets){const sample=document.createElement('span');sample.className='target-sample';sample.setAttribute('role','img');sample.setAttribute('aria-label',`第${i+1}列目标，从上到下${state.targets[i].map(v=>names[v]).join('、')}`);state.targets[i].forEach(v=>{const stripe=document.createElement('i');stripe.style.backgroundColor=colors[v];sample.append(stripe);});b.append(sample);}}
+  b.classList.toggle('pure',pure[i]);b.classList.toggle('reverse',reverse);b.classList.remove('hinted');b.querySelector('.inlet').textContent=reverse?'↑':'↓';b.querySelector('.check').textContent=pure[i]?'✓':'';b.disabled=lock||E.won(state);
+  b.setAttribute('aria-label',`第${i+1}列，${reverse?'从下向上':'从上向下'}织入，从上到下${c.map((v,j)=>hiddenAt(state,i,j)?'未知':names[v]).join('、')}${state.targets?`，目标从上到下${state.targets[i].map(v=>names[v]).join('、')}`:''}`);b.onclick=()=>choose(i);container.append(b);
+ });
+ $('#undo').disabled=lock||!history.length;$('#reset').disabled=lock;$('#hint').disabled=lock||E.won(state);$('#learn').hidden=!teachingKinds().length;$('#learn').disabled=lock;$('#prev-level').disabled=lock||level===0;$('#next-level').disabled=lock||level===total-1;$('#open-levels').disabled=lock;$('#hint').classList.remove('searching');renderPlan();
+ const chapter=KnitChapters.forLevel(level);$('#game-chapter-name').textContent=`第 ${String(chapter.id).padStart(2,'0')} 章 · ${chapter.name}`;$('#game-screen').setAttribute('aria-label',`${chapter.name}，第${level+1}关`);$('#back-home').disabled=lock;$('#brand').setAttribute('aria-disabled',String(lock));if(!booting)KnitPages.refresh();
+}
+function load(i){
+ if(locked())return;token++;hintToken++;relayRunId++;coachQueue=[];KnitRewards.reset();level=Math.max(0,Math.min(total-1,i));const info=E.level(level);state=info.state;history=[];selectionHistory=[];directionHistory=[];selectedDirection=1;selectedSpool=0;rewarded=new Set(state.cols.flatMap((_,i)=>complete(state,i)?[i]:[]));winRewarded=false;relayAvailable=Boolean(info.meta.relay);planning=false;queue=[];relayPlan=[];relayDirections=[];relayIndex=-1;$('#win').hidden=true;$('#receiver').className='empty-spool';render();if(!booting){try{localStorage.setItem('knit-last-level',String(level));}catch{}if(KnitPages.isGame())showCoach();}
+}
+function choose(i){
+ if(locked()||E.won(state))return;
+ const action=E.encodeAction(i,selectedSpool,Boolean(state.freeDirection&&selectedDirection===-1));if(planning&&relayAvailable){if(queue.length<3){queue.push(action);renderPlan();}return;}
+ void performMove(action);
+}
+async function performMove(action){
+ if(busy||E.won(state))return null;const {column:i,spool:slot}=decode(action);if(slot&&!dual(state))return null;
+ const direction=E.actionDirection(state,action);await turnDirection(direction);
+ selectedSpool=slot;KnitRewards.prime();busy=true;hintToken++;const t=token,previous=E.clone(state),incoming=slot?state.reserve:state.hand,outgoingIndex=direction===-1?0:state.cols[i].length-1,outgoing=state.cols[i][outgoingIndex],hiddenOutgoing=hiddenAt(state,i,outgoingIndex),preview=futureDirections(state,2),nextAction=relayRunning?relayPlan[relayIndex+1]:undefined,nextDirection=state.freeDirection?(nextAction===undefined?direction:E.actionDirection(state,nextAction)):preview[1],switchSides=state.freeDirection?direction!==nextDirection:hasFlow(state)&&preview[0]!==preview[1];render();note(incoming);
+ try{await KnitMotion.play({loom:$('#loom'),column:$(`[data-col="${i}"]`),hand:slot?$('#reserve'):$('#hand'),receiver:$('#receiver'),previous:previous.cols[i],previousHidden:previous.hidden?.[i]||[],hiddenOutgoing,incoming,outgoing,colors,direction,returnToReceiver:switchSides,returnSlotOffset:dual(state)?(slot?42:-42):0,companionElement:queued(state)?$('#reserve'):dual(state)?(slot?$('#hand'):$('#reserve')):null,companionColor:queued(state)?state.queueTail:slot?state.hand:state.reserve,queueRotation:queued(state),tick:row=>note(row%4,true),onReveal:()=>KnitRewards.reveal()});}catch(error){console.error('Weaving animation failed',error);}
+ if(t!==token)return null;history.push(previous);selectionHistory.push(slot);directionHistory.push(direction);state=E.move(previous,action);if(state.freeDirection)selectedDirection=nextDirection;busy=false;render();$('#loom').classList.remove('phase-shift');if(switchSides){void $('#loom').offsetWidth;$('#loom').classList.add('phase-shift');}
+ const won=E.won(state),newlyCompleted=!complete(previous,i)&&complete(state,i)&&!rewarded.has(i);
+ if(newlyCompleted){rewarded.add(i);KnitRewards.column({column:$(`[data-col="${i}"]`),color:colors[state.cols[i][0]],progress:state.cols.filter((_,j)=>complete(state,j)).length,last:won});$('#completion').children[i].classList.add('dot-celebrate');}
+ if(won){
+  const celebrate=!winRewarded;winRewarded=true;if(!passed.includes(level)){passed.push(level);try{localStorage.setItem('knit-passed',JSON.stringify(passed));}catch{}}
+  if(celebrate){await new Promise(r=>setTimeout(r,650));if(t!==token||!E.won(state))return null;KnitRewards.victory();}
+  if(t!==token)return null;$('#win-steps').textContent=`${history.length} 步`;$('#win-mini').replaceChildren(...state.cols.map(c=>{const el=document.createElement('i');el.style.setProperty('--yarn',colors[c[0]]);c.forEach(v=>{const band=document.createElement('span');band.className='mini-band';band.style.setProperty('--yarn',colors[v]);band.style.height=(100/c.length)+'%';el.append(band);});return el;}));$('#next').innerHTML=level===total-1?'全部完成 <span>↻</span>':'下一关 <span>↗</span>';$('#win').hidden=false;
+ }
+ return {won,newlyCompleted};
+}
+async function runRelay(){
+ if(locked()||!planning||queue.length<2||E.won(state))return;
+ const t=token,run=++relayRunId;relayPlan=queue.slice();relayDirections=planDirections(state,relayPlan);queue=[];relayRunning=true;relayIndex=0;KnitRewards.prime();render();
+ try{
+  for(let j=0;j<relayPlan.length;j++){
+   if(t!==token||run!==relayRunId||E.won(state))break;relayIndex=j;renderPlan();
+   const result=await performMove(relayPlan[j]);if(!result||result.won||t!==token)break;
+   if(j<relayPlan.length-1)await new Promise(r=>setTimeout(r,result.newlyCompleted?260:60));
+  }
+ }finally{if(run===relayRunId){relayRunning=false;relayPlan=[];relayDirections=[];relayIndex=-1;busy=false;if(t===token)render();}}
+}
+$('#relay-toggle').onclick=()=>{if(locked())return;planning=!planning;queue=[];renderPlan();};$('#relay-pop').onclick=()=>{if(locked())return;queue.pop();renderPlan();};$('#relay-run').onclick=()=>void runRelay();
+$('#hand').onclick=()=>selectSpool(0);$('#reserve').onclick=()=>selectSpool(1);
+$('#direction-down').onclick=()=>selectDirection(1);$('#direction-up').onclick=()=>selectDirection(-1);
+$('#learn').onclick=()=>showCoach(true);
+$('#undo').onclick=()=>{if(locked()||!history.length)return;token++;hintToken++;KnitRewards.reset();queue=[];state=history.pop();selectedSpool=selectionHistory.pop()||0;selectedDirection=directionHistory.pop()||1;$('#win').hidden=true;render();};$('#reset').onclick=()=>load(level);$('#replay').onclick=()=>load(level);$('#next').onclick=()=>load((level+1)%total);$('#prev-level').onclick=()=>load(level-1);$('#next-level').onclick=()=>load(level+1);
+$('#open-levels').onclick=()=>{if(!locked())KnitPages.chapters(KnitChapters.forLevel(level).id);};
+function returnHome(){if(locked())return;KnitRewards.reset();KnitPages.home();}
+$('#back-home').onclick=returnHome;$('#brand').onclick=e=>{e.preventDefault();returnHome();};
+$('#hint').onclick=async()=>{if(locked())return;queue=[];const t=token,h=++hintToken;busy=true;render();$('#hint').classList.add('searching');await new Promise(r=>setTimeout(r,32));let route;try{route=E.solve(state);}finally{if(t===token&&h===hintToken){busy=false;render();}}if(t!==token||h!==hintToken)return;if(route?.length){const next=decode(route[0]);selectedSpool=next.spool;await turnDirection(E.actionDirection(state,route[0]));if(t!==token||h!==hintToken)return;render();$(`[data-col="${next.column}"]`).classList.add('hinted');}};
+$('#sound').onclick=()=>{sound=!sound;syncSound();try{localStorage.setItem('knit-sound',sound?'on':'off');}catch{}if(sound){KnitRewards.prime();note(0);}};
+window.addEventListener('keydown',e=>{if(!KnitPages.isGame()||e.target.matches('input,textarea')||e.ctrlKey||e.metaKey||e.altKey||KnitPages.hasDialog()||KnitCoach.isOpen())return;if(/^[1-4]$/.test(e.key))choose(Number(e.key)-1);if(dual(state)&&/^[ab]$/i.test(e.key))selectSpool(e.key.toLowerCase()==='b'?1:0);if(state.freeDirection&&(e.key==='ArrowUp'||e.key==='ArrowDown')){e.preventDefault();selectDirection(e.key==='ArrowUp'?-1:1);}});
+let initialLevel=Array.from({length:total},(_,i)=>i).find(i=>!passed.includes(i))??0;
+try{const raw=localStorage.getItem('knit-last-level'),saved=Number(raw);if(raw!==null&&Number.isInteger(saved)&&saved>=0&&saved<total)initialLevel=saved;}catch{}
+syncSound();load(initialLevel);
+KnitPages.init({getProgress:()=>({passed:passed.slice(),lastLevel:level}),onViewChange:view=>{$('#back-home').hidden=view==='home';},onPlay:i=>{if(locked()||!Number.isInteger(i)||i<0||i>=total)return;const resume=i===level&&history.length>0&&!E.won(state);KnitPages.game();if(resume){render();showCoach();}else load(i);if(!KnitCoach.isOpen())$('#game-screen').focus({preventScroll:true});}});
+booting=false;
+
+</script></body></html>
